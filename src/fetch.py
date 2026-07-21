@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+import json
 import os
 from pathlib import Path
 import requests
@@ -6,6 +8,7 @@ from models.decision_model import Decision
 from models.keyword_model import Keyword
 
 EDDB_TOKEN = os.environ.get('EDDB_TOKEN')
+NB_DAYS_LAST_INGESTION = 60
 
 
 def download_file(url, filename):
@@ -39,8 +42,8 @@ def fetch_eddb_categories():
         try:
             category = Category(eddb_id, name_en, name_de, name_fr)
             rows[eddb_id_str] = category
-        except ValueError:
-            print(f'Category ({eddb_id}) fails')
+        except ValueError as err:
+            print(f'Category id {eddb_id}: {err}')
     return rows
 
 
@@ -65,27 +68,36 @@ def fetch_eddb_keywords():
         try:
             keyword = Keyword(eddb_id, category_id, name_en, name_de, name_fr)
             rows[eddb_id_str] = keyword
-        except ValueError:
-            print(f'Keyword ({eddb_id}) fails')
+        except ValueError as err:
+            print(f'Keyword {eddb_id}: {err}')
     return rows
 
 
-def fetch_eddb_decisions():
+def fetch_eddb_decisions(reset_cache):
     decisions = {}
+    date_start = '2000-01-01'
+    if not reset_cache:
+        date_start = date.today() - timedelta(days=NB_DAYS_LAST_INGESTION)
     page = 1
     has_next_page = True
     while has_next_page:
-        decisions_page, has_next_page = fetch_eddb_decisions_page(page)
+        decisions_page, has_next_page = fetch_eddb_decisions_page(date_start, page)
         decisions.update(decisions_page)
         page += 1
     return decisions
 
 
-def fetch_eddb_decisions_page(page):
+def fetch_eddb_decisions_page(date_start, page):
     url = 'https://eddb.unifr.ch/noco/api/v2/tables/merxbxhfvr09g66/records'
     limit = 25
     offset = (page - 1) * limit
-    params = {'offset': offset, 'limit': limit, 'where': ''}
+    where = f'(CreatedAt,ge,exactDate,{date_start})~or(UpdatedAt,ge,exactDate,{date_start})'
+    params = {
+        'offset': offset,
+        'limit': limit,
+        'where': where,
+        'sort': 'Id',
+    }
     headers = {'xc-token': EDDB_TOKEN}
     r = requests.get(url, params=params, headers=headers)
     response = r.json()
@@ -119,14 +131,30 @@ def fetch_eddb_decisions_page(page):
 
         try:
             rows[eddb_id_str] = Decision(**attributes)
-        except ValueError:
-            print(f'Decision ({eddb_id}) fails')
+        except ValueError as err:
+            print(f'Decision {eddb_id}: {err}')
     return rows, has_next_page
 
 
-def fetch_all_eddb():
-    data = {}
-    data['category'] = fetch_eddb_categories()
-    data['keyword'] = fetch_eddb_keywords()
-    data['decision'] = fetch_eddb_decisions()
+def fetch_all_eddb(reset_cache):
+    data = {'category': {}, 'keyword': {}, 'decision': {}}
+
+    category_file = Path('data/eddb_categories.json')
+    if category_file.exists():
+        tmp = json.loads(category_file.read_text(encoding='utf-8'))
+        data['category'] = {k: Category(**v) for k, v in tmp.items()}
+
+    keyword_file = Path('data/eddb_keywords.json')
+    if keyword_file.exists():
+        tmp = json.loads(keyword_file.read_text(encoding='utf-8'))
+        data['keyword'] = {k: Keyword(**v) for k, v in tmp.items()}
+
+    decision_file = Path('data/eddb_decisions.json')
+    if decision_file.exists():
+        tmp = json.loads(decision_file.read_text(encoding='utf-8'))
+        data['decision'] = {k: Decision(**v) for k, v in tmp.items()}
+
+    data['category'].update(fetch_eddb_categories())
+    data['keyword'].update(fetch_eddb_keywords())
+    data['decision'].update(fetch_eddb_decisions(reset_cache))
     return data

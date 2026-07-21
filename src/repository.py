@@ -1,3 +1,4 @@
+import json
 import requests
 from urllib.parse import quote
 from helper import (
@@ -7,9 +8,13 @@ from helper import (
 )
 
 
-def fetch_all_resources(token):
+def fetch_all_resources(token, use_cache):
     '''Fetch the user data and enumerations.
     '''
+    if use_cache:
+        with open('data/data_dasch.json', 'r') as f:
+            return json.load(f)
+
     url = 'http://localhost:3333/v2/metadata/projects/0871/resources?format=json'
     headers = {
         'Authorization': f'Bearer {token}',
@@ -141,7 +146,7 @@ def update_label(body, token):
     }
     response = requests.put(url, headers=headers, json=body)
     if response.status_code >= 400:
-        raise RuntimeError('Cannot update label')
+        raise RuntimeError(f'Cannot update label: {response.text}')
     return response
 
 

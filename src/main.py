@@ -8,9 +8,7 @@ from helper import (
     body_delete_resource,
     get_keyword_iri,
 )
-from models.category_model import Category
 from models.decision_model import Decision
-from models.keyword_model import Keyword
 from repository import (
     fetch_all_resources,
     fetch_resource,
@@ -32,13 +30,11 @@ if __name__ == '__main__':
 
     token = fetch_token()
 
-    # Comment this block when debugging to save some bandwidth.
-    data_dasch = fetch_all_resources(token)
+    data_dasch = fetch_all_resources(token, use_cache=True)
     with open('data/data_dasch.json', 'w') as f:
         f.write(json.dumps(data_dasch, indent=4))
 
-    # Comment this block when debugging to save some bandwidth.
-    data_eddb = fetch_all_eddb()
+    data_eddb = fetch_all_eddb(reset_cache=False)
     with open('data/eddb_categories.json', 'w') as f:
         tmp = {k: v.__dict__ for k, v in data_eddb['category'].items()}
         f.write(json.dumps(tmp, indent=4))
@@ -48,23 +44,6 @@ if __name__ == '__main__':
     with open('data/eddb_decisions.json', 'w') as f:
         tmp = {k: v.__dict__ for k, v in data_eddb['decision'].items()}
         f.write(json.dumps(tmp, indent=4))
-
-    # # Uncomment this bloc when debugging to save bandwidth.
-    # # And don't forget to comment the bloc above requesting the data.
-    # with open('data/data_dasch.json', 'r') as f:
-    #     data_dasch = json.load(f)
-
-    # with open('data/eddb_categories.json', 'r') as f:
-    #     eddb_categories = json.load(f)
-    # with open('data/eddb_decisions.json', 'r') as f:
-    #     eddb_decisions = json.load(f)
-    # with open('data/eddb_keywords.json', 'r') as f:
-    #     eddb_keywords = json.load(f)
-    # data_eddb = {
-    #     'category': {k: Category(**v) for k, v in eddb_categories.items()},
-    #     'decision': {k: Decision(**v) for k, v in eddb_decisions.items()},
-    #     'keyword': {k: Keyword(**v) for k, v in eddb_keywords.items()},
-    # }
 
     # Step 1: Update existing categories or add new categories.
     for cid, category_eddb in data_eddb['category'].items():
