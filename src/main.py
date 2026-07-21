@@ -4,11 +4,9 @@ load_dotenv()
 import json
 from pathlib import Path
 from fetch import download_file, fetch_all_eddb
-from helper import (
-    body_delete_resource,
-    get_keyword_iri,
-)
+from helper import get_keyword_iri
 from models.decision_model import Decision
+from payload import body_delete_resource
 from repository import (
     fetch_all_resources,
     fetch_resource,

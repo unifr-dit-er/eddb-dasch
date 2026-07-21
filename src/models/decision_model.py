@@ -2,7 +2,8 @@ import os
 import subprocess
 from dsp_tools import xmllib
 from dsp_tools.xmllib import LicenseRecommended, Resource
-from helper import (
+from helper import get_keyword_iri, is_before
+from payload import (
     body_add_link,
     body_unlink_keyword,
     body_update_date,
@@ -10,8 +11,6 @@ from helper import (
     body_update_list,
     body_update_rich_text,
     body_update_simple_text,
-    get_keyword_iri,
-    is_before,
 )
 
 
