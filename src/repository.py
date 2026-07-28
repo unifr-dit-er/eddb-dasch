@@ -1,4 +1,5 @@
 import json
+from itertools import batched
 import requests
 from urllib.parse import quote
 from helper import (
@@ -6,6 +7,24 @@ from helper import (
     is_class_decision,
     is_class_keyword,
 )
+
+
+BATCH_SIZE = 64
+
+
+def fetch_batch(batch, token):
+    url = 'http://localhost:3333/v2/resources/batch'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json',
+    }
+    data = {'resourceIris': batch}
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code >= 400:
+        raise RuntimeError('Cannot fetch batch resources on DaSCH')
+    resp = response.json()
+    # if batch contains only one element, then it is not an array.
+    return resp['@graph'] if '@graph' in resp else [resp]
 
 
 def fetch_all_resources(token, use_cache):
@@ -27,10 +46,6 @@ def fetch_all_resources(token, use_cache):
     data = build_dasch_data(rows, token)
 
     url = 'http://localhost:3333/admin/lists'
-    headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json',
-    }
     response = requests.get(url, headers=headers)
     r = response.json()
     list_canton_iri = r['lists'][0]['id']  # There is only one controlled vocabulary.
@@ -75,21 +90,23 @@ def fetch_token():
 
 def build_dasch_data(rows, token):
     data = {'category': {}, 'keyword': {}, 'decision': {}}
+    iris = []
     for row in rows:
-        if 'resourceDeletionDate' in row:
-            continue
-        resource_iri = row['resourceIri']
-        resource = fetch_resource(resource_iri, token)
-        id_eddb = resource['Datacant:hasId']['knora-api:intValueAsInt']
-        id_eddb_str = str(id_eddb)
-        if is_class_category(resource):
-            data['category'][id_eddb_str] = resource
-        elif is_class_keyword(resource):
-            data['keyword'][id_eddb_str] = resource
-        elif is_class_decision(resource):
-            data['decision'][id_eddb_str] = resource
-        else:
-            raise ValueError('Unknown class')
+        if 'resourceDeletionDate' not in row:
+            iris.append(row['resourceIri'])
+    for batch_iri in batched(iris, BATCH_SIZE):
+        resources = fetch_batch(batch_iri, token)
+        for resource in resources:
+            id_eddb = resource['Datacant:hasId']['knora-api:intValueAsInt']
+            id_eddb_str = str(id_eddb)
+            if is_class_category(resource):
+                data['category'][id_eddb_str] = resource
+            elif is_class_keyword(resource):
+                data['keyword'][id_eddb_str] = resource
+            elif is_class_decision(resource):
+                data['decision'][id_eddb_str] = resource
+            else:
+                raise ValueError('Unknown class')
     return data
 
 

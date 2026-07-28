@@ -88,8 +88,8 @@ if __name__ == '__main__':
             label_old = keyword_dasch['rdfs:label']
             if keyword_eddb.has_label_changed(label_old):
                 last_modification = \
-                    category_dasch.get('knora-api:lastModificationDate', {}).get('@value')
-                payload = category_eddb.payload_update_label(resource_id, last_modification)
+                    keyword_dasch.get('knora-api:lastModificationDate', {}).get('@value')
+                payload = keyword_eddb.payload_update_label(resource_id, last_modification)
                 response = update_label(payload, token)
                 has_changed = True
             payload_updates = keyword_eddb.payload_update_fields(data_dasch)
@@ -99,7 +99,6 @@ if __name__ == '__main__':
             data_dasch['keyword'][kid] = fetch_resource(resource_id, token)
 
     # Step 3: Update existing decisions or add new decisions.
-
     resources = []
     is_import_required = False
     for did, decision_eddb in data_eddb['decision'].items():

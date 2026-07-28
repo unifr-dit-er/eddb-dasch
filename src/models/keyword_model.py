@@ -59,12 +59,15 @@ class Keyword():
             payload = body_update_simple_text(resource_id, resource_type, field, field_id, value)
             payloads.append(payload)
 
-        iri_current = keyword_dasch['Datacant:linkToCategoryValue']['knora-api:linkValueHasTarget']['@id']
+        field = 'Datacant:linkToCategoryValue'
+        link_target = keyword_dasch[field].get('knora-api:linkValueHasTarget')
+        if link_target is None:
+            link_target = keyword_dasch[field]['knora-api:linkValueHasTargetIri']
+        iri_current = link_target['@id']
         category_id_new = str(self.category_id)
         iri_new = dasch_db['category'][category_id_new]['@id']
         if iri_current != iri_new:
-            field = 'Datacant:linkToCategoryValue'
-            field_id = keyword_dasch['Datacant:linkToCategoryValue']['@id']
+            field_id = keyword_dasch[field]['@id']
             payload = body_update_link(resource_id, resource_type, field, field_id, iri_new)
             payloads.append(payload)
 
