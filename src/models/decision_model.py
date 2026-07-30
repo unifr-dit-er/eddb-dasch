@@ -205,7 +205,7 @@ class Decision():
                 'dsp-tools',
                 'xmlupload',
                 '-s', os.environ.get('DSP_HOST'),
-                '-u', os.environ.get('DSP_USER'),
+                '-u', os.environ.get('DSP_EMAIL'),
                 '-p', os.environ.get('DSP_PASSWORD'),
                 'data.xml',
             ],

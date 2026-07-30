@@ -1,5 +1,6 @@
 import json
 from itertools import batched
+import os
 import requests
 from urllib.parse import quote
 from helper import (
@@ -10,10 +11,13 @@ from helper import (
 
 
 BATCH_SIZE = 64
+DSP_HOST = os.environ.get('DSP_HOST')
+DSP_EMAIL = os.environ.get('DSP_EMAIL')
+DSP_PASSWORD = os.environ.get('DSP_PASSWORD')
 
 
 def fetch_batch(batch, token):
-    url = 'http://localhost:3333/v2/resources/batch'
+    url = f'{DSP_HOST}/v2/resources/batch'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
@@ -34,7 +38,7 @@ def fetch_all_resources(token, use_cache):
         with open('data/data_dasch.json', 'r') as f:
             return json.load(f)
 
-    url = 'http://localhost:3333/v2/metadata/projects/0871/resources?format=json'
+    url = f'{DSP_HOST}/v2/metadata/projects/0871/resources?format=json'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
@@ -45,12 +49,26 @@ def fetch_all_resources(token, use_cache):
     rows = response.json()
     data = build_dasch_data(rows, token)
 
-    url = 'http://localhost:3333/admin/lists'
+    data['cantons'] = fetch_controlled_vocabulary(token)
+    return data
+
+
+def fetch_controlled_vocabulary(token):
+    '''Fetch the enumerations defined in the project.
+    '''
+    url = f'{DSP_HOST}/admin/lists'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json',
+    }
     response = requests.get(url, headers=headers)
     r = response.json()
-    list_canton_iri = r['lists'][0]['id']  # There is only one controlled vocabulary.
+    for project in r['lists']:
+        if '/lists/0871/' in project['id']:
+            list_canton_iri = project['id']
+            break  # There is only one controlled vocabulary.
     list_canton_iri_enc = quote(list_canton_iri, safe='')
-    url = f'http://localhost:3333/admin/lists/{list_canton_iri_enc}'
+    url = f'{DSP_HOST}/admin/lists/{list_canton_iri_enc}'
     response = requests.get(url, headers=headers)
     if response.status_code != 200:
         raise RuntimeError('Cannot fetch resources controlled vocabulary')
@@ -59,13 +77,12 @@ def fetch_all_resources(token, use_cache):
     for canton in r['list']['children']:
         name = canton['name']
         cantons[name] = canton['id']
-    data['cantons'] = cantons
-    return data
+    return cantons
 
 
 def fetch_resource(iri, token):
     iri_enc = quote(iri, safe='')
-    url = f'http://localhost:3333/v2/resources/{iri_enc}'
+    url = f'{DSP_HOST}/v2/resources/{iri_enc}'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
@@ -77,13 +94,13 @@ def fetch_resource(iri, token):
 
 
 def fetch_token():
-    url = 'http://localhost:3333/v2/authentication'
-    json_data = {'email': 'root@example.com', 'password': 'test'}
+    url = f'{DSP_HOST}/v2/authentication'
+    json_data = {'email': DSP_EMAIL, 'password': DSP_PASSWORD}
 
     response = requests.post(url, json=json_data)
 
     if response.status_code != 200:
-        raise RuntimeError('Cannot fetch token')
+        raise RuntimeError(f'Cannot fetch token: {response.text}')
     j = response.json()
     return j['token']
 
@@ -111,7 +128,7 @@ def build_dasch_data(rows, token):
 
 
 def create_resource(body, token):
-    url = 'http://localhost:3333/v2/resources'
+    url = f'{DSP_HOST}/v2/resources'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
@@ -123,7 +140,7 @@ def create_resource(body, token):
 
 
 def create_value(body, token):
-    url = 'http://localhost:3333/v2/values'
+    url = f'{DSP_HOST}/v2/values'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
@@ -134,7 +151,7 @@ def create_value(body, token):
 
 
 def delete_value(body, token):
-    url = 'http://localhost:3333/v2/values/delete'
+    url = f'{DSP_HOST}/v2/values/delete'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
@@ -145,7 +162,7 @@ def delete_value(body, token):
 
 
 def delete_resource(body, token):
-    url = 'http://localhost:3333/v2/resources/delete'
+    url = f'{DSP_HOST}/v2/resources/delete'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
@@ -156,7 +173,7 @@ def delete_resource(body, token):
 
 
 def update_label(body, token):
-    url = 'http://localhost:3333/v2/resources'
+    url = f'{DSP_HOST}/v2/resources'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
@@ -168,7 +185,7 @@ def update_label(body, token):
 
 
 def update_value(body, token):
-    url = 'http://localhost:3333/v2/values'
+    url = f'{DSP_HOST}/v2/values'
     headers = {
         'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json',
