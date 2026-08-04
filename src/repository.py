@@ -36,7 +36,11 @@ def fetch_all_resources(token, use_cache):
     '''
     if use_cache:
         with open('data/data_dasch.json', 'r') as f:
-            return json.load(f)
+            data = json.load(f)
+            data['category'] = {int(k): v for k, v in data['category'].items()}
+            data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
+            data['decision'] = {int(k): v for k, v in data['decision'].items()}
+            return data
 
     url = f'{DSP_HOST}/v2/metadata/projects/0871/resources?format=json'
     headers = {
@@ -115,13 +119,12 @@ def build_dasch_data(rows, token):
         resources = fetch_batch(batch_iri, token)
         for resource in resources:
             id_eddb = resource['Datacant:hasId']['knora-api:intValueAsInt']
-            id_eddb_str = str(id_eddb)
             if is_class_category(resource):
-                data['category'][id_eddb_str] = resource
+                data['category'][id_eddb] = resource
             elif is_class_keyword(resource):
-                data['keyword'][id_eddb_str] = resource
+                data['keyword'][id_eddb] = resource
             elif is_class_decision(resource):
-                data['decision'][id_eddb_str] = resource
+                data['decision'][id_eddb] = resource
             else:
                 raise ValueError('Unknown class')
     return data

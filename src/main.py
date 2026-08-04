@@ -73,7 +73,7 @@ if __name__ == '__main__':
     for kid, keyword_eddb in data_eddb['keyword'].items():
         keyword_dasch = data_dasch['keyword'].get(kid)
         has_changed = False
-        category_id = str(keyword_eddb.category_id)
+        category_id = keyword_eddb.category_id
 
         if keyword_dasch is None:
             # Add new keyword.
@@ -110,8 +110,7 @@ if __name__ == '__main__':
             is_import_required = True
             keywords_iri = []
             for eddb_id in decision_eddb.keywords_id:
-                eddb_id_str = str(eddb_id)
-                iri = get_keyword_iri(data_dasch, eddb_id_str)
+                iri = get_keyword_iri(data_dasch, eddb_id)
                 keywords_iri.append(iri)
             resource = decision_eddb.payload_add(keywords_iri)
             resources.append(resource)
@@ -157,7 +156,7 @@ if __name__ == '__main__':
             with file.open() as f:
                 iri_id = json.load(f)
                 for eddb_id_str, iri in iri_id.items():
-                    eddb_id = eddb_id_str[2:]  # `eddb_id_str` looks like "D_<id>"
+                    eddb_id = int(eddb_id_str[2:])  # `eddb_id_str` looks like "D_<id>"
                     data_dasch['decision'][eddb_id] = fetch_resource(iri, token)
             file.unlink()
         except StopIteration:

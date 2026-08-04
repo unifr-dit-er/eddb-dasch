@@ -84,9 +84,8 @@ class Decision():
         return resource
 
     def payload_update_fields(self, dasch_db):
-        eddb_id = str(self.eddb_id)
         payloads = []
-        decision_dasch = dasch_db['decision'][eddb_id]
+        decision_dasch = dasch_db['decision'][self.eddb_id]
         resource_id = decision_dasch['@id']
         resource_type = self.resource_type()
 
@@ -162,8 +161,7 @@ class Decision():
             links = [links]
         keywords_iri_new = set()
         for eddb_id in self.keywords_id:
-            eddb_id_str = str(eddb_id)
-            iri = get_keyword_iri(dasch_db, eddb_id_str)
+            iri = get_keyword_iri(dasch_db, eddb_id)
             keywords_iri_new.add(iri)
         keywords_iri_old = set()
         for link in links:

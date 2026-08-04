@@ -39,9 +39,8 @@ class Keyword():
         return body_create_keyword(eddb_id, label, name_de, name_fr, category_iri)
 
     def payload_update_fields(self, dasch_db):
-        eddb_id = str(self.eddb_id)
         payloads = []
-        keyword_dasch = dasch_db['keyword'][eddb_id]
+        keyword_dasch = dasch_db['keyword'][self.eddb_id]
         resource_id = keyword_dasch['@id']
         resource_type = self.resource_type()
 
@@ -64,8 +63,7 @@ class Keyword():
         if link_target is None:
             link_target = keyword_dasch[field]['knora-api:linkValueHasTargetIri']
         iri_current = link_target['@id']
-        category_id_new = str(self.category_id)
-        iri_new = dasch_db['category'][category_id_new]['@id']
+        iri_new = dasch_db['category'][self.category_id]['@id']
         if iri_current != iri_new:
             field_id = keyword_dasch[field]['@id']
             payload = body_update_link(resource_id, resource_type, field, field_id, iri_new)

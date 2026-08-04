@@ -34,14 +34,13 @@ def fetch_eddb_categories():
         raise RuntimeError('Could not fetch all the categories in EDDB: increase the limit')
     rows = {}
     for c in response['list']:
-        eddb_id_str = str(c['Id'])
-        eddb_id = int(eddb_id_str)
+        eddb_id = c['Id']
         name_en = c['CategoryEN']
         name_de = c['CategoryDE']
         name_fr = c['CategoryFR']
         try:
             category = Category(eddb_id, name_en, name_de, name_fr)
-            rows[eddb_id_str] = category
+            rows[eddb_id] = category
         except ValueError as err:
             print(f'Category id {eddb_id}: {err}')
     return rows
@@ -59,15 +58,14 @@ def fetch_eddb_keywords():
         raise RuntimeError('Could not fetch all the keywords in EDDB: increase the limit')
     rows = {}
     for k in response['list']:
-        eddb_id_str = str(k['Id'])
-        eddb_id = int(k['Id'])
+        eddb_id = k['Id']
         category_id = k['Categories_id']
         name_en = k['KeywordEN']
         name_de = k['KeywordDE']
         name_fr = k['KeywordFR']
         try:
             keyword = Keyword(eddb_id, category_id, name_en, name_de, name_fr)
-            rows[eddb_id_str] = keyword
+            rows[eddb_id] = keyword
         except ValueError as err:
             print(f'Keyword {eddb_id}: {err}')
     return rows
@@ -106,8 +104,7 @@ def fetch_eddb_decisions_page(date_start, page):
     rows = {}
     for j in judgments:
         url_file = 'https://eddb.unifr.ch/noco/{}'.format(j['Attachment'][0]['path'])
-        eddb_id_str = str(j['Id'])
-        eddb_id = int(eddb_id_str)
+        eddb_id = j['Id']
         attributes = {
             'url_file': url_file,
             'eddb_id': eddb_id,
@@ -130,7 +127,7 @@ def fetch_eddb_decisions_page(date_start, page):
             attributes['keywords_id'].append(keyword_id)
 
         try:
-            rows[eddb_id_str] = Decision(**attributes)
+            rows[eddb_id] = Decision(**attributes)
         except ValueError as err:
             print(f'Decision {eddb_id}: {err}')
     return rows, has_next_page
@@ -142,17 +139,17 @@ def fetch_all_eddb(reset_cache):
     category_file = Path('data/eddb_categories.json')
     if category_file.exists():
         tmp = json.loads(category_file.read_text(encoding='utf-8'))
-        data['category'] = {k: Category(**v) for k, v in tmp.items()}
+        data['category'] = {int(k): Category(**v) for k, v in tmp.items()}
 
     keyword_file = Path('data/eddb_keywords.json')
     if keyword_file.exists():
         tmp = json.loads(keyword_file.read_text(encoding='utf-8'))
-        data['keyword'] = {k: Keyword(**v) for k, v in tmp.items()}
+        data['keyword'] = {int(k): Keyword(**v) for k, v in tmp.items()}
 
     decision_file = Path('data/eddb_decisions.json')
     if decision_file.exists():
         tmp = json.loads(decision_file.read_text(encoding='utf-8'))
-        data['decision'] = {k: Decision(**v) for k, v in tmp.items()}
+        data['decision'] = {int(k): Decision(**v) for k, v in tmp.items()}
 
     data['category'].update(fetch_eddb_categories())
     data['keyword'].update(fetch_eddb_keywords())

@@ -1,5 +1,5 @@
-def get_keyword_iri(dasch, eddb_id_str):
-    return dasch['keyword'][eddb_id_str]['@id']
+def get_keyword_iri(dasch, eddb_id_int):
+    return dasch['keyword'][eddb_id_int]['@id']
 
 
 def is_before(d1, d2):
