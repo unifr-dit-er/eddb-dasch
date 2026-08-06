@@ -64,7 +64,7 @@ class Decision():
         )
 
         resource.add_file(
-            f'documents/{self.filename_eddb()}',
+            f'data/documents/{self.filename_eddb()}',
             license=LicenseRecommended.DSP.PUBLIC_DOMAIN,
             copyright_holder='University of Fribourg',
             authorship=['Institut de droit européen'],

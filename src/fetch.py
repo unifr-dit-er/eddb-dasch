@@ -12,13 +12,13 @@ NB_DAYS_LAST_INGESTION = 60
 
 
 def download_file(url, filename):
-    if Path(f'documents/{filename}').is_file():
+    if Path(f'data/documents/{filename}').is_file():
         return
 
     r = requests.get(url)
     if not r.ok:
         raise RuntimeError(f'Error while downloading file: {url}')
-    with open('documents/{}'.format(filename), 'wb') as f:
+    with open('data/documents/{}'.format(filename), 'wb') as f:
         f.write(r.content)
 
 
@@ -71,10 +71,10 @@ def fetch_eddb_keywords():
     return rows
 
 
-def fetch_eddb_decisions(reset_cache):
+def fetch_eddb_decisions(use_cache):
     decisions = {}
     date_start = '2000-01-01'
-    if not reset_cache:
+    if use_cache:
         date_start = date.today() - timedelta(days=NB_DAYS_LAST_INGESTION)
     page = 1
     has_next_page = True
@@ -119,9 +119,8 @@ def fetch_eddb_decisions_page(date_start, page):
         }
 
         for keyword in j['_nc_m2m_Decisions_Keywords']:
-            # TODO: check that condition below.
             if 'Keywords' not in keyword:
-                print('Decision keywords not found:', keyword)
+                # keyword is no longer linked to the decision.
                 continue
             keyword_id = keyword['Keywords_id']
             attributes['keywords_id'].append(keyword_id)
@@ -153,5 +152,6 @@ def fetch_all_eddb(reset_cache):
 
     data['category'].update(fetch_eddb_categories())
     data['keyword'].update(fetch_eddb_keywords())
-    data['decision'].update(fetch_eddb_decisions(reset_cache))
+    use_cache = decision_file.exists() and not reset_cache
+    data['decision'].update(fetch_eddb_decisions(use_cache))
     return data

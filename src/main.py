@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import json
+import os
 from pathlib import Path
 from fetch import download_file, fetch_all_eddb
 from helper import get_keyword_iri
@@ -20,15 +21,13 @@ from repository import (
 )
 
 
-if __name__ == '__main__':
-    # Before the script, make sure there are not file that starts with `id2iri_`.
-    current_directory = Path('.')
-    if any(current_directory.glob('id2iri_*.json')):
-        raise RuntimeError('Mapping identifier file found from previous run.')
+USE_DASCH_CACHE = os.environ.get('USE_DASCH_CACHE') in ('true', 'True', 'TRUE')
 
+
+if __name__ == '__main__':
     token = fetch_token()
 
-    data_dasch = fetch_all_resources(token, use_cache=True)
+    data_dasch = fetch_all_resources(token, use_cache=USE_DASCH_CACHE)
     with open('data/data_dasch.json', 'w') as f:
         f.write(json.dumps(data_dasch, indent=4))
 
@@ -163,6 +162,7 @@ if __name__ == '__main__':
             raise RuntimeError('Error file mapping iri and eddb id not found')
 
     # Step 4: Delete decisions.
+    keys_to_remove = []
     for eddb_id_old, row in data_dasch['decision'].items():
         if eddb_id_old not in data_eddb['decision']:
             resource_iri = row['@id']
@@ -170,8 +170,12 @@ if __name__ == '__main__':
             last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
             body = body_delete_resource(resource_iri, resource_type, last_modification)
             delete_resource(body, token)
+            keys_to_remove.append(eddb_id_old)
+    for k in keys_to_remove:
+        data_dasch['decision'].pop(k)
 
     # Step 5: Delete keywords.
+    keys_to_remove = []
     for eddb_id_old, row in data_dasch['keyword'].items():
         if eddb_id_old not in data_eddb['keyword']:
             resource_iri = row['@id']
@@ -179,8 +183,12 @@ if __name__ == '__main__':
             last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
             body = body_delete_resource(resource_iri, resource_type, last_modification)
             delete_resource(body, token)
+            keys_to_remove.append(eddb_id_old)
+    for k in keys_to_remove:
+        data_dasch['keyword'].pop(k)
 
     # Step 6: Delete categories.
+    keys_to_remove = []
     for eddb_id_old, row in data_dasch['category'].items():
         if eddb_id_old not in data_eddb['category']:
             resource_iri = row['@id']
@@ -188,6 +196,9 @@ if __name__ == '__main__':
             last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
             body = body_delete_resource(resource_iri, resource_type, last_modification)
             delete_resource(body, token)
+            keys_to_remove.append(eddb_id_old)
+    for k in keys_to_remove:
+        data_dasch['category'].pop(k)
 
     # Step 7: Save data in file.
     with open('data/data_dasch.json', 'w') as f:

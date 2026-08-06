@@ -73,8 +73,12 @@ ENV/
 env.bak/
 venv.bak/
 
+.env.dev
+.env.prod
+
 # Database
 src/database.ini
+src/data
 
 # mkdocs documentation
 /site

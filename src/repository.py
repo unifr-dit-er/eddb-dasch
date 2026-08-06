@@ -1,6 +1,7 @@
 import json
 from itertools import batched
 import os
+from pathlib import Path
 import requests
 from urllib.parse import quote
 from helper import (
@@ -35,8 +36,9 @@ def fetch_all_resources(token, use_cache):
     '''Fetch the user data and enumerations.
     '''
     if use_cache:
-        with open('data/data_dasch.json', 'r') as f:
-            data = json.load(f)
+        dasch_db_file = Path('data/data_dasch.json')
+        if dasch_db_file.exists():
+            data = json.loads(dasch_db_file.read_text(encoding='utf-8'))
             data['category'] = {int(k): v for k, v in data['category'].items()}
             data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
             data['decision'] = {int(k): v for k, v in data['decision'].items()}
@@ -150,7 +152,7 @@ def create_value(body, token):
     }
     response = requests.post(url, headers=headers, json=body)
     if response.status_code >= 400:
-        raise RuntimeError('Cannot create value')
+        raise RuntimeError(f'Cannot create value: {response.text}')
 
 
 def delete_value(body, token):
@@ -161,7 +163,7 @@ def delete_value(body, token):
     }
     response = requests.post(url, headers=headers, json=body)
     if response.status_code >= 400:
-        raise RuntimeError('Cannot delete value')
+        raise RuntimeError(f'Cannot delete value: {response.text}')
 
 
 def delete_resource(body, token):
@@ -172,7 +174,7 @@ def delete_resource(body, token):
     }
     response = requests.post(url, headers=headers, json=body)
     if response.status_code >= 400:
-        raise RuntimeError('Cannot delete resource')
+        raise RuntimeError(f'Cannot delete resource: {response.text}')
 
 
 def update_label(body, token):
@@ -195,4 +197,4 @@ def update_value(body, token):
     }
     response = requests.put(url, headers=headers, json=body)
     if response.status_code >= 400:
-        raise RuntimeError('Cannot update value')
+        raise RuntimeError(f'Cannot update value: {response.text}')
