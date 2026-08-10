@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import json
+import logging
 import os
 from pathlib import Path
 from fetch import download_file, fetch_all_eddb
@@ -22,9 +23,13 @@ from repository import (
 
 
 USE_DASCH_CACHE = os.environ.get('USE_DASCH_CACHE') in ('true', 'True', 'TRUE')
+logger = logging.getLogger(__name__)
 
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='data/app.log', level=logging.INFO)
+    logger.info('Start the process!')
+
     token = fetch_token()
 
     data_dasch = fetch_all_resources(token, use_cache=USE_DASCH_CACHE)
@@ -47,7 +52,7 @@ if __name__ == '__main__':
         category_dasch = data_dasch['category'].get(cid)
         has_changed = False
         if category_dasch is None:
-            # Add new category.
+            logger.info(f'Add new category (id={cid})')
             payload = category_eddb.payload_add()
             resource_id = create_resource(payload, token)
             has_changed = True
@@ -66,6 +71,7 @@ if __name__ == '__main__':
             for payload in payload_updates:
                 update_value(payload, token)
         if has_changed or len(payload_updates) != 0:
+            logger.info(f'Category (id={cid}) has been updated')
             data_dasch['category'][cid] = fetch_resource(resource_id, token)
 
     # Step 2: Update existing keywords or add new keywords.
@@ -75,7 +81,7 @@ if __name__ == '__main__':
         category_id = keyword_eddb.category_id
 
         if keyword_dasch is None:
-            # Add new keyword.
+            logger.info(f'Add new keyword (id={kid})')
             category_iri = data_dasch['category'][category_id]['@id']
             payload = keyword_eddb.payload_add(category_iri)
             resource_id = create_resource(payload, token)
@@ -95,6 +101,7 @@ if __name__ == '__main__':
             for payload in payload_updates:
                 update_value(payload, token)
         if has_changed or len(payload_updates) != 0:
+            logger.info(f'Keyword (id={kid}) has been updated')
             data_dasch['keyword'][kid] = fetch_resource(resource_id, token)
 
     # Step 3: Update existing decisions or add new decisions.
@@ -105,7 +112,7 @@ if __name__ == '__main__':
         has_changed = False
 
         if decision_dasch is None:
-            # Add new decision.
+            logger.info(f'Add new decision (id={did})')
             is_import_required = True
             keywords_iri = []
             for eddb_id in decision_eddb.keywords_id:
@@ -143,6 +150,7 @@ if __name__ == '__main__':
                 delete_value(payload, token)
 
             if has_changed:
+                logger.info(f'Decision (id={did}) has been updated')
                 data_dasch['decision'][did] = fetch_resource(resource_id, token)
 
     if is_import_required:
@@ -165,6 +173,7 @@ if __name__ == '__main__':
     keys_to_remove = []
     for eddb_id_old, row in data_dasch['decision'].items():
         if eddb_id_old not in data_eddb['decision']:
+            logger.info(f'Delete decision (id={eddb_id_old})')
             resource_iri = row['@id']
             resource_type = 'Datacant:Decisions'
             last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
@@ -178,6 +187,7 @@ if __name__ == '__main__':
     keys_to_remove = []
     for eddb_id_old, row in data_dasch['keyword'].items():
         if eddb_id_old not in data_eddb['keyword']:
+            logger.info(f'Delete keyword (id={eddb_id_old})')
             resource_iri = row['@id']
             resource_type = 'Datacant:Keyword'
             last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
@@ -191,6 +201,7 @@ if __name__ == '__main__':
     keys_to_remove = []
     for eddb_id_old, row in data_dasch['category'].items():
         if eddb_id_old not in data_eddb['category']:
+            logger.info(f'Delete category (id={eddb_id_old})')
             resource_iri = row['@id']
             resource_type = 'Datacant:Category'
             last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
@@ -203,3 +214,4 @@ if __name__ == '__main__':
     # Step 7: Save data in file.
     with open('data/data_dasch.json', 'w') as f:
         f.write(json.dumps(data_dasch, indent=4))
+    logger.info('Finished!')

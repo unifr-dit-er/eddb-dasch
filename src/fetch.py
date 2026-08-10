@@ -12,13 +12,16 @@ NB_DAYS_LAST_INGESTION = 60
 
 
 def download_file(url, filename):
-    if Path(f'data/documents/{filename}').is_file():
+    output_dir = Path('data/documents')
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filepath = output_dir / filename
+    if filepath.is_file():
         return
 
     r = requests.get(url)
     if not r.ok:
         raise RuntimeError(f'Error while downloading file: {url}')
-    with open('data/documents/{}'.format(filename), 'wb') as f:
+    with open(filepath, 'wb') as f:
         f.write(r.content)
 
 
