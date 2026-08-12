@@ -4,10 +4,7 @@ load_dotenv()
 import json
 import logging
 import os
-from pathlib import Path
 from fetch import download_file, fetch_all_eddb
-from helper import get_keyword_iri
-from models.decision_model import Decision
 from payload import body_delete_resource
 from repository import (
     fetch_all_resources,
@@ -19,6 +16,7 @@ from repository import (
     delete_value,
     update_label,
     update_value,
+    upload_to_ingest,
 )
 
 
@@ -46,6 +44,12 @@ if __name__ == '__main__':
     with open('data/eddb_decisions.json', 'w') as f:
         tmp = {k: v.__dict__ for k, v in data_eddb['decision'].items()}
         f.write(json.dumps(tmp, indent=4))
+
+    print(len(data_dasch['decision'].keys()))
+    print(data_dasch['decision'].keys())
+    print('')
+    print(len(data_eddb['decision'].keys()))
+    print(data_eddb['decision'].keys())
 
     # Step 1: Update existing categories or add new categories.
     for cid, category_eddb in data_eddb['category'].items():
@@ -105,24 +109,25 @@ if __name__ == '__main__':
             data_dasch['keyword'][kid] = fetch_resource(resource_id, token)
 
     # Step 3: Update existing decisions or add new decisions.
-    resources = []
-    is_import_required = False
     for did, decision_eddb in data_eddb['decision'].items():
         decision_dasch = data_dasch['decision'].get(did)
         has_changed = False
 
         if decision_dasch is None:
             logger.info(f'Add new decision (id={did})')
-            is_import_required = True
-            keywords_iri = []
-            for eddb_id in decision_eddb.keywords_id:
-                iri = get_keyword_iri(data_dasch, eddb_id)
-                keywords_iri.append(iri)
-            resource = decision_eddb.payload_add(keywords_iri)
-            resources.append(resource)
+
+            # Upload to ingest.
             url_file = decision_eddb.url_file
             filename = decision_eddb.filename_eddb()
             download_file(url_file, filename)
+            response = upload_to_ingest(filename, token)
+            filename_tmp = response['internalFilename']
+            checksum = response['checksumOriginal']  # TODO
+
+            # Create the resource.
+            payload = decision_eddb.payload_add(filename_tmp, data_dasch)
+            resource_id = create_resource(payload, token)
+            has_changed = True
         else:
             # Maybe update existing decision.
             resource_id = decision_dasch['@id']
@@ -149,25 +154,9 @@ if __name__ == '__main__':
             for payload in payload_del:
                 delete_value(payload, token)
 
-            if has_changed:
-                logger.info(f'Decision (id={did}) has been updated')
-                data_dasch['decision'][did] = fetch_resource(resource_id, token)
-
-    if is_import_required:
-        exit_code = Decision.run_cmd_import(resources)
-        if exit_code != 0:
-            raise RuntimeError('Error while uploading files to DaSCH')
-        try:
-            current_directory = Path('.')
-            file = next(current_directory.glob('id2iri_*.json'))
-            with file.open() as f:
-                iri_id = json.load(f)
-                for eddb_id_str, iri in iri_id.items():
-                    eddb_id = int(eddb_id_str[2:])  # `eddb_id_str` looks like "D_<id>"
-                    data_dasch['decision'][eddb_id] = fetch_resource(iri, token)
-            file.unlink()
-        except StopIteration:
-            raise RuntimeError('Error file mapping iri and eddb id not found')
+        if has_changed:
+            logger.info(f'Decision (id={did}) has been updated')
+            data_dasch['decision'][did] = fetch_resource(resource_id, token)
 
     # Step 4: Delete decisions.
     keys_to_remove = []

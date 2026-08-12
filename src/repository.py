@@ -15,6 +15,7 @@ BATCH_SIZE = 64
 DSP_HOST = os.environ.get('DSP_HOST')
 DSP_EMAIL = os.environ.get('DSP_EMAIL')
 DSP_PASSWORD = os.environ.get('DSP_PASSWORD')
+INGEST_HOST = os.environ.get('INGEST_HOST')
 
 
 def fetch_batch(batch, token):
@@ -198,3 +199,20 @@ def update_value(body, token):
     response = requests.put(url, headers=headers, json=body)
     if response.status_code >= 400:
         raise RuntimeError(f'Cannot update value: {response.text}')
+
+
+def upload_to_ingest(filename, token):
+    url = f'{INGEST_HOST}/projects/0871/assets/ingest/{filename}'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/octet-stream',
+    }
+    output_dir = Path('data/documents')
+    filepath = output_dir / filename
+    if not filepath.is_file():
+        raise RuntimeError(f'File {filename} not found when uploading it')
+    with open(filepath, 'rb') as f:
+        response = requests.post(url, headers=headers, data=f)
+        if response.status_code >= 400:
+            raise RuntimeError(f'Cannot upload file {filename}: {response.text}')
+        return response.json()

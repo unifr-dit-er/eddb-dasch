@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import requests
+from helper import text_to_xml
 from models.category_model import Category
 from models.decision_model import Decision
 from models.keyword_model import Keyword
@@ -114,8 +115,8 @@ def fetch_eddb_decisions_page(date_start, page):
             'updated_at': j['UpdatedAt'],
             'desc_de': j['DescriptionDE'].strip(),
             'desc_fr': j['DescriptionFR'].strip(),
-            'abstract_de': j['AbstractDE'].strip(),
-            'abstract_fr': j['AbstractFR'].strip(),
+            'abstract_de': text_to_xml(j['AbstractDE']),
+            'abstract_fr': text_to_xml(j['AbstractFR']),
             'date_issued': j['Date'],
             'canton': j['Canton'],
             'keywords_id': [],

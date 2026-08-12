@@ -1,10 +1,7 @@
-import os
-import subprocess
-from dsp_tools import xmllib
-from dsp_tools.xmllib import LicenseRecommended, Resource
 from helper import get_keyword_iri, is_before
 from payload import (
     body_add_link,
+    body_create_decision,
     body_unlink_keyword,
     body_update_date,
     body_update_label,
@@ -55,33 +52,20 @@ class Decision():
     def label(self):
         return '{} {}'.format(self.canton, self.date_issued)
 
-    def payload_add(self, keywords_iri):
-        resource = Resource.create_new(
-            res_id='D_{}'.format(self.eddb_id),
-            restype=':Decisions',
-            label=self.label(),
-            permissions=xmllib.Permissions.PUBLIC,
+    def payload_add(self, filename_tmp, dasch_db):
+        eddb_id = self.eddb_id
+        label = self.label()
+        filename = self.filename()
+        canton_iri = dasch_db['cantons'][self.canton]
+        keywords_iri = []
+        for eddb_id in self.keywords_id:
+            iri = get_keyword_iri(dasch_db, eddb_id)
+            keywords_iri.append(iri)
+        return body_create_decision(
+            eddb_id, label, self.date_issued, filename, filename_tmp, canton_iri,
+            self.desc_de, self.desc_fr,
+            self.abstract_de, self.abstract_fr, keywords_iri
         )
-
-        resource.add_file(
-            f'data/documents/{self.filename_eddb()}',
-            license=LicenseRecommended.DSP.PUBLIC_DOMAIN,
-            copyright_holder='University of Fribourg',
-            authorship=['Institut de droit européen'],
-        )
-
-        # add properties to resource
-        # resource.add_uri_optional(":hasUriLink", None)
-        resource.add_list(':hasCantonList', 'Canton', self.canton)
-        resource.add_date(':hasDateIssued', self.date_issued)
-        resource.add_simpletext(':hasFileName', self.filename())
-        resource.add_simpletext(':hasDescriptionDe', self.desc_de)
-        resource.add_simpletext(':hasDescriptionFr', self.desc_fr)
-        resource.add_richtext(':hasAbstractDe', self.abstract_de)
-        resource.add_richtext(':hasAbstractFr', self.abstract_fr)
-        resource.add_integer(':hasId', self.eddb_id)
-        resource.add_link_multiple(prop_name=':linkToKeyword', values=keywords_iri)
-        return resource
 
     def payload_update_fields(self, dasch_db):
         payloads = []
@@ -191,22 +175,3 @@ class Decision():
 
     def resource_type(self):
         return 'Datacant:Decisions'
-
-    @staticmethod
-    def run_cmd_import(resources):
-        root = xmllib.XMLRoot.create_new(shortcode='0871', default_ontology='Datacant')
-        root = root.add_resource_multiple(resources)
-        root.write_file('data.xml')
-
-        exit_status = subprocess.run(
-            [
-                'dsp-tools',
-                'xmlupload',
-                '-s', os.environ.get('DSP_HOST'),
-                '-u', os.environ.get('DSP_EMAIL'),
-                '-p', os.environ.get('DSP_PASSWORD'),
-                'data.xml',
-            ],
-            check=True,
-        )
-        return exit_status.returncode

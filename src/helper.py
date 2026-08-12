@@ -16,3 +16,8 @@ def is_class_decision(fields):
 
 def is_class_keyword(fields):
     return fields['@type'] == 'Datacant:Keyword'
+
+
+def text_to_xml(text):
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' \
+        f'<text>{text.strip()}</text>'
