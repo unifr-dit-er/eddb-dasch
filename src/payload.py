@@ -22,33 +22,41 @@ def body_add_link(resource_id, resource_type, field, iri_value):
     }
 
 
-def body_create_category(cid, label, name_de, name_fr):
-    return {
-      "@type": "Datacant:Category",
-      "Datacant:hasId": {
-        "@type": "knora-api:IntValue",
-        "knora-api:intValueAsInt": cid,
-      },
-      "Datacant:hasNameDe": {
-        "@type": "knora-api:TextValue",
-        "knora-api:valueAsString": name_de
-      },
-      "Datacant:hasNameFr": {
-        "@type": "knora-api:TextValue",
-        "knora-api:valueAsString": name_fr
-      },
-      "knora-api:attachedToProject": {
-        "@id": RDFH_PROJECT_URL
-      },
-      "rdfs:label": label,
-      "@context": {
-        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
-        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-        "xsd": "http://www.w3.org/2001/XMLSchema#",
-        "Datacant": DATACANT_CONTEXT
-      }
+def create(resource_type, label, fields):
+    '''Payload that creates a resource.
+    '''
+    tmp = {
+        '@type': resource_type,
+        'knora-api:attachedToProject': {
+            '@id': RDFH_PROJECT_URL
+        },
+        'rdfs:label': label,
+        '@context': {
+            'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+            'knora-api': 'http://api.knora.org/ontology/knora-api/v2#',
+            'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
+            'xsd': 'http://www.w3.org/2001/XMLSchema#',
+            'Datacant': DATACANT_CONTEXT
+        }
     }
+    pairs = list(map(lambda f: f.to_knora(), fields))
+    pairs.append(tmp)
+    return {k: v for d in pairs for k, v in d.items()}
+
+
+def update(resource_id, resource_type, key_value):
+    '''Payload that updates a resource.
+    '''
+    tmp = {
+        "@id": resource_id,
+        "@type": resource_type,
+        "@context": {
+            "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
+            "Datacant": DATACANT_CONTEXT
+        }
+    }
+    tmp.update(key_value)
+    return tmp
 
 
 def body_create_decision(did, label, date, filename, filename_tmp, canton_iri, desc_de, desc_fr, abstract_de, abstract_fr, category_iri):
@@ -293,6 +301,7 @@ def body_update_simple_text(resource_id, resource_type, field, field_id, value):
     }
 
 
+# TODO: remove this function that is renamed to 'update_label'.
 def body_update_label(resource_id, resource_type, value, last_modification_date):
     return {
       "@id": resource_id,
@@ -309,6 +318,25 @@ def body_update_label(resource_id, resource_type, value, last_modification_date)
         "xsd": "http://www.w3.org/2001/XMLSchema#",
         "Datacant": DATACANT_CONTEXT
       }
+    }
+
+
+def update_label(resource_id, resource_type, value, last_modification_date):
+    return {
+        '@id': resource_id,
+        '@type': resource_type,
+        'rdfs:label': value,
+        'knora-api:lastModificationDate': {
+            '@type': 'xsd:dateTimeStamp',
+            '@value': last_modification_date
+        },
+        '@context': {
+            'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+            'knora-api': 'http://api.knora.org/ontology/knora-api/v2#',
+            'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
+            'xsd': 'http://www.w3.org/2001/XMLSchema#',
+            'Datacant': DATACANT_CONTEXT
+        }
     }
 
 

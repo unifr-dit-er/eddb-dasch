@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     data_eddb = fetch_all_eddb(reset_cache=False)
     with open('data/eddb_categories.json', 'w') as f:
-        tmp = {k: v.__dict__ for k, v in data_eddb['category'].items()}
+        tmp = {k: v.to_dict() for k, v in data_eddb['category'].items()}
         f.write(json.dumps(tmp, indent=4))
     with open('data/eddb_keywords.json', 'w') as f:
         tmp = {k: v.__dict__ for k, v in data_eddb['keyword'].items()}
@@ -48,28 +48,30 @@ if __name__ == '__main__':
     # Step 1: Update existing categories or add new categories.
     for cid, category_eddb in data_eddb['category'].items():
         category_dasch = data_dasch['category'].get(cid)
-        has_changed = False
+        is_created = False
+        is_updated = False
         if category_dasch is None:
             logger.info(f'Add new category (id={cid})')
-            payload = category_eddb.payload_add()
+            payload = category_eddb.payload_create()
             resource_id = create_resource(payload, token)
-            has_changed = True
+            is_created = True
         else:
             # Maybe update existing category.
-            resource_id = category_dasch['@id']
+            payload_label = category_eddb.payload_update_label(category_dasch)
+            if payload_label is not None:
+                logger.info(f'Category (id={cid}) label has been updated')
+                response = update_label(payload_label, token)
 
-            label_old = category_dasch['rdfs:label']
-            if category_eddb.has_label_changed(label_old):
-                last_modification = \
-                    category_dasch.get('knora-api:lastModificationDate', {}).get('@value')
-                payload = category_eddb.payload_update_label(resource_id, last_modification)
-                response = update_label(payload, token)
-                has_changed = True
-            payload_updates = category_eddb.payload_update_fields(category_dasch)
+            payloads = category_eddb.payload_update_fields(data_dasch)
+            (payload_updates, _, _) = payloads
             for payload in payload_updates:
                 update_value(payload, token)
-        if has_changed or len(payload_updates) != 0:
-            logger.info(f'Category (id={cid}) has been updated')
+
+            is_updated = payload_label is not None or len(payload_updates) != 0
+            if is_updated:
+                resource_id = category_dasch['@id']
+                logger.info(f'Category (id={cid}) field(s) have been updated')
+        if is_created or is_updated:
             data_dasch['category'][cid] = fetch_resource(resource_id, token)
 
     # Step 2: Update existing keywords or add new keywords.
