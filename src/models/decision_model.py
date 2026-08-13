@@ -58,8 +58,8 @@ class Decision():
         filename = self.filename()
         canton_iri = dasch_db['cantons'][self.canton]
         keywords_iri = []
-        for eddb_id in self.keywords_id:
-            iri = get_keyword_iri(dasch_db, eddb_id)
+        for keyword_eddb_id in self.keywords_id:
+            iri = get_keyword_iri(dasch_db, keyword_eddb_id)
             keywords_iri.append(iri)
         return body_create_decision(
             eddb_id, label, self.date_issued, filename, filename_tmp, canton_iri,

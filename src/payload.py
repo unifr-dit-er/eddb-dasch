@@ -70,7 +70,7 @@ def body_create_decision(did, label, date, filename, filename_tmp, canton_iri, d
           "@type": "knora-api:DocumentFileValue",
           "knora-api:fileValueHasFilename": filename_tmp,
           "knora-api:hasLicense": {"@id": "http://rdfh.ch/licenses/public-domain"},
-          "knora-api:hasCopyrightHolder": "Swiss court",
+          "knora-api:hasCopyrightHolder": "Public Domain - Not Protected by Copyright",
           "knora-api:hasAuthorship": ["Swiss court"]
       },
       "Datacant:hasId": {

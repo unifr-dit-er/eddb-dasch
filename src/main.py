@@ -45,12 +45,6 @@ if __name__ == '__main__':
         tmp = {k: v.__dict__ for k, v in data_eddb['decision'].items()}
         f.write(json.dumps(tmp, indent=4))
 
-    print(len(data_dasch['decision'].keys()))
-    print(data_dasch['decision'].keys())
-    print('')
-    print(len(data_eddb['decision'].keys()))
-    print(data_eddb['decision'].keys())
-
     # Step 1: Update existing categories or add new categories.
     for cid, category_eddb in data_eddb['category'].items():
         category_dasch = data_dasch['category'].get(cid)
