@@ -1,0 +1,1372 @@
+{
+    "category": {
+        "3": {
+            "knora-api:lastModificationDate": {
+                "@value": "2026-08-17T15:54:24.629395191Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "rdfs:label": "Surveillance",
+            "knora-api:versionArkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ.20260817T155424629395191Z",
+                "@type": "xsd:anyURI"
+            },
+            "knora-api:attachedToProject": {
+                "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+            },
+            "knora-api:userHasPermission": "CR",
+            "knora-api:creationDate": {
+                "@value": "2026-08-12T15:15:29.685547252Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "knora-api:attachedToUser": {
+                "@id": "http://rdfh.ch/users/root"
+            },
+            "Datacant:hasId": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ/1IEJBZn5QKCGGFcQkW_IvAT",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:intValueAsInt": 3,
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ/1IEJBZn5QKCGGFcQkW_IvAT.20260812T151529685547252Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:29.685547252Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "1IEJBZn5QKCGGFcQkW_IvA",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:IntValue",
+                "@id": "http://rdfh.ch/0871/oTMF94U2TrCoWzM2iW1Jyg/values/1IEJBZn5QKCGGFcQkW_IvA"
+            },
+            "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+            "@type": "Datacant:Category",
+            "Datacant:hasNameDe": {
+                "knora-api:valueAsString": "\u00dcberwachung",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ/0LBxvqCETwqrfgy7ZzdvkQa",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ/0LBxvqCETwqrfgy7ZzdvkQa.20260817T155424365963442Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-17T15:54:24.365963442Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "0LBxvqCETwqrfgy7ZzdvkQ",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/oTMF94U2TrCoWzM2iW1Jyg/values/thsSg8ieQK2tHv1B-XYZmA"
+            },
+            "@id": "http://rdfh.ch/0871/oTMF94U2TrCoWzM2iW1Jyg",
+            "Datacant:hasNameFr": {
+                "knora-api:valueAsString": "Surveillance",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ/CZSfxOf9RTGFv4K0nXt0cQG",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ/CZSfxOf9RTGFv4K0nXt0cQG.20260817T155424629395191Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-17T15:54:24.629395191Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "CZSfxOf9RTGFv4K0nXt0cQ",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/oTMF94U2TrCoWzM2iW1Jyg/values/yHUb2CLvRu2Ut2yQNfJc4g"
+            },
+            "knora-api:arkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ",
+                "@type": "xsd:anyURI"
+            },
+            "@context": {
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "Datacant": "http://0.0.0.0:3333/ontology/0871/Datacant/v2#"
+            }
+        },
+        "22": {
+            "rdfs:label": "Justifications",
+            "knora-api:versionArkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/TG3ioIXHQ5=FNWmiLEzOFwR.20260812T151535592668355Z",
+                "@type": "xsd:anyURI"
+            },
+            "knora-api:attachedToProject": {
+                "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+            },
+            "knora-api:userHasPermission": "CR",
+            "knora-api:creationDate": {
+                "@value": "2026-08-12T15:15:35.592668355Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "knora-api:attachedToUser": {
+                "@id": "http://rdfh.ch/users/root"
+            },
+            "Datacant:hasId": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/TG3ioIXHQ5=FNWmiLEzOFwR/Q=nDeAFrTxKAJDDAQAQTTwA",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:intValueAsInt": 22,
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/TG3ioIXHQ5=FNWmiLEzOFwR/Q=nDeAFrTxKAJDDAQAQTTwA.20260812T151535592668355Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:35.592668355Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "Q-nDeAFrTxKAJDDAQAQTTw",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:IntValue",
+                "@id": "http://rdfh.ch/0871/TG3ioIXHQ5-FNWmiLEzOFw/values/Q-nDeAFrTxKAJDDAQAQTTw"
+            },
+            "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+            "@type": "Datacant:Category",
+            "Datacant:hasNameDe": {
+                "knora-api:valueAsString": "Rechtfertigungsgr\u00fcnde",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/TG3ioIXHQ5=FNWmiLEzOFwR/De2OQ2c0RhSAT8AI7QSCJwP",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/TG3ioIXHQ5=FNWmiLEzOFwR/De2OQ2c0RhSAT8AI7QSCJwP.20260812T151535592668355Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:35.592668355Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "De2OQ2c0RhSAT8AI7QSCJw",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/TG3ioIXHQ5-FNWmiLEzOFw/values/De2OQ2c0RhSAT8AI7QSCJw"
+            },
+            "@id": "http://rdfh.ch/0871/TG3ioIXHQ5-FNWmiLEzOFw",
+            "Datacant:hasNameFr": {
+                "knora-api:valueAsString": "Motifs justificatifs",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/TG3ioIXHQ5=FNWmiLEzOFwR/6Ub9PLVSTlGfGqBiZG5_RAs",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/TG3ioIXHQ5=FNWmiLEzOFwR/6Ub9PLVSTlGfGqBiZG5_RAs.20260812T151535592668355Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:35.592668355Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "6Ub9PLVSTlGfGqBiZG5_RA",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/TG3ioIXHQ5-FNWmiLEzOFw/values/6Ub9PLVSTlGfGqBiZG5_RA"
+            },
+            "knora-api:arkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/TG3ioIXHQ5=FNWmiLEzOFwR",
+                "@type": "xsd:anyURI"
+            }
+        }
+    },
+    "keyword": {
+        "3": {
+            "rdfs:label": "Video surveillance",
+            "knora-api:versionArkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX.20260812T151536817956724Z",
+                "@type": "xsd:anyURI"
+            },
+            "knora-api:attachedToProject": {
+                "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+            },
+            "knora-api:userHasPermission": "CR",
+            "knora-api:creationDate": {
+                "@value": "2026-08-12T15:15:36.817956724Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "knora-api:attachedToUser": {
+                "@id": "http://rdfh.ch/users/root"
+            },
+            "Datacant:hasId": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX/xDVxWvZTT3WQNhy6HNwSfgF",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:intValueAsInt": 3,
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX/xDVxWvZTT3WQNhy6HNwSfgF.20260812T151536817956724Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:36.817956724Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "xDVxWvZTT3WQNhy6HNwSfg",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:IntValue",
+                "@id": "http://rdfh.ch/0871/pFZt9mzuTimLwjdMUByMZg/values/xDVxWvZTT3WQNhy6HNwSfg"
+            },
+            "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+            "@type": "Datacant:Keyword",
+            "Datacant:hasNameDe": {
+                "knora-api:valueAsString": "Video\u00fcberwachung",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX/9ylbWtg8RZ=iOwYI9vBErQA",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX/9ylbWtg8RZ=iOwYI9vBErQA.20260812T151536817956724Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:36.817956724Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "9ylbWtg8RZ-iOwYI9vBErQ",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/pFZt9mzuTimLwjdMUByMZg/values/9ylbWtg8RZ-iOwYI9vBErQ"
+            },
+            "Datacant:linkToCategoryValue": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX/B_AIr32wSi=1Mv7sl2HuKQB",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX/B_AIr32wSi=1Mv7sl2HuKQB.20260812T151536817956724Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:36.817956724Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "B_AIr32wSi-1Mv7sl2HuKQ",
+                "knora-api:linkValueHasTarget": {
+                    "knora-api:arkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ",
+                        "@type": "xsd:anyURI"
+                    },
+                    "rdfs:label": "Surveillance",
+                    "knora-api:versionArkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/oTMF94U2TrCoWzM2iW1JygJ.20260812T151529685547252Z",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:attachedToProject": {
+                        "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+                    },
+                    "knora-api:userHasPermission": "CR",
+                    "knora-api:creationDate": {
+                        "@value": "2026-08-12T15:15:29.685547252Z",
+                        "@type": "xsd:dateTimeStamp"
+                    },
+                    "knora-api:attachedToUser": {
+                        "@id": "http://rdfh.ch/users/root"
+                    },
+                    "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                    "@type": "Datacant:Category",
+                    "@id": "http://rdfh.ch/0871/oTMF94U2TrCoWzM2iW1Jyg"
+                },
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:LinkValue",
+                "@id": "http://rdfh.ch/0871/pFZt9mzuTimLwjdMUByMZg/values/B_AIr32wSi-1Mv7sl2HuKQ"
+            },
+            "@id": "http://rdfh.ch/0871/pFZt9mzuTimLwjdMUByMZg",
+            "Datacant:hasNameFr": {
+                "knora-api:valueAsString": "Par vid\u00e9o",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX/3ARaDimRTh2aQpPktaUzQgm",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX/3ARaDimRTh2aQpPktaUzQgm.20260812T151536817956724Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:36.817956724Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "3ARaDimRTh2aQpPktaUzQg",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/pFZt9mzuTimLwjdMUByMZg/values/3ARaDimRTh2aQpPktaUzQg"
+            },
+            "knora-api:arkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX",
+                "@type": "xsd:anyURI"
+            }
+        },
+        "72": {
+            "rdfs:label": "Consent",
+            "knora-api:versionArkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz.20260812T151550647429198Z",
+                "@type": "xsd:anyURI"
+            },
+            "knora-api:attachedToProject": {
+                "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+            },
+            "knora-api:userHasPermission": "CR",
+            "knora-api:creationDate": {
+                "@value": "2026-08-12T15:15:50.647429198Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "knora-api:attachedToUser": {
+                "@id": "http://rdfh.ch/users/root"
+            },
+            "Datacant:hasId": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz/TQJJlLyjSRmeFHE3HZ7JKQ4",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:intValueAsInt": 72,
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz/TQJJlLyjSRmeFHE3HZ7JKQ4.20260812T151550647429198Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:50.647429198Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "TQJJlLyjSRmeFHE3HZ7JKQ",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:IntValue",
+                "@id": "http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw/values/TQJJlLyjSRmeFHE3HZ7JKQ"
+            },
+            "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+            "@type": "Datacant:Keyword",
+            "Datacant:hasNameDe": {
+                "knora-api:valueAsString": "Einwilligung",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz/EpyAjJKGTmObm1YqRMmDfwy",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz/EpyAjJKGTmObm1YqRMmDfwy.20260812T151550647429198Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:50.647429198Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "EpyAjJKGTmObm1YqRMmDfw",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw/values/EpyAjJKGTmObm1YqRMmDfw"
+            },
+            "Datacant:linkToCategoryValue": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz/pMLL5Oy8RACvblXwqU=umAI",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz/pMLL5Oy8RACvblXwqU=umAI.20260812T151550647429198Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:50.647429198Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "pMLL5Oy8RACvblXwqU-umA",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "knora-api:linkValueHasTargetIri": {
+                    "@id": "http://rdfh.ch/0871/TG3ioIXHQ5-FNWmiLEzOFw"
+                },
+                "@type": "knora-api:LinkValue",
+                "@id": "http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw/values/pMLL5Oy8RACvblXwqU-umA"
+            },
+            "@id": "http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw",
+            "Datacant:hasNameFr": {
+                "knora-api:valueAsString": "Consentement",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz/eGF3rQnHQlG722Oivs66vQx",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz/eGF3rQnHQlG722Oivs66vQx.20260812T151550647429198Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-12T15:15:50.647429198Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "eGF3rQnHQlG722Oivs66vQ",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw/values/eGF3rQnHQlG722Oivs66vQ"
+            },
+            "knora-api:arkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz",
+                "@type": "xsd:anyURI"
+            }
+        }
+    },
+    "decision": {
+        "207": {
+            "knora-api:lastModificationDate": {
+                "@value": "2026-08-18T09:56:18.126091982Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "knora-api:arkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd",
+                "@type": "xsd:anyURI"
+            },
+            "rdfs:label": "BE 2018-12-06",
+            "knora-api:versionArkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd.20260818T095618126091982Z",
+                "@type": "xsd:anyURI"
+            },
+            "knora-api:attachedToProject": {
+                "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+            },
+            "Datacant:hasCantonList": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/E7EuE0_jQdeCpuDc6JS=DQe",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "E7EuE0_jQdeCpuDc6JS-DQ",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:ListValue",
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/E7EuE0_jQdeCpuDc6JS-DQ",
+                "knora-api:listValueAsListNode": {
+                    "@id": "http://rdfh.ch/lists/0871/l9GbRJOGTG6UZDE3Gydgbg"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/E7EuE0_jQdeCpuDc6JS=DQe.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                }
+            },
+            "knora-api:creationDate": {
+                "@value": "2026-08-13T10:29:30.293534896Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "Datacant:hasFileName": {
+                "knora-api:valueAsString": "BE_2018-12-06.pdf",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/oEVybj_TRb2bhSsW0zoLzgY",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/oEVybj_TRb2bhSsW0zoLzgY.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "oEVybj_TRb2bhSsW0zoLzg",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/oEVybj_TRb2bhSsW0zoLzg"
+            },
+            "Datacant:hasId": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/3eL3iSaGQ66oS0YdLoio7QQ",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:intValueAsInt": 207,
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/3eL3iSaGQ66oS0YdLoio7QQ.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "3eL3iSaGQ66oS0YdLoio7Q",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:IntValue",
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/3eL3iSaGQ66oS0YdLoio7Q"
+            },
+            "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+            "knora-api:hasDocumentFileValue": {
+                "knora-api:hasCopyrightHolder": "Public Domain - Not Protected by Copyright",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/n9UWAnEjTiS7G1ATZojr5wb",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:hasLicense": {
+                    "@id": "http://rdfh.ch/licenses/public-domain"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/n9UWAnEjTiS7G1ATZojr5wb.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "n9UWAnEjTiS7G1ATZojr5w",
+                "knora-api:hasAuthorship": "Swiss court",
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/n9UWAnEjTiS7G1ATZojr5w",
+                "knora-api:fileValueAsUrl": {
+                    "@value": "http://0.0.0.0:1024/0871/4rMCDmxpYAx-DiRuvu3v2rQ.pdf/file",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:DocumentFileValue",
+                "knora-api:fileValueHasFilename": "4rMCDmxpYAx-DiRuvu3v2rQ.pdf"
+            },
+            "@type": "Datacant:Decisions",
+            "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw",
+            "Datacant:hasAbstractFr": {
+                "knora-api:textValueHasMapping": {
+                    "@id": "http://rdfh.ch/standoff/mappings/StandardMapping"
+                },
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/qGs6OPHPQiSLmpEjT=b9oA1",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/qGs6OPHPQiSLmpEjT=b9oA1.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "qGs6OPHPQiSLmpEjT-b9oA",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:FormattedText"
+                },
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/qGs6OPHPQiSLmpEjT-b9oA",
+                "knora-api:textValueAsXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<text>Depuis la r\u00e9vision de l&apos;Ordonnance sur la proc\u00e9dure de taxation du Canton de Berne (OPT) entr\u00e9e en vigueur en 2016, les administr\u00e9s peuvent, s&apos;ils le souhaitent, se voir notifier les d\u00e9cisions qui les concernent par un portail &quot;e-banking&quot; sur lequel ils re\u00e7oivent \u00e9galement leurs factures. Le contribuable qui souhaite recevoir ses factures \u00e9lectroniquement se voit \u00e9galement automatiquement notifier les d\u00e9cisions qui le concerne par voie \u00e9lectronique. L&apos;Autorit\u00e9 de surveillance de la protection des donn\u00e9es du Canton de Berne recommande \u00e0 l&apos;Intendance des imp\u00f4ts du Canton de Berne de mettre en place un syst\u00e8me permettant aux contribuables qui le souhaitent de ne recevoir que leurs factures par voie \u00e9lectronique, \u00e0 l&apos;exclusion des d\u00e9cisions. L&apos;Intendance des imp\u00f4ts rend une d\u00e9cision par laquelle elle refuse de suivre la recommandation de l&apos;Autorit\u00e9 de surveillance. L&apos;Autorit\u00e9 de surveillance recourt aupr\u00e8s du Tribunal administratif.\nComme la notification \u00e9lectronique des factures inclut d\u00e9sormais automatiquement la notification \u00e9lectronique des d\u00e9cisions, la question se pose de savoir si le consentement \u00e0 la notification \u00e9lectronique des d\u00e9cisions a \u00e9t\u00e9 donn\u00e9 librement. Le consentement \u00e0 la transmission \u00e9lectronique des d\u00e9cisions et factures de l&apos;administration fiscale n&apos;est pas donn\u00e9 librement uniquement dans les cas o\u00f9 l&apos;inconv\u00e9nient r\u00e9sultant d&apos;un refus est sans rapport avec le but du traitement des donn\u00e9es ou qu&apos;il est disproportionn\u00e9 par rapport au but (cf. cons. 3.5- 3.7). En l&apos;esp\u00e8ce, les inconv\u00e9nients que le contribuable assume s&apos;il ne consent pas \u00e0 la notification \u00e9lectronique des factures et des d\u00e9cisions - \u00e0 savoir l&apos;envoi postal des factures fiscales - sont li\u00e9s \u00e0 ceux-l\u00e0 et sont proportionn\u00e9s. Le consentement \u00e0 l&apos;ouverture des ordres et d\u00e9cisions par e-facture est donc donn\u00e9 librement (cf. cons. 4.2). Le recours est rejet\u00e9.</text>",
+                "@type": "knora-api:TextValue"
+            },
+            "Datacant:hasDescriptionFr": {
+                "knora-api:valueAsString": "Notification \u00e9lectronique des factures et des d\u00e9cisions du service des contributions",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/Wg9dj4UJSAiPKPUcgGvz8wx",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/Wg9dj4UJSAiPKPUcgGvz8wx.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "Wg9dj4UJSAiPKPUcgGvz8w",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/Wg9dj4UJSAiPKPUcgGvz8w"
+            },
+            "knora-api:DeletedValue": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/UmEvgaHOT0CPi6u_lHwjrAo",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/UmEvgaHOT0CPi6u_lHwjrAo.20260818T095618126091982Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-18T09:56:18.126091982Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:deleteDate": {
+                    "@type": "xsd:dateTimeStamp",
+                    "@value": "2026-08-18T09:56:18.126091982Z"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "UmEvgaHOT0CPi6u_lHwjrA",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "knora-api:isDeleted": true,
+                "@type": "knora-api:DeletedValue",
+                "http://www.knora.org/ontology/knora-base#DeletedValue": "DeletedValue",
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/Pj2GMQI-TaKa2QmnOYpTGw"
+            },
+            "Datacant:hasDateIssued": {
+                "knora-api:dateValueHasStartDay": 6,
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/o_cs7gwXTPiO8aboltpEnAC",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/o_cs7gwXTPiO8aboltpEnAC.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:dateValueHasEndYear": 2018,
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:dateValueHasEndDay": 6,
+                "knora-api:dateValueHasEndEra": "CE",
+                "knora-api:valueHasUUID": "o_cs7gwXTPiO8aboltpEnA",
+                "knora-api:dateValueHasCalendar": "GREGORIAN",
+                "knora-api:dateValueHasStartMonth": 12,
+                "@type": "knora-api:DateValue",
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/o_cs7gwXTPiO8aboltpEnA",
+                "knora-api:valueAsString": "GREGORIAN:2018-12-06 CE",
+                "knora-api:dateValueHasStartEra": "CE",
+                "knora-api:dateValueHasEndMonth": 12,
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:dateValueHasStartYear": 2018,
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember"
+            },
+            "knora-api:userHasPermission": "CR",
+            "Datacant:linkToKeywordValue": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/7lJnY0=kR4==RL8YDK2s=gD",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/7lJnY0=kR4==RL8YDK2s=gD.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "7lJnY0-kR4--RL8YDK2s-g",
+                "knora-api:linkValueHasTarget": {
+                    "knora-api:arkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz",
+                        "@type": "xsd:anyURI"
+                    },
+                    "rdfs:label": "Consent",
+                    "knora-api:versionArkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz.20260812T151550647429198Z",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:attachedToProject": {
+                        "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+                    },
+                    "knora-api:userHasPermission": "CR",
+                    "knora-api:creationDate": {
+                        "@value": "2026-08-12T15:15:50.647429198Z",
+                        "@type": "xsd:dateTimeStamp"
+                    },
+                    "knora-api:attachedToUser": {
+                        "@id": "http://rdfh.ch/users/root"
+                    },
+                    "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                    "@type": "Datacant:Keyword",
+                    "@id": "http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw"
+                },
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:LinkValue",
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/7lJnY0-kR4--RL8YDK2s-g"
+            },
+            "Datacant:hasAbstractDe": {
+                "knora-api:textValueHasMapping": {
+                    "@id": "http://rdfh.ch/standoff/mappings/StandardMapping"
+                },
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/FjKXlAupQEeWR4z67L5XLw7",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/FjKXlAupQEeWR4z67L5XLw7.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "FjKXlAupQEeWR4z67L5XLw",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:FormattedText"
+                },
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/FjKXlAupQEeWR4z67L5XLw",
+                "knora-api:textValueAsXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<text>In Folge einer Revision der Verordnung \u00fcber das steuerliche Veranlagungsverfahren (VVV), sollen Verf\u00fcgungen und Entscheide neu \u00abauf dem Weg der E-Rechnung\u00bb, d.h. auf dem E-Banking Portal zugestellt werden k\u00f6nnen. Der Steuerpflichtige, der w\u00fcnscht, seine Rechnungen elektronisch zu erhalten, erh\u00e4lt automatisch auch die Verf\u00fcgungen auf elektronischem Weg. Die Datenschutzaufsichtsstelle beantragte bei der Steuerverwaltung die Option so auszugestalten, dass den Steuerpflichtigen die Wahl offenbleibt nur die Rechnungen elektronisch zu erhalten. Dem Gesuch der Datenschutzaussichtstelle wurde nicht entsprochen, weshalb diese am 5. Mai 2017 Verwaltungsgerichtsbeschwerde erhebt.\nDa neu bei der elektronischen Zustellung der Rechnungen die Verf\u00fcgungen automatisch auch elektronisch zugestellt werden, stellt sich die Frage, ob die Einwilligung zur elektronischen Zustellung von Verf\u00fcgungen freiwillig erfolgt ist. Die Einwilligung in die elektronische Zustellung von Verf\u00fcgungen, Entscheiden und Rechnungen der Steuerverwaltung erfolgt nur dann nicht freiwillig, wenn die Nachteile, die bei einer Ablehnung drohen, in keinem Zusammenhang mit der Datenbearbeitung und der mit ihr verfolgten Zielsetzung stehen oder unverh\u00e4ltnism\u00e4ssig sind (vgl. E. 3.5- 3.7). Die Nachteile, die die steuerpflichtige Person auf sich nimmt, wenn sie der elektronischen Er\u00f6ffnung von Verf\u00fcgungen und Entscheiden nicht zustimmt \u2013 n\u00e4mlich die postalische Zustellung von Steuerrechnungen \u2013 mit dieser zusammenh\u00e4ngen und zumutbar sind. Die Einwilligung in die Er\u00f6ffnung von Verf\u00fcgungen und Entscheiden auf dem Weg der E-Rechnung erfolgt damit freiwillig und g\u00fcltig (vgl. E. 4.2). Die Beschwerde wird abgewiesen.</text>",
+                "@type": "knora-api:TextValue"
+            },
+            "knora-api:attachedToUser": {
+                "@id": "http://rdfh.ch/users/root"
+            },
+            "Datacant:hasDescriptionDe": {
+                "knora-api:valueAsString": "Elektronische Zustellung von Rechnungen und Verf\u00fcgungen der Steuerverwaltung",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/FApeapQaQh6gOD3gR_9VewR",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/KTpmtCo8TE24ZraM=8klhwd/FApeapQaQh6gOD3gR_9VewR.20260813T102930293534896Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:30.293534896Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "FApeapQaQh6gOD3gR_9Vew",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/KTpmtCo8TE24ZraM-8klhw/values/FApeapQaQh6gOD3gR_9Vew"
+            },
+            "@context": {
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "Datacant": "http://0.0.0.0:3333/ontology/0871/Datacant/v2#"
+            }
+        },
+        "257": {
+            "knora-api:lastModificationDate": {
+                "@value": "2026-08-18T09:56:20.337248959Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "knora-api:arkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf",
+                "@type": "xsd:anyURI"
+            },
+            "rdfs:label": "FR 2021-08-12",
+            "knora-api:versionArkUrl": {
+                "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf.20260818T095620337248959Z",
+                "@type": "xsd:anyURI"
+            },
+            "knora-api:attachedToProject": {
+                "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+            },
+            "Datacant:hasCantonList": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/ug=UhvN9RWavPlBY0xbVKgm",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "ug-UhvN9RWavPlBY0xbVKg",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:ListValue",
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/ug-UhvN9RWavPlBY0xbVKg",
+                "knora-api:listValueAsListNode": {
+                    "@id": "http://rdfh.ch/lists/0871/fSKvY2DQTCC1imPR1tNS6w"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/ug=UhvN9RWavPlBY0xbVKgm.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                }
+            },
+            "knora-api:creationDate": {
+                "@value": "2026-08-13T10:29:49.230791283Z",
+                "@type": "xsd:dateTimeStamp"
+            },
+            "Datacant:hasFileName": {
+                "knora-api:valueAsString": "FR_2021-08-12.pdf",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/pReXnykwSDmkbODbg2_hjAC",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/pReXnykwSDmkbODbg2_hjAC.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "pReXnykwSDmkbODbg2_hjA",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/pReXnykwSDmkbODbg2_hjA"
+            },
+            "Datacant:hasId": {
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/lIQxfN3TQiSwyLVXGaaKJgB",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:intValueAsInt": 257,
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/lIQxfN3TQiSwyLVXGaaKJgB.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "lIQxfN3TQiSwyLVXGaaKJg",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:IntValue",
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/lIQxfN3TQiSwyLVXGaaKJg"
+            },
+            "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+            "knora-api:hasDocumentFileValue": {
+                "knora-api:hasCopyrightHolder": "Public Domain - Not Protected by Copyright",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/e4tZGlcDRjuDJsiSp0BiAgd",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:hasLicense": {
+                    "@id": "http://rdfh.ch/licenses/public-domain"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/e4tZGlcDRjuDJsiSp0BiAgd.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "e4tZGlcDRjuDJsiSp0BiAg",
+                "knora-api:hasAuthorship": "Swiss court",
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/e4tZGlcDRjuDJsiSp0BiAg",
+                "knora-api:fileValueAsUrl": {
+                    "@value": "http://0.0.0.0:1024/0871/3HIj4A8lXjQ-vxGzbejbhxO.pdf/file",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:DocumentFileValue",
+                "knora-api:fileValueHasFilename": "3HIj4A8lXjQ-vxGzbejbhxO.pdf"
+            },
+            "@type": "Datacant:Decisions",
+            "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg",
+            "Datacant:hasAbstractFr": {
+                "knora-api:textValueHasMapping": {
+                    "@id": "http://rdfh.ch/standoff/mappings/StandardMapping"
+                },
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/vkEZZ6bbQIS4ZlE0Qjhs_wW",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/vkEZZ6bbQIS4ZlE0Qjhs_wW.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "vkEZZ6bbQIS4ZlE0Qjhs_w",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:FormattedText"
+                },
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/vkEZZ6bbQIS4ZlE0Qjhs_w",
+                "knora-api:textValueAsXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<text>Depuis 1991, A. travaille pour les Services industriels d\u2019une commune vaudoise, pour laquelle il est charg\u00e9 de relever les compteurs d\u2019\u00e9lectricit\u00e9 et de gaz. Il est locataire d\u2019un appartement. Dans le cadre de son activit\u00e9 professionnelle, A. acc\u00e8de aux donn\u00e9es de consommation de gaz de son bailleur afin de v\u00e9rifier si les charges lui sont correctement factur\u00e9es. Il a ensuite retranscrit ces donn\u00e9es dans un fichier Excel et est all\u00e9 en discuter avec son bailleur. Suite \u00e0 cette affaire, A. re\u00e7oit un avertissement, contre lequel il recourt.\nEn tant qu\u2019employ\u00e9 d\u2019une commune, A. est soumis \u00e0 la LPrD-VD dans le cadre de son activit\u00e9 professionnelle (art. 3 al. 2 let. e LPrD-VD). Les factures de gaz constituent des donn\u00e9es personnelles au sens de la LPrD-VD. En consultant les donn\u00e9es, en les enregistrant sur un fichier Excel et en les communicant au bailleur, A. s\u2019est livr\u00e9 au traitement et \u00e0 la communication de donn\u00e9es personnelles. Il soutient qu\u2019il dispose d\u2019un int\u00e9r\u00eat priv\u00e9 pr\u00e9pond\u00e9rant lui permettant d\u2019agir de la sorte. Il d\u00e9duit cet int\u00e9r\u00eat pr\u00e9pond\u00e9rant de l\u2019art. 257b al. 2 CO et de l\u2019art. 8 al. 2 OBLF. Tel n\u2019est en r\u00e9alit\u00e9 pas le cas : m\u00eame si ces dispositions permettent au locataire de consulter les pi\u00e8ces relatives aux charges, elles ne permettent pas d\u2019acc\u00e9der aux donn\u00e9es personnelles du bailleur sans son consentement. A. aurait d\u00fb agir devant les juridictions comp\u00e9tentes en mati\u00e8re de bail. D\u00e8s lors, A. s\u2019est livr\u00e9 \u00e0 une utilisation abusive de donn\u00e9es personnelles, prohib\u00e9e par la LPrD-VD. \nEn agissant de la sorte, A. a donc viol\u00e9 ses obligations contractuelles d\u2019exercer sa fonction avec diligence, conscience et fid\u00e9lit\u00e9. L\u2019autorit\u00e9 \u00e9tait donc fond\u00e9e \u00e0 prononcer une mesure \u00e0 son encontre. Le Tribunal laisse ouverte la question de savoir si A. a viol\u00e9 son secret son fonction ; en effet, les donn\u00e9es ont \u00e9t\u00e9 transmises uniquement \u00e0 son bailleur, c\u2019est-\u00e0-dire \u00e0 une personne qui les connaissait d\u00e9j\u00e0. La mesure choisie par l\u2019autorit\u00e9, l\u2019avertissement, respecte les principes de la proportionnalit\u00e9, de la bonne foi et de l\u2019interdiction de l\u2019arbitraire. \nPartant, le Tribunal rejette le recours et confirme la d\u00e9cision attaqu\u00e9e.</text>",
+                "@type": "knora-api:TextValue"
+            },
+            "Datacant:hasDescriptionFr": {
+                "knora-api:valueAsString": "Utilisation \u00e0 des fins priv\u00e9es de donn\u00e9es trait\u00e9es dans le cadre de l\u2019activit\u00e9 professionnelle",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/r_LqfRhWQGa3k8E46Gy2Ggq",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/r_LqfRhWQGa3k8E46Gy2Ggq.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "r_LqfRhWQGa3k8E46Gy2Gg",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/r_LqfRhWQGa3k8E46Gy2Gg"
+            },
+            "knora-api:DeletedValue": [
+                {
+                    "knora-api:arkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/ZHuP0rGsSH=aPUd79erbIQ7",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:versionArkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/ZHuP0rGsSH=aPUd79erbIQ7.20260818T095620174462323Z",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:userHasPermission": "CR",
+                    "knora-api:valueCreationDate": {
+                        "@value": "2026-08-18T09:56:20.174462323Z",
+                        "@type": "xsd:dateTimeStamp"
+                    },
+                    "knora-api:deleteDate": {
+                        "@type": "xsd:dateTimeStamp",
+                        "@value": "2026-08-18T09:56:20.174462323Z"
+                    },
+                    "knora-api:attachedToUser": {
+                        "@id": "http://rdfh.ch/users/root"
+                    },
+                    "knora-api:valueHasUUID": "ZHuP0rGsSH-aPUd79erbIQ",
+                    "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                    "knora-api:isDeleted": true,
+                    "@type": "knora-api:DeletedValue",
+                    "http://www.knora.org/ontology/knora-base#DeletedValue": "DeletedValue",
+                    "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/6vFCn2ZxQNKrwPwfx8uR0w"
+                },
+                {
+                    "knora-api:arkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/LXNwpoVsTHyfsJgA7_pRHAg",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:versionArkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/LXNwpoVsTHyfsJgA7_pRHAg.20260818T095620337248959Z",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:userHasPermission": "CR",
+                    "knora-api:valueCreationDate": {
+                        "@value": "2026-08-18T09:56:20.337248959Z",
+                        "@type": "xsd:dateTimeStamp"
+                    },
+                    "knora-api:deleteDate": {
+                        "@type": "xsd:dateTimeStamp",
+                        "@value": "2026-08-18T09:56:20.337248959Z"
+                    },
+                    "knora-api:attachedToUser": {
+                        "@id": "http://rdfh.ch/users/root"
+                    },
+                    "knora-api:valueHasUUID": "LXNwpoVsTHyfsJgA7_pRHA",
+                    "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                    "knora-api:isDeleted": true,
+                    "@type": "knora-api:DeletedValue",
+                    "http://www.knora.org/ontology/knora-base#DeletedValue": "DeletedValue",
+                    "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/l8kP2QObSECuAdnLwSr52g"
+                },
+                {
+                    "knora-api:arkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/DGxRIm8pRYSYGLZ_ZkEMLQg",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:versionArkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/DGxRIm8pRYSYGLZ_ZkEMLQg.20260818T095619821995437Z",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:userHasPermission": "CR",
+                    "knora-api:valueCreationDate": {
+                        "@value": "2026-08-18T09:56:19.821995437Z",
+                        "@type": "xsd:dateTimeStamp"
+                    },
+                    "knora-api:deleteDate": {
+                        "@type": "xsd:dateTimeStamp",
+                        "@value": "2026-08-18T09:56:19.821995437Z"
+                    },
+                    "knora-api:attachedToUser": {
+                        "@id": "http://rdfh.ch/users/root"
+                    },
+                    "knora-api:valueHasUUID": "DGxRIm8pRYSYGLZ_ZkEMLQ",
+                    "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                    "knora-api:isDeleted": true,
+                    "@type": "knora-api:DeletedValue",
+                    "http://www.knora.org/ontology/knora-base#DeletedValue": "DeletedValue",
+                    "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/lT2gsMBuTRavon71aVc9vQ"
+                },
+                {
+                    "knora-api:arkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/m3FdFBbbTGeLxWzhy7UQrw5",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:versionArkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/m3FdFBbbTGeLxWzhy7UQrw5.20260818T095620002436587Z",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:userHasPermission": "CR",
+                    "knora-api:valueCreationDate": {
+                        "@value": "2026-08-18T09:56:20.002436587Z",
+                        "@type": "xsd:dateTimeStamp"
+                    },
+                    "knora-api:deleteDate": {
+                        "@type": "xsd:dateTimeStamp",
+                        "@value": "2026-08-18T09:56:20.002436587Z"
+                    },
+                    "knora-api:attachedToUser": {
+                        "@id": "http://rdfh.ch/users/root"
+                    },
+                    "knora-api:valueHasUUID": "m3FdFBbbTGeLxWzhy7UQrw",
+                    "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                    "knora-api:isDeleted": true,
+                    "@type": "knora-api:DeletedValue",
+                    "http://www.knora.org/ontology/knora-base#DeletedValue": "DeletedValue",
+                    "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/rYFw7bxzTr66nLCsx9IDuw"
+                }
+            ],
+            "Datacant:hasDateIssued": {
+                "knora-api:dateValueHasStartDay": 12,
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/ZzI4BLrdRO2YRLhm2RadLg5",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/ZzI4BLrdRO2YRLhm2RadLg5.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:dateValueHasEndYear": 2021,
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:dateValueHasEndDay": 12,
+                "knora-api:dateValueHasEndEra": "CE",
+                "knora-api:valueHasUUID": "ZzI4BLrdRO2YRLhm2RadLg",
+                "knora-api:dateValueHasCalendar": "GREGORIAN",
+                "knora-api:dateValueHasStartMonth": 8,
+                "@type": "knora-api:DateValue",
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/ZzI4BLrdRO2YRLhm2RadLg",
+                "knora-api:valueAsString": "GREGORIAN:2021-08-12 CE",
+                "knora-api:dateValueHasStartEra": "CE",
+                "knora-api:dateValueHasEndMonth": 8,
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:dateValueHasStartYear": 2021,
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember"
+            },
+            "knora-api:userHasPermission": "CR",
+            "Datacant:linkToKeywordValue": [
+                {
+                    "knora-api:arkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/ZMK5ZAlsTyKK8EncUPHR1Ap",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:versionArkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/ZMK5ZAlsTyKK8EncUPHR1Ap.20260813T102949230791283Z",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:userHasPermission": "CR",
+                    "knora-api:valueCreationDate": {
+                        "@value": "2026-08-13T10:29:49.230791283Z",
+                        "@type": "xsd:dateTimeStamp"
+                    },
+                    "knora-api:attachedToUser": {
+                        "@id": "http://rdfh.ch/users/root"
+                    },
+                    "knora-api:valueHasUUID": "ZMK5ZAlsTyKK8EncUPHR1A",
+                    "knora-api:linkValueHasTarget": {
+                        "knora-api:arkUrl": {
+                            "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz",
+                            "@type": "xsd:anyURI"
+                        },
+                        "rdfs:label": "Consent",
+                        "knora-api:versionArkUrl": {
+                            "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/qRMfCDGwToWQnbEouGVIawz.20260812T151550647429198Z",
+                            "@type": "xsd:anyURI"
+                        },
+                        "knora-api:attachedToProject": {
+                            "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+                        },
+                        "knora-api:userHasPermission": "CR",
+                        "knora-api:creationDate": {
+                            "@value": "2026-08-12T15:15:50.647429198Z",
+                            "@type": "xsd:dateTimeStamp"
+                        },
+                        "knora-api:attachedToUser": {
+                            "@id": "http://rdfh.ch/users/root"
+                        },
+                        "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                        "@type": "Datacant:Keyword",
+                        "@id": "http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw"
+                    },
+                    "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                    "@type": "knora-api:LinkValue",
+                    "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/ZMK5ZAlsTyKK8EncUPHR1A"
+                },
+                {
+                    "knora-api:arkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/aNce3D5WRBegtOS1lhX3vA3",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:versionArkUrl": {
+                        "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/aNce3D5WRBegtOS1lhX3vA3.20260818T095619628579228Z",
+                        "@type": "xsd:anyURI"
+                    },
+                    "knora-api:userHasPermission": "CR",
+                    "knora-api:valueCreationDate": {
+                        "@value": "2026-08-18T09:56:19.628579228Z",
+                        "@type": "xsd:dateTimeStamp"
+                    },
+                    "knora-api:attachedToUser": {
+                        "@id": "http://rdfh.ch/users/root"
+                    },
+                    "knora-api:valueHasUUID": "aNce3D5WRBegtOS1lhX3vA",
+                    "knora-api:linkValueHasTarget": {
+                        "knora-api:arkUrl": {
+                            "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX",
+                            "@type": "xsd:anyURI"
+                        },
+                        "rdfs:label": "Video surveillance",
+                        "knora-api:versionArkUrl": {
+                            "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/pFZt9mzuTimLwjdMUByMZgX.20260812T151536817956724Z",
+                            "@type": "xsd:anyURI"
+                        },
+                        "knora-api:attachedToProject": {
+                            "@id": "http://rdfh.ch/projects/7Kctq4A5QfO1AqP9tiTbjQ"
+                        },
+                        "knora-api:userHasPermission": "CR",
+                        "knora-api:creationDate": {
+                            "@value": "2026-08-12T15:15:36.817956724Z",
+                            "@type": "xsd:dateTimeStamp"
+                        },
+                        "knora-api:attachedToUser": {
+                            "@id": "http://rdfh.ch/users/root"
+                        },
+                        "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                        "@type": "Datacant:Keyword",
+                        "@id": "http://rdfh.ch/0871/pFZt9mzuTimLwjdMUByMZg"
+                    },
+                    "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                    "@type": "knora-api:LinkValue",
+                    "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/o2Eugw2FSdmgl7gkfziIWg"
+                }
+            ],
+            "Datacant:hasAbstractDe": {
+                "knora-api:textValueHasMapping": {
+                    "@id": "http://rdfh.ch/standoff/mappings/StandardMapping"
+                },
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/0TXdy6G4TvuAZAfpPSufVwO",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/0TXdy6G4TvuAZAfpPSufVwO.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "0TXdy6G4TvuAZAfpPSufVw",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:FormattedText"
+                },
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/0TXdy6G4TvuAZAfpPSufVw",
+                "knora-api:textValueAsXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<text>A. arbeitet seit 1991 f\u00fcr die Stadtwerke einer Waadtl\u00e4nder Gemeinde, f\u00fcr die er die Strom- und Gasz\u00e4hler ablesen soll. Er ist Mieter einer Wohnung. Im Rahmen seiner beruflichen T\u00e4tigkeit greift A. auf die Gasverbrauchsdaten seines Vermieters zu, um zu \u00fcberpr\u00fcfen, ob ihm die Nebenkosten korrekt in Rechnung gestellt werden. Anschlie\u00dfend \u00fcbertrug er diese Daten in eine Excel-Datei und ging zu seinem Vermieter, um mit ihm dar\u00fcber zu diskutieren. Daraufhin erhielt A. eine Verwarnung, gegen die er Beschwerde einlegte.\nAls Angestellter einer Gemeinde unterliegt A. im Rahmen seiner beruflichen T\u00e4tigkeit dem DSG-VD (Art. 3 Abs. 2 lit. e DSG-VD). Gasrechnungen stellen personenbezogene Daten im Sinne des DSG dar. Indem A. die Daten abfragte, in einer Excel-Datei speicherte und sie dem Vermieter mitteilte, verarbeitete und \u00fcbermittelte er personenbezogene Daten. Er argumentiert, dass er ein \u00fcberwiegendes privates Interesse hat, das es ihm erm\u00f6glicht, so zu handeln. Dieses \u00fcberwiegende Interesse leitet er aus Art. 257b Abs. 2 OR und Art. 8 Abs. 2 VMWG ab. Dies ist in Wirklichkeit nicht der Fall: Selbst wenn diese Bestimmungen dem Mieter die Einsicht in die Unterlagen \u00fcber die Nebenkosten erm\u00f6glichen, erlauben sie nicht, gegen den Willen des Vermieters auf dessen pers\u00f6nliche Daten zuzugreifen. A. h\u00e4tte vor den zust\u00e4ndigen Gerichten f\u00fcr Mietsachen klagen m\u00fcssen. Daher hat A. eine missbr\u00e4uchliche Verwendung von pers\u00f6nlichen Daten vorgenommen, die nach dem DSG-VD verboten ist. \nMit dieser Handlung verletzte A. somit seine vertraglichen Pflichten, sein Amt mit Sorgfalt, Gewissenhaftigkeit und Treue auszu\u00fcben. Die Beh\u00f6rde war daher berechtigt, eine Ma\u00dfnahme gegen ihn zu verh\u00e4ngen. Das Gericht l\u00e4sst die Frage offen, ob A. sein Amtsgeheimnis verletzt hat; die Daten wurden n\u00e4mlich nur an seinen Vermieter weitergegeben, also an eine Person, die sie bereits kannte. Die von der Beh\u00f6rde gew\u00e4hlte Massnahme, die Verwarnung, entspricht den Grunds\u00e4tzen der Verh\u00e4ltnism\u00e4ssigkeit, des guten Glaubens und des Willk\u00fcrverbots. \nDaher weist das Gericht die Beschwerde ab und best\u00e4tigt die angefochtene Verf\u00fcgung.</text>",
+                "@type": "knora-api:TextValue"
+            },
+            "knora-api:attachedToUser": {
+                "@id": "http://rdfh.ch/users/root"
+            },
+            "Datacant:hasDescriptionDe": {
+                "knora-api:valueAsString": "Private Nutzung von Daten, die im Rahmen der beruflichen T\u00e4tigkeit verarbeitet wurden",
+                "knora-api:arkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/L3g3PjX1SjesB6fQKrxaeAA",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:versionArkUrl": {
+                    "@value": "http://0.0.0.0:3336/ark:/72163/1/0871/=69lw2B_RCGuvrkg1KeiUgf/L3g3PjX1SjesB6fQKrxaeAA.20260813T102949230791283Z",
+                    "@type": "xsd:anyURI"
+                },
+                "knora-api:userHasPermission": "CR",
+                "knora-api:valueCreationDate": {
+                    "@value": "2026-08-13T10:29:49.230791283Z",
+                    "@type": "xsd:dateTimeStamp"
+                },
+                "knora-api:attachedToUser": {
+                    "@id": "http://rdfh.ch/users/root"
+                },
+                "knora-api:valueHasUUID": "L3g3PjX1SjesB6fQKrxaeA",
+                "knora-api:hasPermissions": "CR knora-admin:ProjectAdmin|D knora-admin:ProjectMember",
+                "@type": "knora-api:TextValue",
+                "knora-api:hasTextValueType": {
+                    "@id": "knora-api:UnformattedText"
+                },
+                "@id": "http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg/values/L3g3PjX1SjesB6fQKrxaeA"
+            },
+            "@context": {
+                "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
+                "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                "xsd": "http://www.w3.org/2001/XMLSchema#",
+                "Datacant": "http://0.0.0.0:3333/ontology/0871/Datacant/v2#"
+            }
+        }
+    },
+    "cantons": {
+        "AG": "http://rdfh.ch/lists/0871/YqC9emv0TaWLmzBCzOt7lg",
+        "AR": "http://rdfh.ch/lists/0871/s29c716LRmK8AqekoJMHQg",
+        "AI": "http://rdfh.ch/lists/0871/Clc5iOOHQhqpm5_j8-j6Jw",
+        "BL": "http://rdfh.ch/lists/0871/Z7HksEoVQUS5szktByqZBA",
+        "BS": "http://rdfh.ch/lists/0871/9eACFMNBStinDEmLfcHWpw",
+        "BE": "http://rdfh.ch/lists/0871/l9GbRJOGTG6UZDE3Gydgbg",
+        "FR": "http://rdfh.ch/lists/0871/fSKvY2DQTCC1imPR1tNS6w",
+        "GE": "http://rdfh.ch/lists/0871/BMhYa_ypRMODvv254x0L3Q",
+        "GL": "http://rdfh.ch/lists/0871/ADM7KcwbT8mYd3eZSXxdDA",
+        "GR": "http://rdfh.ch/lists/0871/d1m6qUgHQkGkPQrzqtqrZA",
+        "JU": "http://rdfh.ch/lists/0871/apiEvx58R_GS6G7cPl1oyw",
+        "LU": "http://rdfh.ch/lists/0871/qTSfxrTPTvO374l-piqMEA",
+        "NE": "http://rdfh.ch/lists/0871/OUCmE6CVTLGFpb3Mmme2Mg",
+        "NW": "http://rdfh.ch/lists/0871/yhkiOw0_RceqFyo_SKsgUQ",
+        "OW": "http://rdfh.ch/lists/0871/I3eUR_3HRxKyW4zH_2uJfA",
+        "SG": "http://rdfh.ch/lists/0871/lw2vJKhxQeOAIpMn7slnZw",
+        "SH": "http://rdfh.ch/lists/0871/Dccw5CFdQ2mvQwgD5JSfIg",
+        "SZ": "http://rdfh.ch/lists/0871/mM7DQFKJT-K51VPupcfSPw",
+        "SO": "http://rdfh.ch/lists/0871/hscWpCfkQxuJddNsWPkerg",
+        "TG": "http://rdfh.ch/lists/0871/EY6RN9y7SzatXFPb3joy5A",
+        "TI": "http://rdfh.ch/lists/0871/EO-RsikST8KH5AO_AtbJbA",
+        "UR": "http://rdfh.ch/lists/0871/RlN6RFoNR9-guS4yfryMfA",
+        "VD": "http://rdfh.ch/lists/0871/Rmoazh_lQAmNpbuT_J0x2w",
+        "VS": "http://rdfh.ch/lists/0871/tUl1OqEXQxCJDZuHmdMS2g",
+        "ZG": "http://rdfh.ch/lists/0871/otPRlr4VSjmqcDXtT13v0w",
+        "ZH": "http://rdfh.ch/lists/0871/4YjuuOZwSSKCwu0-YEUgbA"
+    }
+}

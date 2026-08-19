@@ -18,6 +18,9 @@ class CategoryLink(LinkValue):
         name = f'{PROJECT_NAME}:linkToCategoryValue'
         LinkValue.__init__(self, name, value)
 
+    def is_constant(self):
+        return False
+
 
 class EddbId(IntValue):
 
@@ -27,6 +30,9 @@ class EddbId(IntValue):
             raise ValueError('EDDB id must be greater than 0')
         name = f'{PROJECT_NAME}:hasId'
         IntValue.__init__(self, name, value)
+
+    def is_constant(self):
+        return True
 
 
 class NameDe(SimpleTextValue):
@@ -39,6 +45,9 @@ class NameDe(SimpleTextValue):
         name = f'{PROJECT_NAME}:hasNameDe'
         SimpleTextValue.__init__(self, name, v)
 
+    def is_constant(self):
+        return False
+
 
 class NameFr(SimpleTextValue):
 
@@ -49,3 +58,6 @@ class NameFr(SimpleTextValue):
             raise ValueError('Name in French must be set')
         name = f'{PROJECT_NAME}:hasNameFr'
         SimpleTextValue.__init__(self, name, v)
+
+    def is_constant(self):
+        return False

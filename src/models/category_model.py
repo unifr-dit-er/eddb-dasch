@@ -14,6 +14,9 @@ class Category(Resource):
         self.name_de = NameDe(name_de)
         self.name_fr = NameFr(name_fr)
 
+    def fill_iri_values(self, dasch_db):
+        pass
+
     def fields(self):
         return [
             self.eddb_id,

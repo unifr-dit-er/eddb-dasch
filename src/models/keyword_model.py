@@ -1,80 +1,53 @@
-from payload import (
-    body_create_keyword,
-    body_update_label,
-    body_update_link,
-    body_update_simple_text,
-)
+from models.resource import Resource
+from fields.datacant import CategoryLink, EddbId, NameDe, NameFr
 
 
-class Keyword():
+class Keyword(Resource):
 
     def __init__(self, eddb_id, category_id, name_en, name_de, name_fr):
         '''Initialization of the fields.'''
         en = (name_en or '').strip()
-        de = (name_de or '').strip()
-        fr = (name_fr or '').strip()
         if len(en) == 0:
-            raise ValueError('Keyword name_en is not set')
-        if len(de) == 0:
-            raise ValueError('Keyword name_de is not set')
-        if len(fr) == 0:
-            raise ValueError('Keyword name_fr is not set')
-        self.eddb_id = eddb_id
-        self.category_id = category_id
+            raise ValueError('Category name_en is not set')
+        self.eddb_id = EddbId(eddb_id)
+        self.category_id = CategoryLink(category_id)
         self.name_en = en
-        self.name_de = de
-        self.name_fr = fr
+        self.name_de = NameDe(name_de)
+        self.name_fr = NameFr(name_fr)
 
-    def has_label_changed(self, label_old):
-        return self.label() != label_old
+    def fill_iri_values(self, dasch_db):
+        category = self.category_id
+        value_iri = dasch_db['category'][category.value]['@id']
+        category.set_value_iri(value_iri)
+
+    def fields(self):
+        return [
+            self.eddb_id,
+            self.category_id,
+            self.name_de,
+            self.name_fr,
+        ]
+
+    @staticmethod
+    def key_in_dasch_db():
+        return 'keyword'
 
     def label(self):
         return self.name_en
 
-    def payload_add(self, category_iri):
-        eddb_id = self.eddb_id
-        label = self.label()
-        name_de = self.name_de
-        name_fr = self.name_fr
-        return body_create_keyword(eddb_id, label, name_de, name_fr, category_iri)
-
-    def payload_update_fields(self, dasch_db):
-        payloads = []
-        keyword_dasch = dasch_db['keyword'][self.eddb_id]
-        resource_id = keyword_dasch['@id']
-        resource_type = self.resource_type()
-
-        field = 'Datacant:hasNameDe'
-        if keyword_dasch[field]['knora-api:valueAsString'] != self.name_de:
-            field_id = keyword_dasch[field]['@id']
-            value = self.name_de
-            payload = body_update_simple_text(resource_id, resource_type, field, field_id, value)
-            payloads.append(payload)
-
-        field = 'Datacant:hasNameFr'
-        if keyword_dasch[field]['knora-api:valueAsString'] != self.name_fr:
-            field_id = keyword_dasch[field]['@id']
-            value = self.name_fr
-            payload = body_update_simple_text(resource_id, resource_type, field, field_id, value)
-            payloads.append(payload)
-
-        field = 'Datacant:linkToCategoryValue'
-        link_target = keyword_dasch[field].get('knora-api:linkValueHasTarget')
-        if link_target is None:
-            link_target = keyword_dasch[field]['knora-api:linkValueHasTargetIri']
-        iri_current = link_target['@id']
-        iri_new = dasch_db['category'][self.category_id]['@id']
-        if iri_current != iri_new:
-            field_id = keyword_dasch[field]['@id']
-            payload = body_update_link(resource_id, resource_type, field, field_id, iri_new)
-            payloads.append(payload)
-
-        return payloads
-
-    def payload_update_label(self, resource_id, last_modification):
-        resource_t = self.resource_type()
-        label = self.label()
-        return body_update_label(resource_id, resource_t, label, last_modification)
-
-    def resource_type(self):
+    @staticmethod
+    def resource_type():
         return 'Datacant:Keyword'
+
+    def to_dict(self):
+        return {
+            'eddb_id': self.eddb_id.value,
+            'category_id': self.category_id.value,
+            'name_en': self.name_en,
+            'name_de': self.name_de.value,
+            'name_fr': self.name_fr.value,
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(**data)

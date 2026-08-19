@@ -1,24 +1,27 @@
 import unittest
+import json
+from pathlib import Path
 from fields.datacant import EddbId, NameDe, NameFr
 from models.category_model import Category
-import json
 
 
 class TestCategory(unittest.TestCase):
     def setUp(self):
-        self.dasch_db = {'category': {}}
-        with open('tests/resources/dasch_category.json', 'r') as txt:
-            tmp = json.load(txt)
-            self.dasch_db['category'] = {int(k): v for k, v in tmp['category'].items()}
+        file = Path('tests/resources/data_dasch.json')
+        data = json.loads(file.read_text(encoding='utf-8'))
+        data['category'] = {int(k): v for k, v in data['category'].items()}
+        data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
+        data['decision'] = {int(k): v for k, v in data['decision'].items()}
+        self.dasch_db = data
 
-    def test_category_constructor(self):
+    def test_constructor(self):
         category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')
         self.assertEqual(category.eddb_id, EddbId(1))
         self.assertEqual(category.name_en, 'Privacy')
         self.assertEqual(category.name_de, NameDe('Datenschutz'))
         self.assertEqual(category.name_fr, NameFr('Vie privée'))
 
-    def test_category_name_fail(self):
+    def test_constructor_fail(self):
         with self.assertRaises(ValueError):
             Category(1, None, 'Datenschutz', 'Vie privée')
         with self.assertRaises(ValueError):
@@ -70,11 +73,12 @@ class TestCategory(unittest.TestCase):
 
     def test_payload_update_label(self):
         dasch_obj = self.dasch_db['category'][3]
-        category = Category(3, 'Surveillance2', 'Überwachung2', 'Surveillance2')
+        category = Category(3, 'Surveillance2', 'Überwachung', 'Surveillance')
         payload = category.payload_update_label(dasch_obj)
+        last_modif = '2026-08-17T15:54:24.629395191Z'
         self.assertEqual(payload['@type'], category.resource_type())
         self.assertEqual(payload['rdfs:label'], category.label())
-        self.assertEqual(payload['knora-api:lastModificationDate']['@value'], None)
+        self.assertEqual(payload['knora-api:lastModificationDate']['@value'], last_modif)
 
     def test_resource_type(self):
         self.assertEqual(Category.resource_type(), 'Datacant:Category')

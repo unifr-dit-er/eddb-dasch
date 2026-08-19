@@ -59,6 +59,20 @@ def update(resource_id, resource_type, key_value):
     return tmp
 
 
+def add_link(resource_id, resource_type, key_value):
+    tmp = {
+        "@id": resource_id,
+        "@type": resource_type,
+        "@context": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
+            "Datacant": DATACANT_CONTEXT
+        }
+    }
+    tmp.update(key_value)
+    return tmp
+
+
 def body_create_decision(did, label, date, filename, filename_tmp, canton_iri, desc_de, desc_fr, abstract_de, abstract_fr, category_iri):
     year = int(date[:4])
     month = int(date[5:7])
@@ -140,41 +154,6 @@ def body_create_decision(did, label, date, filename, filename_tmp, canton_iri, d
           "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
           "xsd": "http://www.w3.org/2001/XMLSchema#",
           "Datacant": DATACANT_CONTEXT
-      }
-    }
-
-
-def body_create_keyword(kid, label, name_de, name_fr, category_iri):
-    return {
-      "@type": "Datacant:Keyword",
-      "Datacant:hasId": {
-        "@type": "knora-api:IntValue",
-        "knora-api:intValueAsInt": kid,
-      },
-      "Datacant:linkToCategoryValue": {
-        "@type": "knora-api:LinkValue",
-        "knora-api:linkValueHasTargetIri": {
-          "@id": category_iri
-        }
-      },
-      "Datacant:hasNameDe": {
-        "@type": "knora-api:TextValue",
-        "knora-api:valueAsString": name_de
-      },
-      "Datacant:hasNameFr": {
-        "@type": "knora-api:TextValue",
-        "knora-api:valueAsString": name_fr
-      },
-      "knora-api:attachedToProject": {
-        "@id": RDFH_PROJECT_URL
-      },
-      "rdfs:label": label,
-      "@context": {
-        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
-        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-        "xsd": "http://www.w3.org/2001/XMLSchema#",
-        "Datacant": DATACANT_CONTEXT
       }
     }
 

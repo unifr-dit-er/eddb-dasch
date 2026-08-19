@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import payload
-from fields.datacant import EddbId
+from fields.dasch import LinkValue
 
 
 class Resource(ABC):
@@ -11,6 +11,10 @@ class Resource(ABC):
         pass
 
     @abstractmethod
+    def fill_iri_values(self, dasch_db):
+        pass
+
+    @abstractmethod
     def fields(self):
         pass
 
@@ -18,11 +22,11 @@ class Resource(ABC):
         return self.label() != label_old
 
     @abstractmethod
-    def key_in_dasch_db(self):
+    def key_in_dasch_db():
         pass
 
     @abstractmethod
-    def label(self):
+    def label():
         pass
 
     def payload_create(self):
@@ -42,15 +46,16 @@ class Resource(ABC):
         resource_type = self.resource_type()
 
         for field in self.fields():
-            if isinstance(field, EddbId):
+            if field.is_constant():
                 continue
-            field_key = field.name
-            value = field.value
-            value_old = field.knora_value(dasch_obj)
-            if value != value_old:
+            if field.is_updated(dasch_obj):
+                field_key = field.name
                 field_id = dasch_obj[field_key]['@id']
                 key_value = field.to_knora_update(field_id)
-                p = payload.update(resource_id, resource_type, key_value)
+                if isinstance(field, LinkValue):
+                    p = payload.add_link(resource_id, resource_type, key_value)
+                else:
+                    p = payload.update(resource_id, resource_type, key_value)
                 payloads.append(p)
 
         return payloads, [], []

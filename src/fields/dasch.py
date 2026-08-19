@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class DateValue(ABC):
@@ -23,9 +23,13 @@ class IntValue(ABC):
         self.value = value
 
     def __eq__(self, other):
-        if not isinstance(other, DateValue):
-            return NotImplementedError()
+        if not isinstance(other, IntValue):
+            return RuntimeError()
         return self.name == other.name and self.value == other.value
+
+    @abstractmethod
+    def is_constant(self):
+        pass
 
     def to_knora(self):
         return {
@@ -40,10 +44,55 @@ class LinkValue(ABC):
     '''Abstract class which shapes a link to another resource.
     '''
 
-    def __init__(self, name, iri_value):
+    def __init__(self, name, value):
         '''Initialization of the fields and inputs validation.'''
         self.name = name
-        self.iri_value = iri_value
+        self.value = value
+        self.value_iri = None
+
+    def __eq__(self, other):
+        if not isinstance(other, LinkValue):
+            return RuntimeError()
+        return self.name == other.name and self.value == other.value
+
+    @abstractmethod
+    def is_constant(self):
+        pass
+
+    def is_updated(self, dasch_obj):
+        link_target = dasch_obj[self.name].get('knora-api:linkValueHasTarget')
+        if link_target is None:
+            link_target = dasch_obj[self.name]['knora-api:linkValueHasTargetIri']
+        value_old = link_target['@id']
+        return self.value_iri != value_old
+
+    def set_value_iri(self, value_iri):
+        self.value_iri = value_iri
+
+    def to_knora(self):
+        if self.value_iri is None:
+            raise RuntimeError('Method cannot be called when `iri` is not set')
+        return {
+            self.name: {
+                '@type': 'knora-api:LinkValue',
+                'knora-api:linkValueHasTargetIri': {
+                    '@id': self.value_iri
+                }
+            }
+        }
+
+    def to_knora_update(self, field_id):
+        if self.value_iri is None:
+            raise RuntimeError('Method cannot be called when `iri` is not set')
+        return {
+            self.name: {
+                '@id': field_id,
+                '@type': 'knora-api:LinkValue',
+                'knora-api:linkValueHasTargetIri': {
+                    '@id': self.value_iri
+                }
+            }
+        }
 
 
 class ListValue(ABC):
@@ -76,13 +125,17 @@ class SimpleTextValue(ABC):
         self.value = value
 
     def __eq__(self, other):
-        if not isinstance(other, DateValue):
-            return NotImplementedError()
+        if not isinstance(other, SimpleTextValue):
+            return RuntimeError()
         return self.name == other.name and self.value == other.value
 
-    def knora_value(self, dasch_obj):
-        field_key = self.name
-        return dasch_obj[field_key]['knora-api:valueAsString']
+    @abstractmethod
+    def is_constant(self):
+        pass
+
+    def is_updated(self, dasch_obj):
+        value_old = dasch_obj[self.name]['knora-api:valueAsString']
+        return self.value != value_old
 
     def to_knora(self):
         return {
