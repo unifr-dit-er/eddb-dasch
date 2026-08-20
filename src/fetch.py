@@ -156,8 +156,8 @@ def fetch_all_eddb(reset_cache):
 
     # Consider commenting out the lines below while debugging to prevent your
     # (manual) data changes from being overwritten.
-    data['category'].update(fetch_eddb_categories())
-    data['keyword'].update(fetch_eddb_keywords())
-    use_cache = decision_file.exists() and not reset_cache
-    data['decision'].update(fetch_eddb_decisions(use_cache))
+    # data['category'].update(fetch_eddb_categories())
+    # data['keyword'].update(fetch_eddb_keywords())
+    # use_cache = decision_file.exists() and not reset_cache
+    # data['decision'].update(fetch_eddb_decisions(use_cache))
     return data

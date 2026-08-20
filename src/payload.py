@@ -22,7 +22,30 @@ def body_add_link(resource_id, resource_type, field, iri_value):
     }
 
 
-def create(resource_type, label, fields):
+def body_unlink_keyword(decision_iri, link_iri, target_iri):
+    return {
+        "@id": decision_iri,
+        "@type": "Datacant:Decisions",
+        "Datacant:linkToKeywordValue": [
+            {
+                "@id": link_iri,
+                "@type": "knora-api:LinkValue",
+                "knora-api:linkValueHasTargetIri": {
+                  "@id": target_iri
+                }
+            }
+        ],
+        "@context": {
+            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
+            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "Datacant": DATACANT_CONTEXT
+        }
+    }
+
+
+def create(resource_type, label, chunks):
     '''Payload that creates a resource.
     '''
     tmp = {
@@ -39,9 +62,8 @@ def create(resource_type, label, fields):
             'Datacant': DATACANT_CONTEXT
         }
     }
-    pairs = list(map(lambda f: f.to_knora(), fields))
-    pairs.append(tmp)
-    return {k: v for d in pairs for k, v in d.items()}
+    chunks.append(tmp)
+    return {k: v for d in chunks for k, v in d.items()}
 
 
 def update(resource_id, resource_type, key_value):
@@ -176,29 +198,6 @@ def body_delete_resource(resource_iri, resource_type, last_modification):
     }
 
 
-def body_unlink_keyword(decision_iri, link_iri, target_iri):
-    return {
-        "@id": decision_iri,
-        "@type": "Datacant:Decisions",
-        "Datacant:linkToKeywordValue": [
-            {
-                "@id": link_iri,
-                "@type": "knora-api:LinkValue",
-                "knora-api:linkValueHasTargetIri": {
-                  "@id": target_iri
-                }
-            }
-        ],
-        "@context": {
-            "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-            "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
-            "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-            "xsd": "http://www.w3.org/2001/XMLSchema#",
-            "Datacant": DATACANT_CONTEXT
-        }
-    }
-
-
 def body_update_link(resource_id, resource_type, field, field_id, value):
     '''Link like a foreign key.'''
     return {
@@ -277,26 +276,6 @@ def body_update_simple_text(resource_id, resource_type, field, field_id, value):
             "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
             "Datacant": DATACANT_CONTEXT
         }
-    }
-
-
-# TODO: remove this function that is renamed to 'update_label'.
-def body_update_label(resource_id, resource_type, value, last_modification_date):
-    return {
-      "@id": resource_id,
-      "@type": resource_type,
-      "rdfs:label": value,
-      "knora-api:lastModificationDate": {
-        "@type": "xsd:dateTimeStamp",
-        "@value": last_modification_date
-      },
-      "@context": {
-        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "knora-api": "http://api.knora.org/ontology/knora-api/v2#",
-        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-        "xsd": "http://www.w3.org/2001/XMLSchema#",
-        "Datacant": DATACANT_CONTEXT
-      }
     }
 
 

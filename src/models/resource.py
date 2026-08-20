@@ -32,8 +32,8 @@ class Resource(ABC):
     def payload_create(self):
         resource_type = self.resource_type()
         label = self.label()
-        fields = self.fields()
-        return payload.create(resource_type, label, fields)
+        payload_chunks = [field.to_knora() for field in self.fields()]
+        return payload.create(resource_type, label, payload_chunks)
 
     def payload_update_fields(self, dasch_db):
         payloads = []
