@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import payload
-from fields.dasch import LinkValue
+from fields.dasch import LinkValue, LinksValue
 
 
 class Resource(ABC):
@@ -32,11 +32,13 @@ class Resource(ABC):
     def payload_create(self):
         resource_type = self.resource_type()
         label = self.label()
-        fields = self.fields()
-        return payload.create(resource_type, label, fields)
+        payload_chunks = [field.to_knora() for field in self.fields()]
+        return payload.create(resource_type, label, payload_chunks)
 
     def payload_update_fields(self, dasch_db):
         payloads = []
+        payloads_add_links = []
+        payloads_del_links = []
         key_in_dasch_db = self.key_in_dasch_db()
         eddb_id = self.eddb_id.value
         dasch_obj = dasch_db[key_in_dasch_db].get(eddb_id)
@@ -49,16 +51,25 @@ class Resource(ABC):
             if field.is_constant():
                 continue
             if field.is_updated(dasch_obj):
-                field_key = field.name
-                field_id = dasch_obj[field_key]['@id']
-                key_value = field.to_knora_update(field_id)
-                if isinstance(field, LinkValue):
-                    p = payload.add_link(resource_id, resource_type, key_value)
+                if isinstance(field, LinksValue):
+                    add_links, del_links = field.to_knora_update(dasch_obj)
+                    for link in add_links:
+                        p = payload.add_link(resource_id, resource_type, link)
+                        payloads_add_links.append(p)
+                    for link in del_links:
+                        p = payload.del_link(resource_id, resource_type, link)
+                        payloads_del_links.append(p)
                 else:
-                    p = payload.update(resource_id, resource_type, key_value)
-                payloads.append(p)
+                    field_key = field.name
+                    field_id = dasch_obj[field_key]['@id']
+                    key_value = field.to_knora_update(field_id)
+                    if isinstance(field, LinkValue):
+                        p = payload.add_link(resource_id, resource_type, key_value)
+                    else:
+                        p = payload.update(resource_id, resource_type, key_value)
+                    payloads.append(p)
 
-        return payloads, [], []
+        return payloads, payloads_add_links, payloads_del_links
 
     def payload_update_label(self, dasch_obj):
         label_old = dasch_obj['rdfs:label']
