@@ -27,7 +27,7 @@ class DateValue(ABC):
 
     def is_updated(self, dasch_obj):
         value_old = dasch_obj[self.name]['knora-api:valueAsString']
-        return self.value != value_old
+        return self.value not in value_old
 
     def to_knora(self):
         year = int(self.value[:4])
@@ -105,6 +105,9 @@ class DocumentFileValue(ABC):
             }
         }
 
+    def to_knora_update(self, field_id):
+        raise NotImplementedError()
+
 
 class IntValue(ABC):
     '''Abstract class which shapes the integers.
@@ -133,6 +136,9 @@ class IntValue(ABC):
                 'knora-api:intValueAsInt': self.value,
             }
         }
+
+    def to_knora_update(self, field_id):
+        raise NotImplementedError()
 
 
 class LinkValue(ABC):
