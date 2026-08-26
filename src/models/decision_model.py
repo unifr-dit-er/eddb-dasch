@@ -3,6 +3,7 @@ from fields.datacant import (
     Canton,
     DateGreg,
     Description,
+    DocumentFile,
     EddbId,
     FileName,
     KeywordLink,
@@ -23,7 +24,8 @@ class Decision(Resource):
         abstract_de,
         abstract_fr,
         url_file,
-        keywords_id
+        keywords_id,
+        dasch_filename_tmp=None
     ):
         '''Initialization of the fields.'''
         if len(keywords_id) == 0:
@@ -38,6 +40,13 @@ class Decision(Resource):
         self.abstract_fr = Abstract(abstract_fr, 'fr', updated_at)
         self.url_file = url_file
         self.keywords_id = KeywordLink(keywords_id)
+        self.dasch_filename_tmp = DocumentFile(dasch_filename_tmp)
+
+    def eddb_filename(self):
+        return self.url_file.split('/')[-1]
+
+    def eddb_url_file(self):
+        return self.url_file
 
     def fields(self):
         return [
@@ -50,13 +59,11 @@ class Decision(Resource):
             self.abstract_de,
             self.abstract_fr,
             self.keywords_id,
+            self.dasch_filename_tmp,
         ]
 
     def filename(self):
         return '{}_{}.pdf'.format(self.canton.value, self.date_issued.value)
-
-    def filename_eddb(self):
-        return self.url_file.split('/')[-1]
 
     def fill_iri_values(self, dasch_db):
         canton_iri = dasch_db['cantons'][self.canton.value]
@@ -64,6 +71,9 @@ class Decision(Resource):
 
         tmp = [dasch_db['keyword'][k_id]['@id'] for k_id in self.keywords_id.value]
         self.keywords_id.set_value_iri(tmp)
+
+    def has_file_field(self):
+        return True
 
     def has_label_changed(self, label_old):
         return self.label() != label_old
@@ -78,6 +88,9 @@ class Decision(Resource):
     @staticmethod
     def resource_type():
         return 'Datacant:Decisions'
+
+    def set_dasch_filename_tmp(self, filename):
+        self.dasch_filename_tmp = DocumentFile(filename)
 
     def to_dict(self):
         return {

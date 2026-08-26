@@ -11,11 +11,23 @@ class Resource(ABC):
         pass
 
     @abstractmethod
+    def eddb_filename(self):
+        pass
+
+    @abstractmethod
+    def eddb_url_file(self):
+        pass
+
+    @abstractmethod
     def fill_iri_values(self, dasch_db):
         pass
 
     @abstractmethod
     def fields(self):
+        pass
+
+    @abstractmethod
+    def has_file_field(self):
         pass
 
     def has_label_changed(self, label_old):
@@ -83,4 +95,8 @@ class Resource(ABC):
 
     @abstractmethod
     def resource_type():
+        pass
+
+    @abstractmethod
+    def set_dasch_filename_tmp(self, filename):
         pass

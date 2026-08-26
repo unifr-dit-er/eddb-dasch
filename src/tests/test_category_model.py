@@ -39,6 +39,10 @@ class TestCategory(unittest.TestCase):
         self.assertEqual(new_category.name_de, 'Datenschutz')
         self.assertEqual(new_category.name_fr, 'Vie privée')
 
+    def test_has_file_field(self):
+        category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')
+        self.assertFalse(category.has_file_field())
+
     def test_label(self):
         category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')
         self.assertEqual(category.label(), 'Privacy')

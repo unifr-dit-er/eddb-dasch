@@ -69,6 +69,43 @@ class DateValue(ABC):
         }
 
 
+class DocumentFileValue(ABC):
+    '''Abstract class which shapes the document files.
+    '''
+
+    def __init__(self, name, value, licens, cpyright, authors):
+        '''Initialization of the fields and inputs validation.'''
+        self.name = name
+        self.value = value
+        self.license = licens
+        self.copyright = cpyright
+        self.authors = authors
+
+    def __eq__(self, other):
+        if not isinstance(other, DocumentFileValue):
+            return TypeError()
+        return self.name == other.name and self.value == other.value
+
+    @abstractmethod
+    def is_constant(self):
+        pass
+
+    def is_updated(self, dasch_obj):
+        # TODO: check with hash instead
+        return False
+
+    def to_knora(self):
+        return {
+            self.name: {
+                '@type': 'knora-api:DocumentFileValue',
+                'knora-api:fileValueHasFilename': self.value,
+                'knora-api:hasLicense': {'@id': self.license},
+                'knora-api:hasCopyrightHolder': self.copyright,
+                'knora-api:hasAuthorship': self.authors
+            }
+        }
+
+
 class IntValue(ABC):
     '''Abstract class which shapes the integers.
     '''

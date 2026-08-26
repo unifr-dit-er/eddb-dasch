@@ -42,7 +42,7 @@ if __name__ == '__main__':
         tmp = {k: v.to_dict() for k, v in data_eddb['keyword'].items()}
         f.write(json.dumps(tmp, indent=4))
     with open('data/eddb_decisions.json', 'w') as f:
-        tmp = {k: v.__dict__ for k, v in data_eddb['decision'].items()}
+        tmp = {k: v.to_dict() for k, v in data_eddb['decision'].items()}
         f.write(json.dumps(tmp, indent=4))
 
     # Step 1: Update existing categories or add new categories.
@@ -108,42 +108,37 @@ if __name__ == '__main__':
     # Step 3: Update existing decisions or add new decisions.
     for did, decision_eddb in data_eddb['decision'].items():
         decision_dasch = data_dasch['decision'].get(did)
-        has_changed = False
+        decision_eddb.fill_iri_values(data_dasch)
+        is_created = False
+        is_updated = False
 
         if decision_dasch is None:
             logger.info(f'Add new decision (id={did})')
 
-            # Upload to ingest.
-            url_file = decision_eddb.url_file
-            filename = decision_eddb.filename_eddb()
-            download_file(url_file, filename)
-            response = upload_to_ingest(filename, token)
-            filename_tmp = response['internalFilename']
-            checksum = response['checksumOriginal']  # TODO
+            if decision_eddb.has_file_field():
+                # Upload to ingest.
+                filename = decision_eddb.eddb_filename()
+                url_file = decision_eddb.eddb_url_file()
+                download_file(url_file, filename)
+                response = upload_to_ingest(filename, token)
+                filename_tmp_dasch = response['internalFilename']
+                decision_eddb.set_dasch_filename_tmp(filename_tmp_dasch)
+                checksum = response['checksumOriginal']  # TODO
 
             # Create the resource.
-            payload = decision_eddb.payload_add(filename_tmp, data_dasch)
+            payload = decision_eddb.payload_create()
             resource_id = create_resource(payload, token)
-            has_changed = True
+            is_created = True
         else:
             # Maybe update existing decision.
             resource_id = decision_dasch['@id']
-
-            # label
-            label_old = decision_dasch['rdfs:label']
-            if decision_eddb.has_label_changed(label_old):
-                last_modification = \
-                    decision_dasch.get('knora-api:lastModificationDate', {}).get('@value')
-                payload = decision_eddb.payload_update_label(resource_id, last_modification)
-                response = update_label(payload, token)
-                has_changed = True
+            payload_label = decision_eddb.payload_update_label(decision_dasch)
+            if payload_label is not None:
+                logger.info(f'Decision (id={did}) label has been updated')
+                response = update_label(payload_label, token)
 
             payloads = decision_eddb.payload_update_fields(data_dasch)
             (payload_updates, payload_add, payload_del) = payloads
-            has_changed = has_changed or \
-                len(payload_updates) != 0 or \
-                len(payload_add) != 0 or \
-                len(payload_del) != 0
             for payload in payload_updates:
                 update_value(payload, token)
             for payload in payload_add:
@@ -151,7 +146,14 @@ if __name__ == '__main__':
             for payload in payload_del:
                 delete_value(payload, token)
 
-        if has_changed:
+            is_updated = payload_label is not None or \
+                len(payload_updates) != 0 or \
+                len(payload_add) != 0 or \
+                len(payload_del) != 0
+            if is_updated:
+                logger.info(f'Decision (id={did}) field(s) have been updated')
+
+        if is_created or is_updated:
             logger.info(f'Decision (id={did}) has been updated')
             data_dasch['decision'][did] = fetch_resource(resource_id, token)
 

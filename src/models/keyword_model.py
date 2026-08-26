@@ -15,6 +15,12 @@ class Keyword(Resource):
         self.name_de = NameDe(name_de)
         self.name_fr = NameFr(name_fr)
 
+    def eddb_filename(self):
+        raise RuntimeError()
+
+    def eddb_url_file(self):
+        raise RuntimeError()
+
     def fill_iri_values(self, dasch_db):
         category = self.category_id
         value_iri = dasch_db['category'][category.value]['@id']
@@ -28,12 +34,18 @@ class Keyword(Resource):
             self.name_fr,
         ]
 
+    def has_file_field(self):
+        return False
+
     @staticmethod
     def key_in_dasch_db():
         return 'keyword'
 
     def label(self):
         return self.name_en
+
+    def set_dasch_filename_tmp(self, filename):
+        raise RuntimeError()
 
     @staticmethod
     def resource_type():

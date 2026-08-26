@@ -51,6 +51,14 @@ class TestDecision(unittest.TestCase):
         with self.assertRaises(ValueError):
             Decision(**attributes)
 
+    def test_eddb_filename(self):
+        decision = Decision(**self.attributes)
+        self.assertEqual(decision.eddb_filename(), '2005.06.28-5__vzhl.pdf')
+
+    def test_eddb_url_file(self):
+        decision = Decision(**self.attributes)
+        self.assertEqual(decision.eddb_url_file(), decision.url_file)
+
     def test_fill_iri_values(self):
         decision = Decision(**self.attributes)
         decision.fill_iri_values(self.dasch_db)
@@ -84,9 +92,9 @@ class TestDecision(unittest.TestCase):
         decision = Decision(**self.attributes)
         self.assertEqual(decision.filename(), 'FR_2021-08-12.pdf')
 
-    def test_filename_eddb(self):
+    def test_has_file_field(self):
         decision = Decision(**self.attributes)
-        self.assertEqual(decision.filename_eddb(), '2005.06.28-5__vzhl.pdf')
+        self.assertTrue(decision.has_file_field())
 
     def test_label(self):
         decision = Decision(**self.attributes)
@@ -118,6 +126,11 @@ class TestDecision(unittest.TestCase):
 
         filename = payload['Datacant:hasFileName']['knora-api:valueAsString']
         self.assertEqual(filename, decision.filename())
+
+        filename_dasch_tmp = payload \
+            .get('knora-api:hasDocumentFileValue') \
+            .get('knora-api:fileValueHasFilename')
+        self.assertEqual(filename_dasch_tmp, decision.dasch_filename_tmp.value)
 
         desc_de = payload['Datacant:hasDescriptionDe']['knora-api:valueAsString']
         self.assertEqual(desc_de, decision.desc_de.value)
@@ -194,6 +207,12 @@ class TestDecision(unittest.TestCase):
         self.assertEqual(payload['@type'], decision.resource_type())
         self.assertEqual(payload['rdfs:label'], decision.label())
         self.assertEqual(payload['knora-api:lastModificationDate']['@value'], last_modif)
+
+    def test_set_filename_dasch(self):
+        decision = Decision(**self.attributes)
+        filename_tmp = '4rMCDmxpYAx-DiRuvu3v2rQ.pdf'
+        decision.set_dasch_filename_tmp(filename_tmp)
+        self.assertEqual(decision.dasch_filename_tmp, filename_tmp)
 
     def test_resource_type(self):
         decision = Decision(**self.attributes)

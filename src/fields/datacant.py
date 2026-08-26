@@ -1,5 +1,6 @@
 from fields.dasch import (
     DateValue,
+    DocumentFileValue,
     IntValue,
     LinkValue,
     LinksValue,
@@ -72,6 +73,21 @@ class Description(SimpleTextValue):
         if len(v) == 0:
             raise ValueError('Description must be set')
         SimpleTextValue.__init__(self, name, v)
+
+    def is_constant(self):
+        return False
+
+
+class DocumentFile(DocumentFileValue):
+
+    def __init__(self, value):
+        '''Initialization of the fields.'''
+        name = 'knora-api:hasDocumentFileValue'
+        value = value
+        lic = 'http://rdfh.ch/licenses/public-domain'
+        cpyright = 'Public Domain - Not Protected by Copyright'
+        authors = ['Swiss court']
+        DocumentFileValue.__init__(self, name, value, lic, cpyright, authors)
 
     def is_constant(self):
         return False
