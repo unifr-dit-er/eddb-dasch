@@ -27,7 +27,7 @@ class Resource(ABC):
         pass
 
     @abstractmethod
-    def has_file_field(self):
+    def has_attachment_field(self):
         pass
 
     def has_label_changed(self, label_old):
@@ -98,5 +98,5 @@ class Resource(ABC):
         pass
 
     @abstractmethod
-    def set_dasch_filename_tmp(self, filename):
+    def set_attachment(self, eddb_url, filename_dasch, sha):
         pass

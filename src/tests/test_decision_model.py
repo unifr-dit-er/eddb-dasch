@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from fields.datacant import (
     Abstract,
+    Attachment,
     Canton,
     DateGreg,
     EddbId,
@@ -29,8 +30,12 @@ class TestDecision(unittest.TestCase):
             'desc_fr': 'Utilisation à des fins privées',
             'abstract_de': 'A. arbeitet seit 1991',
             'abstract_fr': 'Depuis 1991',
-            'url_file': 'https://www.unifr.ch/example/download/2005.06.28-5__vzhl.pdf',
             'keywords_id': [3, 72],
+            'attachment': {
+                'eddb_url': 'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
+                'filename_dasch': '3HIj4A8lXjQ-vxGzbejbhxO.pdf',
+                'sha': 'ba7816bf8',
+            },
         }
 
     def test_constructor(self):
@@ -57,7 +62,8 @@ class TestDecision(unittest.TestCase):
 
     def test_eddb_url_file(self):
         decision = Decision(**self.attributes)
-        self.assertEqual(decision.eddb_url_file(), decision.url_file)
+        url_file = 'http://www.u.ch/download/2005.06.28-5__vzhl.pdf'
+        self.assertEqual(decision.attachment.eddb_url, url_file)
 
     def test_fill_iri_values(self):
         decision = Decision(**self.attributes)
@@ -85,7 +91,13 @@ class TestDecision(unittest.TestCase):
         self.assertEqual(decision.desc_fr, Description('Utilisation à des fins privées', 'fr'))
         self.assertEqual(decision.abstract_de, Abstract('A. arbeitet seit 1991', 'de', edit))
         self.assertEqual(decision.abstract_fr, Abstract('Depuis 1991', 'fr', edit))
-        self.assertTrue(decision.url_file.endswith('2005.06.28-5__vzhl.pdf'))
+        self.assertEqual(decision.attachment, Attachment(
+            'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
+            '3HIj4A8lXjQ-vxGzbejbhxO.pdf',
+            'ba7816bf8',
+        ))
+        # self.assertTrue(decision.attachment.eddb_url.startswith('http'))
+        # self.assertTrue(decision.attachment.filename_dasch.endswith('2005.06.28-5__vzhl.pdf'))
         self.assertEqual(decision.keywords_id, KeywordLink([3, 72]))
 
     def test_filename(self):
@@ -94,7 +106,7 @@ class TestDecision(unittest.TestCase):
 
     def test_has_file_field(self):
         decision = Decision(**self.attributes)
-        self.assertTrue(decision.has_file_field())
+        self.assertTrue(decision.has_attachment_field())
 
     def test_label(self):
         decision = Decision(**self.attributes)
@@ -130,7 +142,7 @@ class TestDecision(unittest.TestCase):
         filename_dasch_tmp = payload \
             .get('knora-api:hasDocumentFileValue') \
             .get('knora-api:fileValueHasFilename')
-        self.assertEqual(filename_dasch_tmp, decision.dasch_filename_tmp.value)
+        self.assertEqual(filename_dasch_tmp, decision.attachment.filename_dasch)
 
         desc_de = payload['Datacant:hasDescriptionDe']['knora-api:valueAsString']
         self.assertEqual(desc_de, decision.desc_de.value)
@@ -154,8 +166,8 @@ class TestDecision(unittest.TestCase):
             'desc_fr': 'Une nouvelle description',
             'abstract_de': 'Eine neue Zusammenfassung',
             'abstract_fr': 'Un nouveau résumé',
-            'url_file': self.attributes['url_file'],
             'keywords_id': [3],
+            'attachment': self.attributes['attachment'],
         }
         decision = Decision(**args)
         decision.fill_iri_values(self.dasch_db)
@@ -210,9 +222,13 @@ class TestDecision(unittest.TestCase):
 
     def test_set_filename_dasch(self):
         decision = Decision(**self.attributes)
-        filename_tmp = '4rMCDmxpYAx-DiRuvu3v2rQ.pdf'
-        decision.set_dasch_filename_tmp(filename_tmp)
-        self.assertEqual(decision.dasch_filename_tmp, filename_tmp)
+        eddb_url = 'https://...'
+        filename_dasch = '4rMCDmxpYAx-DiRuvu3v2rQ.pdf'
+        sha = 'ba7816bf8'
+        decision.set_attachment(eddb_url, filename_dasch, sha)
+        self.assertEqual(decision.attachment.eddb_url, eddb_url)
+        self.assertEqual(decision.attachment.filename_dasch, filename_dasch)
+        self.assertEqual(decision.attachment.sha, sha)
 
     def test_resource_type(self):
         decision = Decision(**self.attributes)

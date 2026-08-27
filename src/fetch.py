@@ -110,7 +110,6 @@ def fetch_eddb_decisions_page(date_start, page):
         url_file = 'https://eddb.unifr.ch/noco/{}'.format(j['Attachment'][0]['path'])
         eddb_id = j['Id']
         attributes = {
-            'url_file': url_file,
             'eddb_id': eddb_id,
             'updated_at': j['UpdatedAt'],
             'desc_de': j['DescriptionDE'].strip(),
@@ -120,6 +119,11 @@ def fetch_eddb_decisions_page(date_start, page):
             'date_issued': j['Date'],
             'canton': j['Canton'],
             'keywords_id': [],
+            'attachment': {
+                'eddb_url': url_file,
+                'filename_dasch': None,
+                'sha': None,
+            },
         }
 
         for keyword in j['_nc_m2m_Decisions_Keywords']:

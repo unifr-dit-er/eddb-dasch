@@ -1,9 +1,9 @@
 from fields.datacant import (
     Abstract,
+    Attachment,
     Canton,
     DateGreg,
     Description,
-    DocumentFile,
     EddbId,
     FileName,
     KeywordLink,
@@ -23,9 +23,8 @@ class Decision(Resource):
         desc_fr,
         abstract_de,
         abstract_fr,
-        url_file,
         keywords_id,
-        dasch_filename_tmp=None
+        attachment,
     ):
         '''Initialization of the fields.'''
         if len(keywords_id) == 0:
@@ -38,18 +37,19 @@ class Decision(Resource):
         self.desc_fr = Description(desc_fr, 'fr')
         self.abstract_de = Abstract(abstract_de, 'de', updated_at)
         self.abstract_fr = Abstract(abstract_fr, 'fr', updated_at)
-        self.url_file = url_file
         self.keywords_id = KeywordLink(keywords_id)
-        self.dasch_filename_tmp = DocumentFile(dasch_filename_tmp)
+        self.attachment = Attachment(
+            attachment['eddb_url'], attachment['filename_dasch'], attachment['sha'])
 
     def eddb_filename(self):
-        return self.url_file.split('/')[-1]
+        # return self.url_file.split('/')[-1]
+        return self.attachment.eddb_url.split('/')[-1]
 
     def eddb_url_file(self):
-        return self.url_file
+        return self.attachment.eddb_url
 
     def fields(self):
-        return [
+        ret = [
             self.eddb_id,
             self.date_issued,
             self.canton,
@@ -59,8 +59,11 @@ class Decision(Resource):
             self.abstract_de,
             self.abstract_fr,
             self.keywords_id,
-            self.dasch_filename_tmp,
+            self.attachment,
         ]
+        if self.attachment is not None:
+            ret.append(self.attachment)
+        return ret
 
     def filename(self):
         return '{}_{}.pdf'.format(self.canton.value, self.date_issued.value)
@@ -72,7 +75,7 @@ class Decision(Resource):
         tmp = [dasch_db['keyword'][k_id]['@id'] for k_id in self.keywords_id.value]
         self.keywords_id.set_value_iri(tmp)
 
-    def has_file_field(self):
+    def has_attachment_field(self):
         return True
 
     def has_label_changed(self, label_old):
@@ -89,8 +92,10 @@ class Decision(Resource):
     def resource_type():
         return 'Datacant:Decisions'
 
-    def set_dasch_filename_tmp(self, filename):
-        self.dasch_filename_tmp = DocumentFile(filename)
+    def set_attachment(self, eddb_url, filename_dasch, sha):
+        self.attachment.eddb_url = eddb_url
+        self.attachment.filename_dasch = filename_dasch
+        self.attachment.sha = sha
 
     def to_dict(self):
         return {
@@ -102,8 +107,12 @@ class Decision(Resource):
             'desc_fr': self.desc_fr.value,
             'abstract_de': self.abstract_de.value,
             'abstract_fr': self.abstract_fr.value,
-            'url_file': self.url_file,
             'keywords_id': self.keywords_id.value,
+            'attachment': {
+                'eddb_url': self.attachment.eddb_url,
+                'filename_dasch': self.attachment.filename_dasch,
+                'sha': self.attachment.sha,
+            }
         }
 
     @classmethod

@@ -30,7 +30,7 @@ class Category(Resource):
             self.name_fr,
         ]
 
-    def has_file_field(self):
+    def has_attachment_field(self):
         return False
 
     @staticmethod
@@ -44,7 +44,7 @@ class Category(Resource):
     def resource_type():
         return 'Datacant:Category'
 
-    def set_dasch_filename_tmp(self, filename):
+    def set_attachment(self, eddb_url, filename_dasch, sha):
         raise RuntimeError()
 
     def to_dict(self):

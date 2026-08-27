@@ -34,7 +34,7 @@ class Keyword(Resource):
             self.name_fr,
         ]
 
-    def has_file_field(self):
+    def has_attachment_field(self):
         return False
 
     @staticmethod
@@ -44,7 +44,7 @@ class Keyword(Resource):
     def label(self):
         return self.name_en
 
-    def set_dasch_filename_tmp(self, filename):
+    def set_attachment(self, eddb_url, filename_dasch, sha):
         raise RuntimeError()
 
     @staticmethod

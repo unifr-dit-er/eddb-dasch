@@ -121,9 +121,10 @@ if __name__ == '__main__':
                 url_file = decision_eddb.eddb_url_file()
                 download_file(url_file, filename)
                 response = upload_to_ingest(filename, token)
-                filename_tmp_dasch = response['internalFilename']
-                decision_eddb.set_dasch_filename_tmp(filename_tmp_dasch)
-                checksum = response['checksumOriginal']  # TODO
+                filename_dasch = response['internalFilename']
+                checksum = response['checksumOriginal']
+                print(checksum)
+                decision_eddb.set_attachment(url_file, filename_dasch, checksum)
 
             # Create the resource.
             payload = decision_eddb.payload_create()
@@ -136,6 +137,13 @@ if __name__ == '__main__':
             if payload_label is not None:
                 logger.info(f'Decision (id={did}) label has been updated')
                 response = update_label(payload_label, token)
+
+            # TODO: add a special bloc to compare
+            '''
+            with open(filename, 'rb', buffering=0) as f:
+            tmp = hashlib.file_digest(f, 'sha256').hexdigest()
+            print(tmp)
+            '''
 
             payloads = decision_eddb.payload_update_fields(data_dasch)
             (payload_updates, payload_add, payload_del) = payloads

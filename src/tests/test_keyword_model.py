@@ -47,9 +47,9 @@ class TestKeyword(unittest.TestCase):
         self.assertEqual(new_keyword.name_de, NameDe('Einwilligung'))
         self.assertEqual(new_keyword.name_fr, NameFr('Consentement'))
 
-    def test_has_file_field(self):
+    def test_has_attachment_field(self):
         keyword = Keyword(72, 22, 'Consent', 'Einwilligung', 'Consentement')
-        self.assertFalse(keyword.has_file_field())
+        self.assertFalse(keyword.has_attachment_field())
 
     def test_label(self):
         keyword = Keyword(72, 22, 'Consent', 'Einwilligung', 'Consentement')

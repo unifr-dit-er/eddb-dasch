@@ -73,10 +73,10 @@ class DocumentFileValue(ABC):
     '''Abstract class which shapes the document files.
     '''
 
-    def __init__(self, name, value, licens, cpyright, authors):
+    def __init__(self, name, sha, licens, cpyright, authors):
         '''Initialization of the fields and inputs validation.'''
         self.name = name
-        self.value = value
+        self.value = sha
         self.license = licens
         self.copyright = cpyright
         self.authors = authors
