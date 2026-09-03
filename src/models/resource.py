@@ -11,14 +11,6 @@ class Resource(ABC):
         pass
 
     @abstractmethod
-    def eddb_filename(self):
-        pass
-
-    @abstractmethod
-    def eddb_url_file(self):
-        pass
-
-    @abstractmethod
     def fill_iri_values(self, dasch_db):
         pass
 
@@ -71,14 +63,17 @@ class Resource(ABC):
                     for link in del_links:
                         p = payload.del_link(resource_id, resource_type, link)
                         payloads_del_links.append(p)
+                elif isinstance(field, LinkValue):
+                    field_key = field.name
+                    field_id = dasch_obj[field_key]['@id']
+                    key_value = field.to_knora_update(field_id)
+                    p = payload.add_link(resource_id, resource_type, key_value)
+                    payloads.append(p)
                 else:
                     field_key = field.name
                     field_id = dasch_obj[field_key]['@id']
                     key_value = field.to_knora_update(field_id)
-                    if isinstance(field, LinkValue):
-                        p = payload.add_link(resource_id, resource_type, key_value)
-                    else:
-                        p = payload.update(resource_id, resource_type, key_value)
+                    p = payload.update(resource_id, resource_type, key_value)
                     payloads.append(p)
 
         return payloads, payloads_add_links, payloads_del_links
@@ -95,8 +90,4 @@ class Resource(ABC):
 
     @abstractmethod
     def resource_type():
-        pass
-
-    @abstractmethod
-    def set_attachment(self, eddb_url, filename_dasch, sha):
         pass

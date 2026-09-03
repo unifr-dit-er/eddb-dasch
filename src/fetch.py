@@ -5,7 +5,8 @@ from pathlib import Path
 import requests
 from helper import text_to_xml
 from models.category_model import Category
-from models.decision_model import Decision
+from models.decision_document import DecisionDocument
+from models.decision_summary import DecisionSummary
 from models.keyword_model import Keyword
 
 EDDB_TOKEN = os.environ.get('EDDB_TOKEN')
@@ -75,21 +76,18 @@ def fetch_eddb_keywords():
     return rows
 
 
-def fetch_eddb_decisions(use_cache):
-    decisions = {}
+def fetch_eddb_decisions(data, use_cache):
     date_start = '2000-01-01'
     if use_cache:
         date_start = date.today() - timedelta(days=NB_DAYS_LAST_INGESTION)
     page = 1
     has_next_page = True
     while has_next_page:
-        decisions_page, has_next_page = fetch_eddb_decisions_page(date_start, page)
-        decisions.update(decisions_page)
+        has_next_page = fetch_eddb_decisions_page(data, date_start, page)
         page += 1
-    return decisions
 
 
-def fetch_eddb_decisions_page(date_start, page):
+def fetch_eddb_decisions_page(data, date_start, page):
     url = 'https://eddb.unifr.ch/noco/api/v2/tables/merxbxhfvr09g66/records'
     limit = 25
     offset = (page - 1) * limit
@@ -105,11 +103,21 @@ def fetch_eddb_decisions_page(date_start, page):
     response = r.json()
     has_next_page = not response['pageInfo']['isLastPage']
     judgments = response['list']
-    rows = {}
     for j in judgments:
-        url_file = 'https://eddb.unifr.ch/noco/{}'.format(j['Attachment'][0]['path'])
         eddb_id = j['Id']
-        attributes = {
+        attributes_document = None
+        if j['Attachment'] is not None:
+            url_file = 'https://eddb.unifr.ch/noco/{}'.format(j['Attachment'][0]['path'])
+            attributes_document = {
+                'eddb_id': eddb_id,
+                'eddb_url': url_file,
+                'date_issued': j['Date'],
+                'canton': j['Canton'],
+                'filename_dasch': None,
+                'checksum': None,
+                'updated_at': j['UpdatedAt'],
+            }
+        attributes_summary = {
             'eddb_id': eddb_id,
             'updated_at': j['UpdatedAt'],
             'desc_de': j['DescriptionDE'].strip(),
@@ -119,11 +127,7 @@ def fetch_eddb_decisions_page(date_start, page):
             'date_issued': j['Date'],
             'canton': j['Canton'],
             'keywords_id': [],
-            'attachment': {
-                'eddb_url': url_file,
-                'filename_dasch': None,
-                'sha': None,
-            },
+            'decision_document': None if attributes_document is None else eddb_id,
         }
 
         for keyword in j['_nc_m2m_Decisions_Keywords']:
@@ -131,17 +135,26 @@ def fetch_eddb_decisions_page(date_start, page):
                 # keyword is no longer linked to the decision.
                 continue
             keyword_id = keyword['Keywords_id']
-            attributes['keywords_id'].append(keyword_id)
+            attributes_summary['keywords_id'].append(keyword_id)
 
         try:
-            rows[eddb_id] = Decision(**attributes)
+            decision = DecisionSummary(**attributes_summary)
+            data['decision_summary'][eddb_id] = decision
+            if attributes_document is not None:
+                doc = DecisionDocument(**attributes_document)
+                data['decision_document'][eddb_id] = doc
         except ValueError as err:
-            print(f'Decision {eddb_id}: {err}')
-    return rows, has_next_page
+            print(f'DecisionSummary {eddb_id}: {err}')
+    return has_next_page
 
 
 def fetch_all_eddb(reset_cache):
-    data = {'category': {}, 'keyword': {}, 'decision': {}}
+    data = {
+        'category': {},
+        'keyword': {},
+        'decision_document': {},
+        'decision_summary': {},
+    }
 
     category_file = Path('data/eddb_categories.json')
     if category_file.exists():
@@ -153,15 +166,15 @@ def fetch_all_eddb(reset_cache):
         tmp = json.loads(keyword_file.read_text(encoding='utf-8'))
         data['keyword'] = {int(k): Keyword(**v) for k, v in tmp.items()}
 
-    decision_file = Path('data/eddb_decisions.json')
-    if decision_file.exists():
-        tmp = json.loads(decision_file.read_text(encoding='utf-8'))
-        data['decision'] = {int(k): Decision(**v) for k, v in tmp.items()}
+    decision_summary_file = Path('data/eddb_decisions_summary.json')
+    if decision_summary_file.exists():
+        tmp = json.loads(decision_summary_file.read_text(encoding='utf-8'))
+        data['decision_summary'] = {int(k): DecisionSummary(**v) for k, v in tmp.items()}
 
     # Consider commenting out the lines below while debugging to prevent your
     # (manual) data changes from being overwritten.
     data['category'].update(fetch_eddb_categories())
     data['keyword'].update(fetch_eddb_keywords())
-    use_cache = decision_file.exists() and not reset_cache
-    data['decision'].update(fetch_eddb_decisions(use_cache))
+    use_cache = decision_summary_file.exists() and not reset_cache
+    fetch_eddb_decisions(data, use_cache)
     return data

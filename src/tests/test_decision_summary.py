@@ -3,23 +3,26 @@ import json
 from pathlib import Path
 from fields.datacant import (
     Abstract,
-    Attachment,
     Canton,
     DateGreg,
-    EddbId,
+    DecisionDocumentLink,
     Description,
+    EddbId,
     KeywordLink,
 )
-from models.decision_model import Decision
+from models.decision_summary import DecisionSummary
 
 
-class TestDecision(unittest.TestCase):
+class TestDecisionSummary(unittest.TestCase):
     def setUp(self):
         file = Path('tests/resources/data_dasch.json')
         data = json.loads(file.read_text(encoding='utf-8'))
         data['category'] = {int(k): v for k, v in data['category'].items()}
         data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
-        data['decision'] = {int(k): v for k, v in data['decision'].items()}
+        data['Datacant:DecisionDocument'] = \
+            {int(k): v for k, v in data['Datacant:DecisionDocument'].items()}
+        data['Datacant:DecisionSummary'] = \
+            {int(k): v for k, v in data['Datacant:DecisionSummary'].items()}
         self.dasch_db = data
         self.attributes = {
             'eddb_id': 257,
@@ -31,15 +34,11 @@ class TestDecision(unittest.TestCase):
             'abstract_de': 'A. arbeitet seit 1991',
             'abstract_fr': 'Depuis 1991',
             'keywords_id': [3, 72],
-            'attachment': {
-                'eddb_url': 'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
-                'filename_dasch': '3HIj4A8lXjQ-vxGzbejbhxO.pdf',
-                'sha': 'ba7816bf8',
-            },
+            'decision_document': None,
         }
 
     def test_constructor(self):
-        decision = Decision(**self.attributes)
+        decision = DecisionSummary(**self.attributes)
         edit = self.attributes['updated_at']
         self.assertEqual(decision.eddb_id, EddbId(257))
         self.assertEqual(decision.date_issued, DateGreg('2021-08-12'))
@@ -54,19 +53,10 @@ class TestDecision(unittest.TestCase):
         attributes = self.attributes
         attributes['keywords_id'] = []
         with self.assertRaises(ValueError):
-            Decision(**attributes)
-
-    def test_eddb_filename(self):
-        decision = Decision(**self.attributes)
-        self.assertEqual(decision.eddb_filename(), '2005.06.28-5__vzhl.pdf')
-
-    def test_eddb_url_file(self):
-        decision = Decision(**self.attributes)
-        url_file = 'http://www.u.ch/download/2005.06.28-5__vzhl.pdf'
-        self.assertEqual(decision.attachment.eddb_url, url_file)
+            DecisionSummary(**attributes)
 
     def test_fill_iri_values(self):
-        decision = Decision(**self.attributes)
+        decision = DecisionSummary(**self.attributes)
         decision.fill_iri_values(self.dasch_db)
 
         canton_iri = decision.canton.value_iri
@@ -77,12 +67,14 @@ class TestDecision(unittest.TestCase):
             'http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw',
         ])
 
+        # TODO: add decision_document.
+
     def test_from_and_to_json(self):
-        decision_original = Decision(**self.attributes)
+        decision_original = DecisionSummary(**self.attributes)
         edit = self.attributes['updated_at']
         json_str = json.dumps(decision_original.to_dict())
         json_data = json.loads(json_str)
-        decision = Decision(**json_data)
+        decision = DecisionSummary(**json_data)
         self.assertEqual(decision.eddb_id, EddbId(257))
         self.assertEqual(decision.date_issued, DateGreg('2021-08-12'))
         self.assertEqual(decision.updated_at, '2026-02-20 13:37:26+00:00')
@@ -91,29 +83,15 @@ class TestDecision(unittest.TestCase):
         self.assertEqual(decision.desc_fr, Description('Utilisation à des fins privées', 'fr'))
         self.assertEqual(decision.abstract_de, Abstract('A. arbeitet seit 1991', 'de', edit))
         self.assertEqual(decision.abstract_fr, Abstract('Depuis 1991', 'fr', edit))
-        self.assertEqual(decision.attachment, Attachment(
-            'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
-            '3HIj4A8lXjQ-vxGzbejbhxO.pdf',
-            'ba7816bf8',
-        ))
-        # self.assertTrue(decision.attachment.eddb_url.startswith('http'))
-        # self.assertTrue(decision.attachment.filename_dasch.endswith('2005.06.28-5__vzhl.pdf'))
         self.assertEqual(decision.keywords_id, KeywordLink([3, 72]))
-
-    def test_filename(self):
-        decision = Decision(**self.attributes)
-        self.assertEqual(decision.filename(), 'FR_2021-08-12.pdf')
-
-    def test_has_file_field(self):
-        decision = Decision(**self.attributes)
-        self.assertTrue(decision.has_attachment_field())
+        self.assertEqual(decision.decision_document, DecisionDocumentLink(None))
 
     def test_label(self):
-        decision = Decision(**self.attributes)
+        decision = DecisionSummary(**self.attributes)
         self.assertEqual(decision.label(), 'FR 2021-08-12')
 
     def test_payload_create(self):
-        decision = Decision(**self.attributes)
+        decision = DecisionSummary(**self.attributes)
         decision.fill_iri_values(self.dasch_db)
         payload = decision.payload_create()
         self.assertEqual(payload['@type'], decision.resource_type())
@@ -135,14 +113,6 @@ class TestDecision(unittest.TestCase):
 
         canton = payload['Datacant:hasCantonList']['knora-api:listValueAsListNode']['@id']
         self.assertEqual(canton, 'http://rdfh.ch/lists/0871/fSKvY2DQTCC1imPR1tNS6w')
-
-        filename = payload['Datacant:hasFileName']['knora-api:valueAsString']
-        self.assertEqual(filename, decision.filename())
-
-        filename_dasch_tmp = payload \
-            .get('knora-api:hasDocumentFileValue') \
-            .get('knora-api:fileValueHasFilename')
-        self.assertEqual(filename_dasch_tmp, decision.attachment.filename_dasch)
 
         desc_de = payload['Datacant:hasDescriptionDe']['knora-api:valueAsString']
         self.assertEqual(desc_de, decision.desc_de.value)
@@ -167,14 +137,14 @@ class TestDecision(unittest.TestCase):
             'abstract_de': 'Eine neue Zusammenfassung',
             'abstract_fr': 'Un nouveau résumé',
             'keywords_id': [3],
-            'attachment': self.attributes['attachment'],
+            'decision_document': None,
         }
-        decision = Decision(**args)
+        decision = DecisionSummary(**args)
         decision.fill_iri_values(self.dasch_db)
         (payloads, links_add, links_del) = decision.payload_update_fields(self.dasch_db)
-        self.assertEqual(len(payloads), 7)
-        for i in range(7):
-            self.assertEqual(payloads[i]['@type'], Decision.resource_type())
+        self.assertEqual(len(payloads), 6)
+        for i in range(6):
+            self.assertEqual(payloads[i]['@type'], DecisionSummary.resource_type())
 
         date_issued = payloads[0]['Datacant:hasDateIssued']
         self.assertEqual(date_issued['knora-api:dateValueHasStartYear'], 2021)
@@ -187,19 +157,16 @@ class TestDecision(unittest.TestCase):
         node = payloads[1]['Datacant:hasCantonList']['knora-api:listValueAsListNode']['@id']
         self.assertEqual(node, 'http://rdfh.ch/lists/0871/otPRlr4VSjmqcDXtT13v0w')
 
-        filename = payloads[2]['Datacant:hasFileName']['knora-api:valueAsString']
-        self.assertEqual(filename, 'ZG_2021-08-13.pdf')
-
-        desc_de = payloads[3]['Datacant:hasDescriptionDe']['knora-api:valueAsString']
+        desc_de = payloads[2]['Datacant:hasDescriptionDe']['knora-api:valueAsString']
         self.assertEqual(desc_de, 'Eine neue Beschreibung')
 
-        desc_fr = payloads[4]['Datacant:hasDescriptionFr']['knora-api:valueAsString']
+        desc_fr = payloads[3]['Datacant:hasDescriptionFr']['knora-api:valueAsString']
         self.assertEqual(desc_fr, 'Une nouvelle description')
 
-        abstract_de = payloads[5]['Datacant:hasAbstractDe']['knora-api:textValueAsXml']
+        abstract_de = payloads[4]['Datacant:hasAbstractDe']['knora-api:textValueAsXml']
         self.assertEqual(abstract_de, 'Eine neue Zusammenfassung')
 
-        abstract_fr = payloads[6]['Datacant:hasAbstractFr']['knora-api:textValueAsXml']
+        abstract_fr = payloads[5]['Datacant:hasAbstractFr']['knora-api:textValueAsXml']
         self.assertEqual(abstract_fr, 'Un nouveau résumé')
 
         self.assertEqual(len(links_add), 0)
@@ -211,8 +178,8 @@ class TestDecision(unittest.TestCase):
         self.assertEqual(iri_to_remove, 'http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw')
 
     def test_payload_update_label(self):
-        dasch_obj = self.dasch_db['decision'][257]
-        decision = Decision(**self.attributes)
+        dasch_obj = self.dasch_db['Datacant:DecisionSummary'][257]
+        decision = DecisionSummary(**self.attributes)
         decision.canton = Canton('ZH')
         payload = decision.payload_update_label(dasch_obj)
         last_modif = '2026-08-18T09:56:20.337248959Z'
@@ -220,19 +187,9 @@ class TestDecision(unittest.TestCase):
         self.assertEqual(payload['rdfs:label'], decision.label())
         self.assertEqual(payload['knora-api:lastModificationDate']['@value'], last_modif)
 
-    def test_set_filename_dasch(self):
-        decision = Decision(**self.attributes)
-        eddb_url = 'https://...'
-        filename_dasch = '4rMCDmxpYAx-DiRuvu3v2rQ.pdf'
-        sha = 'ba7816bf8'
-        decision.set_attachment(eddb_url, filename_dasch, sha)
-        self.assertEqual(decision.attachment.eddb_url, eddb_url)
-        self.assertEqual(decision.attachment.filename_dasch, filename_dasch)
-        self.assertEqual(decision.attachment.sha, sha)
-
     def test_resource_type(self):
-        decision = Decision(**self.attributes)
-        self.assertEqual(decision.resource_type(), 'Datacant:Decisions')
+        decision = DecisionSummary(**self.attributes)
+        self.assertEqual(decision.resource_type(), 'Datacant:DecisionSummary')
 
 
 if __name__ == '__main__':

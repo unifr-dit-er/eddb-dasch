@@ -486,7 +486,8 @@
             }
         }
     },
-    "decision": {
+    "Datacant:DecisionDocument": {},
+    "Datacant:DecisionSummary": {
         "207": {
             "knora-api:lastModificationDate": {
                 "@value": "2026-08-18T09:56:18.126091982Z",

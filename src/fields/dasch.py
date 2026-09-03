@@ -171,6 +171,8 @@ class LinkValue(ABC):
         self.value_iri = value_iri
 
     def to_knora(self):
+        if self.value is None:
+            return {}
         if self.value_iri is None:
             raise RuntimeError('Method cannot be called when `iri` is not set')
         return {

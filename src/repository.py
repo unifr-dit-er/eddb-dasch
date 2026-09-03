@@ -4,11 +4,8 @@ import os
 from pathlib import Path
 import requests
 from urllib.parse import quote
-from helper import (
-    is_class_category,
-    is_class_decision,
-    is_class_keyword,
-)
+from models.decision_document import DecisionDocument
+from models.decision_summary import DecisionSummary
 
 
 BATCH_SIZE = 64
@@ -40,9 +37,14 @@ def fetch_all_resources(token, use_cache):
         dasch_db_file = Path('data/data_dasch.json')
         if dasch_db_file.exists():
             data = json.loads(dasch_db_file.read_text(encoding='utf-8'))
-            data['category'] = {int(k): v for k, v in data['category'].items()}
-            data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
-            data['decision'] = {int(k): v for k, v in data['decision'].items()}
+            keys = [
+                'category',
+                'keyword',
+                DecisionDocument.key_in_dasch_db(),
+                DecisionSummary.key_in_dasch_db(),
+            ]
+            for key in keys:
+                data[key] = {int(k): v for k, v in data[key].items()}
             return data
 
     url = f'{DSP_HOST}/v2/metadata/projects/0871/resources?format=json'
@@ -113,7 +115,12 @@ def fetch_token():
 
 
 def build_dasch_data(rows, token):
-    data = {'category': {}, 'keyword': {}, 'decision': {}}
+    data = {
+        'category': {},
+        'keyword': {},
+        DecisionDocument.key_in_dasch_db(): {},
+        DecisionSummary.key_in_dasch_db(): {},
+    }
     iris = []
     for row in rows:
         if 'resourceDeletionDate' not in row:
@@ -122,12 +129,14 @@ def build_dasch_data(rows, token):
         resources = fetch_batch(batch_iri, token)
         for resource in resources:
             id_eddb = resource['Datacant:hasId']['knora-api:intValueAsInt']
-            if is_class_category(resource):
+            if resource['@type'] == 'Datacant:Category':
                 data['category'][id_eddb] = resource
-            elif is_class_keyword(resource):
+            elif resource['@type'] == 'Datacant:Keyword':
                 data['keyword'][id_eddb] = resource
-            elif is_class_decision(resource):
-                data['decision'][id_eddb] = resource
+            elif resource['@type'] == 'Datacant:DecisionDocument':
+                data['Datacant:DecisionDocument'][id_eddb] = resource
+            elif resource['@type'] == 'Datacant:DecisionSummary':
+                data['Datacant:DecisionSummary'][id_eddb] = resource
             else:
                 raise ValueError('Unknown class')
     return data

@@ -31,11 +31,11 @@ class Abstract(RichTextValue):
 
 class Attachment(DocumentFileValue):
 
-    def __init__(self, eddb_url, filename_dasch, sha):
+    def __init__(self, eddb_url, filename_dasch, checksum):
         '''Initialization of the fields.'''
         self.eddb_url = eddb_url
         self.filename_dasch = filename_dasch
-        self.sha = sha
+        self.checksum = checksum
         name = 'knora-api:hasDocumentFileValue'
         value = filename_dasch
         lic = 'http://rdfh.ch/licenses/public-domain'
@@ -78,6 +78,17 @@ class DateGreg(DateValue):
 
     def is_constant(self):
         return False
+
+
+class DecisionDocumentLink(LinkValue):
+
+    def __init__(self, value):
+        '''Initialization of the fields.'''
+        name = f'{PROJECT_NAME}:linkToCategoryValue'
+        LinkValue.__init__(self, name, value)
+
+    def is_constant(self):
+        return True
 
 
 class Description(SimpleTextValue):

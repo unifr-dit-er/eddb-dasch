@@ -11,7 +11,10 @@ class TestKeyword(unittest.TestCase):
         data = json.loads(file.read_text(encoding='utf-8'))
         data['category'] = {int(k): v for k, v in data['category'].items()}
         data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
-        data['decision'] = {int(k): v for k, v in data['decision'].items()}
+        data['Datacant:DecisionDocument'] = \
+            {int(k): v for k, v in data['Datacant:DecisionDocument'].items()}
+        data['Datacant:DecisionSummary'] = \
+            {int(k): v for k, v in data['Datacant:DecisionSummary'].items()}
         self.dasch_db = data
 
     def test_constructor(self):

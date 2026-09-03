@@ -1,17 +1,16 @@
 from fields.datacant import (
     Abstract,
-    Attachment,
     Canton,
     DateGreg,
     Description,
+    DecisionDocumentLink,
     EddbId,
-    FileName,
     KeywordLink,
 )
 from models.resource import Resource
 
 
-class Decision(Resource):
+class DecisionSummary(Resource):
 
     def __init__(
         self,
@@ -24,7 +23,7 @@ class Decision(Resource):
         abstract_de,
         abstract_fr,
         keywords_id,
-        attachment,
+        decision_document,
     ):
         '''Initialization of the fields.'''
         if len(keywords_id) == 0:
@@ -38,35 +37,20 @@ class Decision(Resource):
         self.abstract_de = Abstract(abstract_de, 'de', updated_at)
         self.abstract_fr = Abstract(abstract_fr, 'fr', updated_at)
         self.keywords_id = KeywordLink(keywords_id)
-        self.attachment = Attachment(
-            attachment['eddb_url'], attachment['filename_dasch'], attachment['sha'])
-
-    def eddb_filename(self):
-        # return self.url_file.split('/')[-1]
-        return self.attachment.eddb_url.split('/')[-1]
-
-    def eddb_url_file(self):
-        return self.attachment.eddb_url
+        self.decision_document = DecisionDocumentLink(decision_document)
 
     def fields(self):
-        ret = [
+        return [
             self.eddb_id,
             self.date_issued,
             self.canton,
-            FileName(self.filename()),
             self.desc_de,
             self.desc_fr,
             self.abstract_de,
             self.abstract_fr,
             self.keywords_id,
-            self.attachment,
+            self.decision_document,
         ]
-        if self.attachment is not None:
-            ret.append(self.attachment)
-        return ret
-
-    def filename(self):
-        return '{}_{}.pdf'.format(self.canton.value, self.date_issued.value)
 
     def fill_iri_values(self, dasch_db):
         canton_iri = dasch_db['cantons'][self.canton.value]
@@ -75,27 +59,21 @@ class Decision(Resource):
         tmp = [dasch_db['keyword'][k_id]['@id'] for k_id in self.keywords_id.value]
         self.keywords_id.set_value_iri(tmp)
 
-    def has_attachment_field(self):
-        return True
+        # TODO: add decision_document here.
 
-    def has_label_changed(self, label_old):
-        return self.label() != label_old
+    def has_attachment_field(self):
+        return False
 
     @staticmethod
     def key_in_dasch_db():
-        return 'decision'
+        return 'Datacant:DecisionSummary'
 
     def label(self):
         return '{} {}'.format(self.canton.value, self.date_issued.value)
 
     @staticmethod
     def resource_type():
-        return 'Datacant:Decisions'
-
-    def set_attachment(self, eddb_url, filename_dasch, sha):
-        self.attachment.eddb_url = eddb_url
-        self.attachment.filename_dasch = filename_dasch
-        self.attachment.sha = sha
+        return 'Datacant:DecisionSummary'
 
     def to_dict(self):
         return {
@@ -108,11 +86,7 @@ class Decision(Resource):
             'abstract_de': self.abstract_de.value,
             'abstract_fr': self.abstract_fr.value,
             'keywords_id': self.keywords_id.value,
-            'attachment': {
-                'eddb_url': self.attachment.eddb_url,
-                'filename_dasch': self.attachment.filename_dasch,
-                'sha': self.attachment.sha,
-            }
+            'decision_document': self.decision_document.value,
         }
 
     @classmethod

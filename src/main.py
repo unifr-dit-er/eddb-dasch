@@ -41,8 +41,11 @@ if __name__ == '__main__':
     with open('data/eddb_keywords.json', 'w') as f:
         tmp = {k: v.to_dict() for k, v in data_eddb['keyword'].items()}
         f.write(json.dumps(tmp, indent=4))
-    with open('data/eddb_decisions.json', 'w') as f:
-        tmp = {k: v.to_dict() for k, v in data_eddb['decision'].items()}
+    with open('data/eddb_decisions_document.json', 'w') as f:
+        tmp = {k: v.to_dict() for k, v in data_eddb['decision_document'].items()}
+        f.write(json.dumps(tmp, indent=4))
+    with open('data/eddb_decisions_summary.json', 'w') as f:
+        tmp = {k: v.to_dict() for k, v in data_eddb['decision_summary'].items()}
         f.write(json.dumps(tmp, indent=4))
 
     # Step 1: Update existing categories or add new categories.
@@ -105,18 +108,19 @@ if __name__ == '__main__':
         if is_created or is_updated:
             data_dasch['keyword'][kid] = fetch_resource(resource_id, token)
 
-    # Step 3: Update existing decisions or add new decisions.
-    for did, decision_eddb in data_eddb['decision'].items():
-        decision_dasch = data_dasch['decision'].get(did)
+    # Step 3: Update existing decisions document or add new documents.
+    for did, decision_eddb in data_eddb['decision_document'].items():
+        decision_dasch = data_dasch['Datacant:DecisionDocument'].get(did)
         decision_eddb.fill_iri_values(data_dasch)
         is_created = False
         is_updated = False
 
         if decision_dasch is None:
-            logger.info(f'Add new decision (id={did})')
+            logger.info(f'Add new DecisionDoc (id={did})')
 
-            if decision_eddb.has_file_field():
+            if decision_eddb.has_attachment_field():
                 # Upload to ingest.
+                # TODO move the download to fetch.py
                 filename = decision_eddb.eddb_filename()
                 url_file = decision_eddb.eddb_url_file()
                 download_file(url_file, filename)
@@ -146,6 +150,41 @@ if __name__ == '__main__':
             '''
 
             payloads = decision_eddb.payload_update_fields(data_dasch)
+            (payload_updates, _, _) = payloads
+            for payload in payload_updates:
+                update_value(payload, token)
+
+            is_updated = payload_label is not None or len(payload_updates) != 0
+            if is_updated:
+                logger.info(f'DecisionDoc (id={did}) field(s) have been updated')
+
+        if is_created or is_updated:
+            logger.info(f'DecisionDocument (id={did}) has been updated')
+            data_dasch['Datacant:DecisionDocument'][did] = fetch_resource(resource_id, token)
+
+    # Step 4: Update existing decisions summary or add new summaries.
+    for did, decision_eddb in data_eddb['decision_summary'].items():
+        decision_dasch = data_dasch['Datacant:DecisionSummary'].get(did)
+        decision_eddb.fill_iri_values(data_dasch)
+        is_created = False
+        is_updated = False
+
+        if decision_dasch is None:
+            logger.info(f'Add new DecisionSummary (id={did})')
+
+            # Create the resource.
+            payload = decision_eddb.payload_create()
+            resource_id = create_resource(payload, token)
+            is_created = True
+        else:
+            # Maybe update existing decision.
+            resource_id = decision_dasch['@id']
+            payload_label = decision_eddb.payload_update_label(decision_dasch)
+            if payload_label is not None:
+                logger.info(f'DecisionSummary (id={did}) label has been updated')
+                response = update_label(payload_label, token)
+
+            payloads = decision_eddb.payload_update_fields(data_dasch)
             (payload_updates, payload_add, payload_del) = payloads
             for payload in payload_updates:
                 update_value(payload, token)
@@ -159,19 +198,19 @@ if __name__ == '__main__':
                 len(payload_add) != 0 or \
                 len(payload_del) != 0
             if is_updated:
-                logger.info(f'Decision (id={did}) field(s) have been updated')
+                logger.info(f'DecisionSummary (id={did}) field(s) have been updated')
 
         if is_created or is_updated:
-            logger.info(f'Decision (id={did}) has been updated')
-            data_dasch['decision'][did] = fetch_resource(resource_id, token)
+            logger.info(f'DecisionSummary (id={did}) has been updated')
+            data_dasch['Datacant:DecisionSummary'][did] = fetch_resource(resource_id, token)
 
-    # Step 4: Delete decisions.
+    # Step 5: Delete decisions summary.
     keys_to_remove = []
-    for eddb_id_old, row in data_dasch['decision'].items():
-        if eddb_id_old not in data_eddb['decision']:
-            logger.info(f'Delete decision (id={eddb_id_old})')
+    for eddb_id_old, row in data_dasch['decision_summary'].items():
+        if eddb_id_old not in data_eddb['decision_summary']:
+            logger.info(f'Delete decision summary (id={eddb_id_old})')
             resource_iri = row['@id']
-            resource_type = 'Datacant:Decisions'
+            resource_type = 'Datacant:DecisionSummary'
             last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
             body = body_delete_resource(resource_iri, resource_type, last_modification)
             delete_resource(body, token)
@@ -179,7 +218,9 @@ if __name__ == '__main__':
     for k in keys_to_remove:
         data_dasch['decision'].pop(k)
 
-    # Step 5: Delete keywords.
+    # Step 6: Delete decisions document.
+
+    # Step 7: Delete keywords.
     keys_to_remove = []
     for eddb_id_old, row in data_dasch['keyword'].items():
         if eddb_id_old not in data_eddb['keyword']:
@@ -193,7 +234,7 @@ if __name__ == '__main__':
     for k in keys_to_remove:
         data_dasch['keyword'].pop(k)
 
-    # Step 6: Delete categories.
+    # Step 8: Delete categories.
     keys_to_remove = []
     for eddb_id_old, row in data_dasch['category'].items():
         if eddb_id_old not in data_eddb['category']:
