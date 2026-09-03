@@ -1,5 +1,6 @@
 from fields.datacant import (
     Attachment,
+    Checksum,
     EddbId,
     FileName,
 )
@@ -23,6 +24,7 @@ class DecisionDocument(Resource):
         self.updated_at = updated_at
         self.date_issued = date_issued
         self.canton = canton
+        self.checksum = Checksum(checksum)
         self.attachment = Attachment(eddb_url, filename_dasch, checksum)
 
     def eddb_filename(self):
@@ -37,6 +39,7 @@ class DecisionDocument(Resource):
             self.eddb_id,
             FileName(self.filename()),
             self.attachment,
+            self.checksum,
         ]
 
     def filename(self):
@@ -61,8 +64,9 @@ class DecisionDocument(Resource):
 
     def set_attachment(self, eddb_url, filename_dasch, checksum):
         self.attachment.eddb_url = eddb_url
-        self.attachment.filename_dasch = filename_dasch
+        self.attachment.value = filename_dasch
         self.attachment.checksum = checksum
+        self.checksum.value = checksum
 
     def to_dict(self):
         return {

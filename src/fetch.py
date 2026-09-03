@@ -139,10 +139,10 @@ def fetch_eddb_decisions_page(data, date_start, page):
 
         try:
             decision = DecisionSummary(**attributes_summary)
-            data['decision_summary'][eddb_id] = decision
+            data[DecisionSummary.resource_type()][eddb_id] = decision
             if attributes_document is not None:
                 doc = DecisionDocument(**attributes_document)
-                data['decision_document'][eddb_id] = doc
+                data[DecisionDocument.resource_type()][eddb_id] = doc
         except ValueError as err:
             print(f'DecisionSummary {eddb_id}: {err}')
     return has_next_page
@@ -152,8 +152,8 @@ def fetch_all_eddb(reset_cache):
     data = {
         'category': {},
         'keyword': {},
-        'decision_document': {},
-        'decision_summary': {},
+        DecisionDocument.resource_type(): {},
+        DecisionSummary.resource_type(): {},
     }
 
     category_file = Path('data/eddb_categories.json')
@@ -169,7 +169,8 @@ def fetch_all_eddb(reset_cache):
     decision_summary_file = Path('data/eddb_decisions_summary.json')
     if decision_summary_file.exists():
         tmp = json.loads(decision_summary_file.read_text(encoding='utf-8'))
-        data['decision_summary'] = {int(k): DecisionSummary(**v) for k, v in tmp.items()}
+        data[DecisionSummary.resource_type()] = \
+            {int(k): DecisionSummary(**v) for k, v in tmp.items()}
 
     # Consider commenting out the lines below while debugging to prevent your
     # (manual) data changes from being overwritten.
