@@ -166,8 +166,12 @@ def fetch_all_eddb(reset_cache):
         tmp = json.loads(keyword_file.read_text(encoding='utf-8'))
         data['keyword'] = {int(k): Keyword(**v) for k, v in tmp.items()}
 
+    decision_document_file = Path('data/eddb_decisions_document.json')
     decision_summary_file = Path('data/eddb_decisions_summary.json')
-    if decision_summary_file.exists():
+    if decision_document_file.exists() and decision_summary_file.exists():
+        tmp = json.loads(decision_document_file.read_text(encoding='utf-8'))
+        data[DecisionDocument.resource_type()] = \
+            {int(k): DecisionDocument(**v) for k, v in tmp.items()}
         tmp = json.loads(decision_summary_file.read_text(encoding='utf-8'))
         data[DecisionSummary.resource_type()] = \
             {int(k): DecisionSummary(**v) for k, v in tmp.items()}

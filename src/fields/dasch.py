@@ -48,7 +48,8 @@ class DateValue(ABC):
             }
         }
 
-    def to_knora_update(self, field_id):
+    def to_knora_update(self, dasch_obj):
+        field_id = dasch_obj[self.name]['@id']
         year = int(self.value[:4])
         month = int(self.value[5:7])
         day = int(self.value[8:])
@@ -91,8 +92,10 @@ class DocumentFileValue(ABC):
         pass
 
     def is_updated(self, dasch_obj):
-        # TODO: check with hash instead
-        return False
+        value_old = dasch_obj \
+            .get('Datacant:hasChecksum', {}) \
+            .get('knora-api:valueAsString')
+        return self.checksum != value_old
 
     def to_knora(self):
         return {
@@ -105,7 +108,7 @@ class DocumentFileValue(ABC):
             }
         }
 
-    def to_knora_update(self, field_id):
+    def to_knora_update(self, dasch_obj):
         raise NotImplementedError()
 
 
@@ -137,7 +140,7 @@ class IntValue(ABC):
             }
         }
 
-    def to_knora_update(self, field_id):
+    def to_knora_update(self, dasch_obj):
         raise NotImplementedError()
 
 
@@ -184,9 +187,11 @@ class LinkValue(ABC):
             }
         }
 
-    def to_knora_update(self, field_id):
+    def to_knora_update(self, dasch_obj):
+        # TODO: handle optional field.
         if self.value_iri is None:
             raise RuntimeError('Method cannot be called when `iri` is not set')
+        field_id = dasch_obj[self.name]['@id']
         return {
             self.name: {
                 '@id': field_id,
@@ -223,7 +228,12 @@ class LinksValue(ABC):
         if not is_list:
             # When only a single keyword
             links = [links]
-        links_old = [li['knora-api:linkValueHasTarget']['@id'] for li in links]
+        links_old = []
+        for link in links:
+            node = link.get('knora-api:linkValueHasTarget')
+            if node is None:
+                node = link.get('knora-api:linkValueHasTargetIri')
+            links_old.append(node['@id'])
         return set(self.value_iri) != set(links_old)
 
     def set_value_iri(self, value_iri):
@@ -316,9 +326,10 @@ class ListValue(ABC):
             }
         }
 
-    def to_knora_update(self, field_id):
+    def to_knora_update(self, dasch_obj):
         if self.value_iri is None:
             raise RuntimeError('Method cannot be called when `iri` is not set')
+        field_id = dasch_obj[self.name]['@id']
         return {
             self.name: {
                 '@id': field_id,
@@ -367,7 +378,8 @@ class RichTextValue(ABC):
             }
         }
 
-    def to_knora_update(self, field_id):
+    def to_knora_update(self, dasch_obj):
+        field_id = dasch_obj[self.name]['@id']
         return {
             self.name: {
                 '@id': field_id,
@@ -411,7 +423,8 @@ class SimpleTextValue(ABC):
             }
         }
 
-    def to_knora_update(self, field_id):
+    def to_knora_update(self, dasch_obj):
+        field_id = dasch_obj[self.name]['@id']
         return {
             self.name: {
                 '@id': field_id,

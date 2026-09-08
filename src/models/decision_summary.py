@@ -59,7 +59,10 @@ class DecisionSummary(Resource):
         tmp = [dasch_db['keyword'][k_id]['@id'] for k_id in self.keywords_id.value]
         self.keywords_id.set_value_iri(tmp)
 
-        # TODO: add decision_document here.
+        doc_iri = dasch_db['Datacant:DecisionDocument'] \
+            .get(self.eddb_id.value, {}) \
+            .get('@id')
+        self.decision_document.set_value_iri(doc_iri)
 
     def has_attachment_field(self):
         return False

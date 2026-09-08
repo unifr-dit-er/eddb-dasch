@@ -52,7 +52,7 @@ class Canton(ListValue):
     def __init__(self, value):
         '''Initialization of the fields.'''
         name = f'{PROJECT_NAME}:hasCantonList'
-        LinkValue.__init__(self, name, value)
+        ListValue.__init__(self, name, value)
 
     def is_constant(self):
         return False
@@ -96,7 +96,7 @@ class DecisionDocumentLink(LinkValue):
 
     def __init__(self, value):
         '''Initialization of the fields.'''
-        name = f'{PROJECT_NAME}:linkToCategoryValue'
+        name = f'{PROJECT_NAME}:linkToDocumentValue'
         LinkValue.__init__(self, name, value)
 
     def is_constant(self):

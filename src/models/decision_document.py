@@ -64,7 +64,13 @@ class DecisionDocument(Resource):
 
     def set_attachment(self, eddb_url, filename_dasch, checksum):
         self.attachment.eddb_url = eddb_url
+        self.attachment.filename_dasch = filename_dasch
         self.attachment.value = filename_dasch
+        self.attachment.checksum = checksum
+        self.checksum.value = checksum
+
+    def set_checksum(self, checksum):
+        # TODO: remove this function and the field `checksum` of this class.
         self.attachment.checksum = checksum
         self.checksum.value = checksum
 

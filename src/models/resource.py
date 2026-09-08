@@ -64,15 +64,11 @@ class Resource(ABC):
                         p = payload.del_link(resource_id, resource_type, link)
                         payloads_del_links.append(p)
                 elif isinstance(field, LinkValue):
-                    field_key = field.name
-                    field_id = dasch_obj[field_key]['@id']
-                    key_value = field.to_knora_update(field_id)
+                    key_value = field.to_knora_update(dasch_obj)
                     p = payload.add_link(resource_id, resource_type, key_value)
                     payloads.append(p)
                 else:
-                    field_key = field.name
-                    field_id = dasch_obj[field_key]['@id']
-                    key_value = field.to_knora_update(field_id)
+                    key_value = field.to_knora_update(dasch_obj)
                     p = payload.update(resource_id, resource_type, key_value)
                     payloads.append(p)
 

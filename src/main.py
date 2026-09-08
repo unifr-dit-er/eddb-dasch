@@ -1,9 +1,11 @@
 from dotenv import load_dotenv
 load_dotenv()
 
+import hashlib
 import json
 import logging
 import os
+from pathlib import Path
 from fetch import download_file, fetch_all_eddb
 from models.decision_document import DecisionDocument
 from models.decision_summary import DecisionSummary
@@ -52,7 +54,27 @@ if __name__ == '__main__':
         tmp = {k: v.to_dict() for k, v in data_eddb[key].items()}
         f.write(json.dumps(tmp, indent=4))
 
-    # Step 0: Download new files.
+    # Handle the attachments.
+    key_in_db = DecisionDocument.resource_type()
+    for did, doc_eddb in data_eddb[key_in_db].items():
+        doc_dasch = data_dasch[key_in_db].get(did)
+        if doc_dasch is None:
+            # New document.
+            filename = doc_eddb.eddb_filename()
+            url_file = doc_eddb.eddb_url_file()
+            download_file(url_file, filename)
+            path_to_file = Path('data/documents') / filename
+            with open(path_to_file, 'rb', buffering=0) as f:
+                checksum = hashlib.file_digest(f, 'sha256').hexdigest()
+                doc_eddb.set_attachment(url_file, None, checksum)
+        else:
+            # Check if it has changed.
+            updated_at = doc_eddb.updated_at
+            checksum_old = doc_dasch['Datacant:hasChecksum']['knora-api:valueAsString']
+            doc_eddb.set_checksum(checksum_old)
+            # TODO: we don't check if `last_updated` is more than 60 days ago.
+            if updated_at and False:
+                pass
 
     # Step 1: Update existing categories or add new categories.
     for cid, category_eddb in data_eddb['category'].items():
@@ -116,6 +138,51 @@ if __name__ == '__main__':
 
     # Step 3: Update existing decisions document or add new documents.
     key_in_db = DecisionDocument.resource_type()
+    for did, doc_eddb in data_eddb[key_in_db].items():
+        decision_dasch = data_dasch[key_in_db].get(did)
+        doc_eddb.fill_iri_values(data_dasch)
+        is_created = False
+        is_updated = False
+
+        if decision_dasch is None:
+            logger.info(f'Add new DecisionDoc (id={did})')
+
+            if doc_eddb.has_attachment_field():
+                # Upload to ingest.
+                # TODO: move this code to `fetch.py`
+                filename = doc_eddb.eddb_filename()
+                response = upload_to_ingest(filename, token)
+                filename_dasch = response['internalFilename']
+                doc_eddb.attachment.value = filename_dasch
+
+            # Create the resource.
+            payload = doc_eddb.payload_create()
+            resource_id = create_resource(payload, token)
+            is_created = True
+        else:
+            # Maybe update existing decision.
+            resource_id = decision_dasch['@id']
+            payload_label = doc_eddb.payload_update_label(decision_dasch)
+            if payload_label is not None:
+                logger.info(f'Decision (id={did}) label has been updated')
+                response = update_label(payload_label, token)
+
+            # TODO: add a special bloc to compare attachment.
+
+            payloads = doc_eddb.payload_update_fields(data_dasch)
+            (payload_updates, _, _) = payloads
+            for payload in payload_updates:
+                update_value(payload, token)
+
+            is_updated = payload_label is not None or len(payload_updates) != 0
+            if is_updated:
+                logger.info(f'DecisionDoc (id={did}) field(s) have been updated')
+
+        if is_created or is_updated:
+            data_dasch['Datacant:DecisionDocument'][did] = fetch_resource(resource_id, token)
+
+    # Step 4: Update existing decisions summary or add new summaries.
+    key_in_db = DecisionSummary.resource_type()
     for did, decision_eddb in data_eddb[key_in_db].items():
         decision_dasch = data_dasch[key_in_db].get(did)
         decision_eddb.fill_iri_values(data_dasch)
@@ -123,18 +190,7 @@ if __name__ == '__main__':
         is_updated = False
 
         if decision_dasch is None:
-            logger.info(f'Add new DecisionDoc (id={did})')
-
-            if decision_eddb.has_attachment_field():
-                # Upload to ingest.
-                # TODO move the download to fetch.py
-                filename = decision_eddb.eddb_filename()
-                url_file = decision_eddb.eddb_url_file()
-                download_file(url_file, filename)
-                response = upload_to_ingest(filename, token)
-                filename_dasch = response['internalFilename']
-                checksum = response['checksumOriginal']
-                decision_eddb.set_attachment(url_file, filename_dasch, checksum)
+            logger.info(f'Add new DecisionSummary (id={did})')
 
             # Create the resource.
             payload = decision_eddb.payload_create()
@@ -145,65 +201,27 @@ if __name__ == '__main__':
             resource_id = decision_dasch['@id']
             payload_label = decision_eddb.payload_update_label(decision_dasch)
             if payload_label is not None:
-                logger.info(f'Decision (id={did}) label has been updated')
+                logger.info(f'DecisionSummary (id={did}) label has been updated')
                 response = update_label(payload_label, token)
 
-            # TODO: add a special bloc to compare
-
             payloads = decision_eddb.payload_update_fields(data_dasch)
-            (payload_updates, _, _) = payloads
+            (payload_updates, payload_add, payload_del) = payloads
             for payload in payload_updates:
                 update_value(payload, token)
+            for payload in payload_add:
+                create_value(payload, token)
+            for payload in payload_del:
+                delete_value(payload, token)
 
-            is_updated = payload_label is not None or len(payload_updates) != 0
+            is_updated = payload_label is not None or \
+                len(payload_updates) != 0 or \
+                len(payload_add) != 0 or \
+                len(payload_del) != 0
             if is_updated:
-                logger.info(f'DecisionDoc (id={did}) field(s) have been updated')
+                logger.info(f'DecisionSummary (id={did}) field(s) have been updated')
 
         if is_created or is_updated:
-            logger.info(f'DecisionDocument (id={did}) has been updated')
-            data_dasch['Datacant:DecisionDocument'][did] = fetch_resource(resource_id, token)
-
-    # Step 4: Update existing decisions summary or add new summaries.
-    # for did, decision_eddb in data_eddb['decision_summary'].items():
-    #     decision_dasch = data_dasch['Datacant:DecisionSummary'].get(did)
-    #     decision_eddb.fill_iri_values(data_dasch)
-    #     is_created = False
-    #     is_updated = False
-
-    #     if decision_dasch is None:
-    #         logger.info(f'Add new DecisionSummary (id={did})')
-
-    #         # Create the resource.
-    #         payload = decision_eddb.payload_create()
-    #         resource_id = create_resource(payload, token)
-    #         is_created = True
-    #     else:
-    #         # Maybe update existing decision.
-    #         resource_id = decision_dasch['@id']
-    #         payload_label = decision_eddb.payload_update_label(decision_dasch)
-    #         if payload_label is not None:
-    #             logger.info(f'DecisionSummary (id={did}) label has been updated')
-    #             response = update_label(payload_label, token)
-
-    #         payloads = decision_eddb.payload_update_fields(data_dasch)
-    #         (payload_updates, payload_add, payload_del) = payloads
-    #         for payload in payload_updates:
-    #             update_value(payload, token)
-    #         for payload in payload_add:
-    #             create_value(payload, token)
-    #         for payload in payload_del:
-    #             delete_value(payload, token)
-
-    #         is_updated = payload_label is not None or \
-    #             len(payload_updates) != 0 or \
-    #             len(payload_add) != 0 or \
-    #             len(payload_del) != 0
-    #         if is_updated:
-    #             logger.info(f'DecisionSummary (id={did}) field(s) have been updated')
-
-    #     if is_created or is_updated:
-    #         logger.info(f'DecisionSummary (id={did}) has been updated')
-    #         data_dasch['Datacant:DecisionSummary'][did] = fetch_resource(resource_id, token)
+            data_dasch[key_in_db][did] = fetch_resource(resource_id, token)
 
     # Step 5: Delete decisions summary.
     keys_to_remove = []

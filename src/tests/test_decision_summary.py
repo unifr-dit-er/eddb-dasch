@@ -67,7 +67,8 @@ class TestDecisionSummary(unittest.TestCase):
             'http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw',
         ])
 
-        # TODO: add decision_document.
+        self.assertIsNone(decision.decision_document.value)
+        self.assertIsNone(decision.decision_document.value_iri)
 
     def test_from_and_to_json(self):
         decision_original = DecisionSummary(**self.attributes)
