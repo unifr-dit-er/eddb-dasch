@@ -275,16 +275,16 @@ class LinksValue(ABC):
                     }
                 }
             })
-        for link_iri in link_iri_to_del:
-            del_list.append({
-                self.name: {
-                    '@id': link_iri,
-                    '@type': 'knora-api:LinkValue',
-                    'knora-api:linkValueHasTargetIri': {
-                      '@id': link_iri
+        for link in links:
+            link_iri = link['@id']
+            target_iri = link['knora-api:linkValueHasTarget']['@id']
+            if target_iri in link_iri_to_del:
+                del_list.append({
+                    self.name: {
+                        '@id': link_iri,
+                        '@type': 'knora-api:LinkValue',
                     }
-                }
-            })
+                })
         return add_list, del_list
 
 

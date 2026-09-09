@@ -173,10 +173,8 @@ class TestDecisionSummary(unittest.TestCase):
         self.assertEqual(len(links_add), 0)
         self.assertEqual(len(links_del), 1)
         iri_to_remove = links_del[0] \
-            .get('Datacant:linkToKeywordValue') \
-            .get('knora-api:linkValueHasTargetIri') \
             .get('@id')
-        self.assertEqual(iri_to_remove, 'http://rdfh.ch/0871/qRMfCDGwToWQnbEouGVIaw')
+        self.assertEqual(iri_to_remove, 'http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg')
 
     def test_payload_update_label(self):
         dasch_obj = self.dasch_db['Datacant:DecisionSummary'][257]
