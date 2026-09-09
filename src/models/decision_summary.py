@@ -53,10 +53,10 @@ class DecisionSummary(Resource):
         ]
 
     def fill_iri_values(self, dasch_db):
-        canton_iri = dasch_db['cantons'][self.canton.value]
+        canton_iri = dasch_db['Datacant:Cantons'][self.canton.value]
         self.canton.set_value_iri(canton_iri)
 
-        tmp = [dasch_db['keyword'][k_id]['@id'] for k_id in self.keywords_id.value]
+        tmp = [dasch_db['Datacant:Keyword'][k_id]['@id'] for k_id in self.keywords_id.value]
         self.keywords_id.set_value_iri(tmp)
 
         doc_iri = dasch_db['Datacant:DecisionDocument'] \
@@ -66,10 +66,6 @@ class DecisionSummary(Resource):
 
     def has_attachment_field(self):
         return False
-
-    @staticmethod
-    def key_in_dasch_db():
-        return 'Datacant:DecisionSummary'
 
     def label(self):
         return '{} {}'.format(self.canton.value, self.date_issued.value)

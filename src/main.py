@@ -7,9 +7,11 @@ import logging
 import os
 from pathlib import Path
 from fetch import download_file, fetch_all_eddb
+from models.category_model import Category
 from models.decision_document import DecisionDocument
 from models.decision_summary import DecisionSummary
-from payload import body_delete_resource
+from models.keyword_model import Keyword
+import payload as pload
 from repository import (
     fetch_all_resources,
     fetch_resource,
@@ -40,10 +42,12 @@ if __name__ == '__main__':
 
     data_eddb = fetch_all_eddb(reset_cache=False)
     with open('data/eddb_categories.json', 'w') as f:
-        tmp = {k: v.to_dict() for k, v in data_eddb['category'].items()}
+        key = Category.resource_type()
+        tmp = {k: v.to_dict() for k, v in data_eddb[key].items()}
         f.write(json.dumps(tmp, indent=4))
     with open('data/eddb_keywords.json', 'w') as f:
-        tmp = {k: v.to_dict() for k, v in data_eddb['keyword'].items()}
+        key = Keyword.resource_type()
+        tmp = {k: v.to_dict() for k, v in data_eddb[key].items()}
         f.write(json.dumps(tmp, indent=4))
     with open('data/eddb_decisions_document.json', 'w') as f:
         key = DecisionDocument.resource_type()
@@ -77,8 +81,9 @@ if __name__ == '__main__':
                 pass
 
     # Step 1: Update existing categories or add new categories.
-    for cid, category_eddb in data_eddb['category'].items():
-        category_dasch = data_dasch['category'].get(cid)
+    key_in_db = Category.resource_type()
+    for cid, category_eddb in data_eddb[key_in_db].items():
+        category_dasch = data_dasch[key_in_db].get(cid)
         is_created = False
         is_updated = False
         if category_dasch is None:
@@ -103,11 +108,12 @@ if __name__ == '__main__':
                 resource_id = category_dasch['@id']
                 logger.info(f'Category (id={cid}) field(s) have been updated')
         if is_created or is_updated:
-            data_dasch['category'][cid] = fetch_resource(resource_id, token)
+            data_dasch[key_in_db][cid] = fetch_resource(resource_id, token)
 
     # Step 2: Update existing keywords or add new keywords.
-    for kid, keyword_eddb in data_eddb['keyword'].items():
-        keyword_dasch = data_dasch['keyword'].get(kid)
+    key_in_db = Keyword.resource_type()
+    for kid, keyword_eddb in data_eddb[key_in_db].items():
+        keyword_dasch = data_dasch[key_in_db].get(kid)
         keyword_eddb.fill_iri_values(data_dasch)
         is_created = False
         is_updated = False
@@ -134,7 +140,7 @@ if __name__ == '__main__':
                 logger.info(f'keyword (id={kid}) field(s) have been updated')
 
         if is_created or is_updated:
-            data_dasch['keyword'][kid] = fetch_resource(resource_id, token)
+            data_dasch[key_in_db][kid] = fetch_resource(resource_id, token)
 
     # Step 3: Update existing decisions document or add new documents.
     key_in_db = DecisionDocument.resource_type()
@@ -179,7 +185,7 @@ if __name__ == '__main__':
                 logger.info(f'DecisionDoc (id={did}) field(s) have been updated')
 
         if is_created or is_updated:
-            data_dasch['Datacant:DecisionDocument'][did] = fetch_resource(resource_id, token)
+            data_dasch[key_in_db][did] = fetch_resource(resource_id, token)
 
     # Step 4: Update existing decisions summary or add new summaries.
     key_in_db = DecisionSummary.resource_type()
@@ -223,61 +229,25 @@ if __name__ == '__main__':
         if is_created or is_updated:
             data_dasch[key_in_db][did] = fetch_resource(resource_id, token)
 
-    # Step 5: Delete decisions summary.
-    keys_to_remove = []
-    resource_type = 'Datacant:DecisionSummary'
-    for eddb_id_old, row in data_dasch[resource_type].items():
-        if eddb_id_old not in data_eddb[resource_type]:
-            logger.info(f'Delete decision summary (id={eddb_id_old})')
-            resource_iri = row['@id']
-            last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
-            body = body_delete_resource(resource_iri, resource_type, last_modification)
-            delete_resource(body, token)
-            keys_to_remove.append(eddb_id_old)
-    for k in keys_to_remove:
-        data_dasch[resource_type].pop(k)
-
-    # Step 6: Delete decisions document.
-    keys_to_remove = []
-    resource_type = 'Datacant:DecisionDocument'
-    for eddb_id_old, row in data_dasch[resource_type].items():
-        if eddb_id_old not in data_eddb[resource_type]:
-            logger.info(f'Delete decision document (id={eddb_id_old})')
-            resource_iri = row['@id']
-            last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
-            body = body_delete_resource(resource_iri, resource_type, last_modification)
-            delete_resource(body, token)
-            keys_to_remove.append(eddb_id_old)
-    for k in keys_to_remove:
-        data_dasch[resource_type].pop(k)
-
-    # Step 7: Delete keywords.
-    keys_to_remove = []
-    resource_type = 'Datacant:Keyword'
-    for eddb_id_old, row in data_dasch['keyword'].items():
-        if eddb_id_old not in data_eddb['keyword']:
-            logger.info(f'Delete keyword (id={eddb_id_old})')
-            resource_iri = row['@id']
-            last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
-            body = body_delete_resource(resource_iri, resource_type, last_modification)
-            delete_resource(body, token)
-            keys_to_remove.append(eddb_id_old)
-    for k in keys_to_remove:
-        data_dasch['keyword'].pop(k)
-
-    # Step 8: Delete categories.
-    keys_to_remove = []
-    resource_type = 'Datacant:Category'
-    for eddb_id_old, row in data_dasch['category'].items():
-        if eddb_id_old not in data_eddb['category']:
-            logger.info(f'Delete category (id={eddb_id_old})')
-            resource_iri = row['@id']
-            last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
-            body = body_delete_resource(resource_iri, resource_type, last_modification)
-            delete_resource(body, token)
-            keys_to_remove.append(eddb_id_old)
-    for k in keys_to_remove:
-        data_dasch['category'].pop(k)
+    # Step 5: Delete resources if not found in EDDB.
+    resource_types = [
+        DecisionSummary.resource_type(),
+        DecisionDocument.resource_type(),
+        Keyword.resource_type(),
+        Category.resource_type(),
+    ]
+    for resource_type in resource_types:
+        keys_to_remove = []
+        for eddb_id_old, row in data_dasch[resource_type].items():
+            if eddb_id_old not in data_eddb[resource_type]:
+                logger.info(f'Delete {resource_type} (id={eddb_id_old})')
+                resource_iri = row['@id']
+                last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
+                body = pload.delete(resource_iri, resource_type, last_modification)
+                delete_resource(body, token)
+                keys_to_remove.append(eddb_id_old)
+        for k in keys_to_remove:
+            data_dasch[resource_type].pop(k)
 
     # Step 7: Save data in file.
     with open('data/data_dasch.json', 'w') as f:

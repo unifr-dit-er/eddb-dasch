@@ -9,8 +9,10 @@ class TestDecisionDocument(unittest.TestCase):
     def setUp(self):
         file = Path('tests/resources/data_dasch.json')
         data = json.loads(file.read_text(encoding='utf-8'))
-        data['category'] = {int(k): v for k, v in data['category'].items()}
-        data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
+        data['Datacant:Category'] = \
+            {int(k): v for k, v in data['Datacant:Category'].items()}
+        data['Datacant:Keyword'] = \
+            {int(k): v for k, v in data['Datacant:Keyword'].items()}
         data['Datacant:DecisionDocument'] = \
             {int(k): v for k, v in data['Datacant:DecisionDocument'].items()}
         data['Datacant:DecisionSummary'] = \

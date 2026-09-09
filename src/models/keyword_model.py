@@ -1,4 +1,5 @@
 from models.resource import Resource
+from models.category_model import Category
 from fields.datacant import CategoryLink, EddbId, NameDe, NameFr
 
 
@@ -17,7 +18,8 @@ class Keyword(Resource):
 
     def fill_iri_values(self, dasch_db):
         category = self.category_id
-        value_iri = dasch_db['category'][category.value]['@id']
+        category_type = Category.resource_type()
+        value_iri = dasch_db[category_type][category.value]['@id']
         category.set_value_iri(value_iri)
 
     def fields(self):
@@ -30,10 +32,6 @@ class Keyword(Resource):
 
     def has_attachment_field(self):
         return False
-
-    @staticmethod
-    def key_in_dasch_db():
-        return 'keyword'
 
     def label(self):
         return self.name_en

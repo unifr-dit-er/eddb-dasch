@@ -51,10 +51,6 @@ class DecisionDocument(Resource):
     def has_attachment_field(self):
         return True
 
-    @staticmethod
-    def key_in_dasch_db():
-        return 'Datacant:DecisionDocument'
-
     def label(self):
         return '{} {}'.format(self.canton, self.date_issued)
 

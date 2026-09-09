@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 import requests
 from urllib.parse import quote
+from models.category_model import Category
+from models.keyword_model import Keyword
 from models.decision_document import DecisionDocument
 from models.decision_summary import DecisionSummary
 
@@ -38,10 +40,10 @@ def fetch_all_resources(token, use_cache):
         if dasch_db_file.exists():
             data = json.loads(dasch_db_file.read_text(encoding='utf-8'))
             keys = [
-                'category',
-                'keyword',
-                DecisionDocument.key_in_dasch_db(),
-                DecisionSummary.key_in_dasch_db(),
+                Category.resource_type(),
+                Keyword.resource_type(),
+                DecisionDocument.resource_type(),
+                DecisionSummary.resource_type(),
             ]
             for key in keys:
                 data[key] = {int(k): v for k, v in data[key].items()}
@@ -58,7 +60,7 @@ def fetch_all_resources(token, use_cache):
     rows = response.json()
     data = build_dasch_data(rows, token)
 
-    data['cantons'] = fetch_controlled_vocabulary(token)
+    data['Datacant:Cantons'] = fetch_controlled_vocabulary(token)
     return data
 
 
@@ -116,10 +118,10 @@ def fetch_token():
 
 def build_dasch_data(rows, token):
     data = {
-        'category': {},
-        'keyword': {},
-        DecisionDocument.key_in_dasch_db(): {},
-        DecisionSummary.key_in_dasch_db(): {},
+        Category.resource_type(): {},
+        Keyword.resource_type(): {},
+        DecisionDocument.resource_type(): {},
+        DecisionSummary.resource_type(): {},
     }
     iris = []
     for row in rows:
@@ -130,9 +132,9 @@ def build_dasch_data(rows, token):
         for resource in resources:
             id_eddb = resource['Datacant:hasId']['knora-api:intValueAsInt']
             if resource['@type'] == 'Datacant:Category':
-                data['category'][id_eddb] = resource
+                data['Datacant:Category'][id_eddb] = resource
             elif resource['@type'] == 'Datacant:Keyword':
-                data['keyword'][id_eddb] = resource
+                data['Datacant:Keyword'][id_eddb] = resource
             elif resource['@type'] == 'Datacant:DecisionDocument':
                 data['Datacant:DecisionDocument'][id_eddb] = resource
             elif resource['@type'] == 'Datacant:DecisionSummary':

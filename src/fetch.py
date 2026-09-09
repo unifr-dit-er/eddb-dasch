@@ -150,8 +150,8 @@ def fetch_eddb_decisions_page(data, date_start, page):
 
 def fetch_all_eddb(reset_cache):
     data = {
-        'category': {},
-        'keyword': {},
+        Category.resource_type(): {},
+        Keyword.resource_type(): {},
         DecisionDocument.resource_type(): {},
         DecisionSummary.resource_type(): {},
     }
@@ -159,12 +159,12 @@ def fetch_all_eddb(reset_cache):
     category_file = Path('data/eddb_categories.json')
     if category_file.exists():
         tmp = json.loads(category_file.read_text(encoding='utf-8'))
-        data['category'] = {int(k): Category(**v) for k, v in tmp.items()}
+        data['Datacant:Category'] = {int(k): Category(**v) for k, v in tmp.items()}
 
     keyword_file = Path('data/eddb_keywords.json')
     if keyword_file.exists():
         tmp = json.loads(keyword_file.read_text(encoding='utf-8'))
-        data['keyword'] = {int(k): Keyword(**v) for k, v in tmp.items()}
+        data['Datacant:Keyword'] = {int(k): Keyword(**v) for k, v in tmp.items()}
 
     decision_document_file = Path('data/eddb_decisions_document.json')
     decision_summary_file = Path('data/eddb_decisions_summary.json')
@@ -178,8 +178,8 @@ def fetch_all_eddb(reset_cache):
 
     # Consider commenting out the lines below while debugging to prevent your
     # (manual) data changes from being overwritten.
-    data['category'].update(fetch_eddb_categories())
-    data['keyword'].update(fetch_eddb_keywords())
+    data['Datacant:Category'].update(fetch_eddb_categories())
+    data['Datacant:Keyword'].update(fetch_eddb_keywords())
     use_cache = decision_summary_file.exists() and not reset_cache
     fetch_eddb_decisions(data, use_cache)
     return data

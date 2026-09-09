@@ -9,8 +9,10 @@ class TestKeyword(unittest.TestCase):
     def setUp(self):
         file = Path('tests/resources/data_dasch.json')
         data = json.loads(file.read_text(encoding='utf-8'))
-        data['category'] = {int(k): v for k, v in data['category'].items()}
-        data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
+        data['Datacant:Category'] = \
+            {int(k): v for k, v in data['Datacant:Category'].items()}
+        data['Datacant:Keyword'] = \
+            {int(k): v for k, v in data['Datacant:Keyword'].items()}
         data['Datacant:DecisionDocument'] = \
             {int(k): v for k, v in data['Datacant:DecisionDocument'].items()}
         data['Datacant:DecisionSummary'] = \
@@ -96,7 +98,7 @@ class TestKeyword(unittest.TestCase):
         self.assertEqual(name_fr, 'Consentement2')
 
     def test_payload_update_label(self):
-        dasch_obj = self.dasch_db['keyword'][72]
+        dasch_obj = self.dasch_db['Datacant:Keyword'][72]
         keyword = Keyword(72, 22, 'Consent2', 'Einwilligung', 'Consentement')
         payload = keyword.payload_update_label(dasch_obj)
         last_modif = None

@@ -9,8 +9,10 @@ class TestCategory(unittest.TestCase):
     def setUp(self):
         file = Path('tests/resources/data_dasch.json')
         data = json.loads(file.read_text(encoding='utf-8'))
-        data['category'] = {int(k): v for k, v in data['category'].items()}
-        data['keyword'] = {int(k): v for k, v in data['keyword'].items()}
+        data['Datacant:Category'] = \
+            {int(k): v for k, v in data['Datacant:Category'].items()}
+        data['Datacant:Keyword'] = \
+            {int(k): v for k, v in data['Datacant:Keyword'].items()}
         data['Datacant:DecisionDocument'] = \
             {int(k): v for k, v in data['Datacant:DecisionDocument'].items()}
         data['Datacant:DecisionSummary'] = \
@@ -79,7 +81,7 @@ class TestCategory(unittest.TestCase):
         self.assertEqual(name_fr, 'Surveillance2')
 
     def test_payload_update_label(self):
-        dasch_obj = self.dasch_db['category'][3]
+        dasch_obj = self.dasch_db['Datacant:Category'][3]
         category = Category(3, 'Surveillance2', 'Überwachung', 'Surveillance')
         payload = category.payload_update_label(dasch_obj)
         last_modif = '2026-08-17T15:54:24.629395191Z'

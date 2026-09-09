@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import payload
-from fields.dasch import LinkValue, LinksValue
+from fields.dasch import LinksValue
 
 
 class Resource(ABC):
@@ -26,10 +26,6 @@ class Resource(ABC):
         return self.label() != label_old
 
     @abstractmethod
-    def key_in_dasch_db():
-        pass
-
-    @abstractmethod
     def label():
         pass
 
@@ -43,13 +39,12 @@ class Resource(ABC):
         payloads = []
         payloads_add_links = []
         payloads_del_links = []
-        key_in_dasch_db = self.key_in_dasch_db()
+        resource_type = self.resource_type()
         eddb_id = self.eddb_id.value
-        dasch_obj = dasch_db[key_in_dasch_db].get(eddb_id)
+        dasch_obj = dasch_db[resource_type].get(eddb_id)
         if dasch_obj is None:
             raise RuntimeError(f'Updated resource (id={eddb_id}) not found')
         resource_id = dasch_obj['@id']
-        resource_type = self.resource_type()
 
         for field in self.fields():
             if field.is_constant():
@@ -58,15 +53,11 @@ class Resource(ABC):
                 if isinstance(field, LinksValue):
                     add_links, del_links = field.to_knora_update(dasch_obj)
                     for link in add_links:
-                        p = payload.add_link(resource_id, resource_type, link)
+                        p = payload.update(resource_id, resource_type, link)
                         payloads_add_links.append(p)
                     for link in del_links:
-                        p = payload.del_link(resource_id, resource_type, link)
+                        p = payload.update(resource_id, resource_type, link)
                         payloads_del_links.append(p)
-                elif isinstance(field, LinkValue):
-                    key_value = field.to_knora_update(dasch_obj)
-                    p = payload.add_link(resource_id, resource_type, key_value)
-                    payloads.append(p)
                 else:
                     key_value = field.to_knora_update(dasch_obj)
                     p = payload.update(resource_id, resource_type, key_value)

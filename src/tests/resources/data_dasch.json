@@ -1,5 +1,5 @@
 {
-    "category": {
+    "Datacant:Category": {
         "3": {
             "knora-api:lastModificationDate": {
                 "@value": "2026-08-17T15:54:24.629395191Z",
@@ -212,7 +212,7 @@
             }
         }
     },
-    "keyword": {
+    "Datacant:Keyword": {
         "3": {
             "rdfs:label": "Video surveillance",
             "knora-api:versionArkUrl": {
@@ -1342,7 +1342,7 @@
             }
         }
     },
-    "cantons": {
+    "Datacant:Cantons": {
         "AG": "http://rdfh.ch/lists/0871/YqC9emv0TaWLmzBCzOt7lg",
         "AR": "http://rdfh.ch/lists/0871/s29c716LRmK8AqekoJMHQg",
         "AI": "http://rdfh.ch/lists/0871/Clc5iOOHQhqpm5_j8-j6Jw",

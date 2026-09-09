@@ -27,10 +27,6 @@ class Category(Resource):
     def has_attachment_field(self):
         return False
 
-    @staticmethod
-    def key_in_dasch_db():
-        return 'category'
-
     def label(self):
         return self.name_en
 
