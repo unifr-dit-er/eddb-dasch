@@ -31,20 +31,26 @@ class Abstract(RichTextValue):
 
 class Attachment(DocumentFileValue):
 
-    def __init__(self, eddb_url, filename_dasch, checksum):
+    def __init__(self, eddb_url, filename_dasch, checksum, updated_at):
         '''Initialization of the fields.'''
         self.eddb_url = eddb_url
         self.filename_dasch = filename_dasch
-        self.checksum = checksum
         name = 'knora-api:hasDocumentFileValue'
         value = filename_dasch
         lic = 'http://rdfh.ch/licenses/public-domain'
         cpyright = 'Public Domain - Not Protected by Copyright'
         authors = ['Swiss court']
-        DocumentFileValue.__init__(self, name, value, lic, cpyright, authors)
+        DocumentFileValue.__init__(
+            self, name, value, checksum, updated_at, lic, cpyright, authors)
 
     def is_constant(self):
         return False
+
+    def set_value(self, eddb_url, filename_dasch, checksum):
+        self.eddb_url = eddb_url
+        self.filename_dasch = filename_dasch
+        self.value = filename_dasch
+        self.checksum = checksum
 
 
 class Canton(ListValue):

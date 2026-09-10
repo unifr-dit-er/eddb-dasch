@@ -58,134 +58,70 @@ if __name__ == '__main__':
         tmp = {k: v.to_dict() for k, v in data_eddb[key].items()}
         f.write(json.dumps(tmp, indent=4))
 
-    # Handle the attachments.
+    # Step 1: Handle the attachments.
     key_in_db = DecisionDocument.resource_type()
     for did, doc_eddb in data_eddb[key_in_db].items():
         doc_dasch = data_dasch[key_in_db].get(did)
-        if doc_dasch is None:
-            # New document.
+
+        is_new = doc_dasch is None
+        maybe_updated = doc_eddb.attachment.is_updated(doc_dasch)
+
+        if is_new or maybe_updated:
+            # Download required.
             filename = doc_eddb.eddb_filename()
             url_file = doc_eddb.eddb_url_file()
             download_file(url_file, filename)
             path_to_file = Path('data/documents') / filename
             with open(path_to_file, 'rb', buffering=0) as f:
                 checksum = hashlib.file_digest(f, 'sha256').hexdigest()
-                doc_eddb.set_attachment(url_file, None, checksum)
-        else:
-            # Check if it has changed.
-            updated_at = doc_eddb.updated_at
-            checksum_old = doc_dasch['Datacant:hasChecksum']['knora-api:valueAsString']
-            doc_eddb.set_checksum(checksum_old)
-            # TODO: we don't check if `last_updated` is more than 60 days ago.
-            if updated_at and False:
-                pass
+                same_checksum = checksum == doc_dasch \
+                    .get('Datacant:hasChecksum', {}) \
+                    .get('knora-api:valueAsString')
+                filename_dasch = None
+                if not same_checksum:
+                    response = upload_to_ingest(filename, token)
+                    filename_dasch = response['internalFilename']
+                doc_eddb.attachment.set_value(url_file, filename_dasch, checksum)
 
-    # Step 1: Update existing categories or add new categories.
-    key_in_db = Category.resource_type()
-    for cid, category_eddb in data_eddb[key_in_db].items():
-        category_dasch = data_dasch[key_in_db].get(cid)
-        is_created = False
-        is_updated = False
-        if category_dasch is None:
-            logger.info(f'Add new category (id={cid})')
-            payload = category_eddb.payload_create()
-            resource_id = create_resource(payload, token)
-            is_created = True
-        else:
-            # Maybe update existing category.
-            payload_label = category_eddb.payload_update_label(category_dasch)
-            if payload_label is not None:
-                logger.info(f'Category (id={cid}) label has been updated')
-                response = update_label(payload_label, token)
+    resource_types = [
+        Category.resource_type(),
+        Keyword.resource_type(),
+        DecisionDocument.resource_type(),
+        # DecisionSummary.resource_type(),
+    ]
 
-            payloads = category_eddb.payload_update_fields(data_dasch)
-            (payload_updates, _, _) = payloads
-            for payload in payload_updates:
-                update_value(payload, token)
+    # Step 2: Update existing resources  or add new resources.
+    for key_in_db in resource_types:
+        for eddb_id, object_eddb in data_eddb[key_in_db].items():
+            object_dasch = data_dasch[key_in_db].get(eddb_id)
+            object_eddb.fill_iri_values(data_dasch)
+            is_created = False
+            is_updated = False
+            if object_dasch is None:
+                logger.info(f'Add new {key_in_db} (id={eddb_id})')
+                payload = object_eddb.payload_create()
+                resource_id = create_resource(payload, token)
+                is_created = True
+            else:
+                # Maybe update existing category.
+                payload_label = object_eddb.payload_update_label(object_dasch)
+                if payload_label is not None:
+                    logger.info(f'{key_in_db} (id={eddb_id}) label has been updated')
+                    response = update_label(payload_label, token)
 
-            is_updated = payload_label is not None or len(payload_updates) != 0
-            if is_updated:
-                resource_id = category_dasch['@id']
-                logger.info(f'Category (id={cid}) field(s) have been updated')
-        if is_created or is_updated:
-            data_dasch[key_in_db][cid] = fetch_resource(resource_id, token)
+                # TODO: add a special bloc to compare attachment.
 
-    # Step 2: Update existing keywords or add new keywords.
-    key_in_db = Keyword.resource_type()
-    for kid, keyword_eddb in data_eddb[key_in_db].items():
-        keyword_dasch = data_dasch[key_in_db].get(kid)
-        keyword_eddb.fill_iri_values(data_dasch)
-        is_created = False
-        is_updated = False
-        if keyword_dasch is None:
-            logger.info(f'Add new keyword (id={kid})')
-            payload = keyword_eddb.payload_create()
-            resource_id = create_resource(payload, token)
-            is_created = True
-        else:
-            # Maybe update existing keyword.
-            payload_label = keyword_eddb.payload_update_label(keyword_dasch)
-            if payload_label is not None:
-                logger.info(f'Keyword (id={kid}) label has been updated')
-                response = update_label(payload_label, token)
+                payloads = object_eddb.payload_update_fields(data_dasch)
+                (payload_updates, _, _) = payloads
+                for payload in payload_updates:
+                    update_value(payload, token)
 
-            payloads = keyword_eddb.payload_update_fields(data_dasch)
-            (payload_updates, _, _) = payloads
-            for payload in payload_updates:
-                update_value(payload, token)
-
-            is_updated = payload_label is not None or len(payload_updates) != 0
-            if is_updated:
-                resource_id = keyword_dasch['@id']
-                logger.info(f'keyword (id={kid}) field(s) have been updated')
-
-        if is_created or is_updated:
-            data_dasch[key_in_db][kid] = fetch_resource(resource_id, token)
-
-    # Step 3: Update existing decisions document or add new documents.
-    key_in_db = DecisionDocument.resource_type()
-    for did, doc_eddb in data_eddb[key_in_db].items():
-        decision_dasch = data_dasch[key_in_db].get(did)
-        doc_eddb.fill_iri_values(data_dasch)
-        is_created = False
-        is_updated = False
-
-        if decision_dasch is None:
-            logger.info(f'Add new DecisionDoc (id={did})')
-
-            if doc_eddb.has_attachment_field():
-                # Upload to ingest.
-                # TODO: move this code to `fetch.py`
-                filename = doc_eddb.eddb_filename()
-                response = upload_to_ingest(filename, token)
-                filename_dasch = response['internalFilename']
-                doc_eddb.attachment.value = filename_dasch
-
-            # Create the resource.
-            payload = doc_eddb.payload_create()
-            resource_id = create_resource(payload, token)
-            is_created = True
-        else:
-            # Maybe update existing decision.
-            resource_id = decision_dasch['@id']
-            payload_label = doc_eddb.payload_update_label(decision_dasch)
-            if payload_label is not None:
-                logger.info(f'Decision (id={did}) label has been updated')
-                response = update_label(payload_label, token)
-
-            # TODO: add a special bloc to compare attachment.
-
-            payloads = doc_eddb.payload_update_fields(data_dasch)
-            (payload_updates, _, _) = payloads
-            for payload in payload_updates:
-                update_value(payload, token)
-
-            is_updated = payload_label is not None or len(payload_updates) != 0
-            if is_updated:
-                logger.info(f'DecisionDoc (id={did}) field(s) have been updated')
-
-        if is_created or is_updated:
-            data_dasch[key_in_db][did] = fetch_resource(resource_id, token)
+                is_updated = payload_label is not None or len(payload_updates) != 0
+                if is_updated:
+                    resource_id = object_dasch['@id']
+                    logger.info(f'{key_in_db} (id={eddb_id}) field(s) have been updated')
+            if is_created or is_updated:
+                data_dasch[key_in_db][eddb_id] = fetch_resource(resource_id, token)
 
     # Step 4: Update existing decisions summary or add new summaries.
     key_in_db = DecisionSummary.resource_type()
@@ -252,4 +188,8 @@ if __name__ == '__main__':
     # Step 7: Save data in file.
     with open('data/data_dasch.json', 'w') as f:
         f.write(json.dumps(data_dasch, indent=4))
+    with open('data/eddb_decisions_document.json', 'w') as f:
+        key = DecisionDocument.resource_type()
+        tmp = {k: v.to_dict() for k, v in data_eddb[key].items()}
+        f.write(json.dumps(tmp, indent=4))
     logger.info('Finished!')

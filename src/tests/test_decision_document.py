@@ -69,6 +69,7 @@ class TestDecisionDocument(unittest.TestCase):
             'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
             '3HIj4A8lXjQ-vxGzbejbhxO.pdf',
             'ba7816bf8',
+            '2026-02-20 13:37:26+00:00',
         ))
         # self.assertTrue(decision.attachment.eddb_url.startswith('http'))
         # self.assertTrue(decision.attachment.filename_dasch.endswith('2005.06.28-5__vzhl.pdf'))
@@ -116,7 +117,7 @@ class TestDecisionDocument(unittest.TestCase):
         eddb_url = 'https://...'
         filename_dasch = '4rMCDmxpYAx-DiRuvu3v2rQ.pdf'
         checksum = 'ba7816bf8'
-        decision.set_attachment(eddb_url, filename_dasch, checksum)
+        decision.attachment.set_value(eddb_url, filename_dasch, checksum)
         self.assertEqual(decision.attachment.eddb_url, eddb_url)
         self.assertEqual(decision.attachment.filename_dasch, filename_dasch)
         self.assertEqual(decision.attachment.checksum, checksum)

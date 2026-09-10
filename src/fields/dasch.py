@@ -74,10 +74,12 @@ class DocumentFileValue(ABC):
     '''Abstract class which shapes the document files.
     '''
 
-    def __init__(self, name, value, licens, cpyright, authors):
+    def __init__(self, name, value, checksum, updated_at, licens, cpyright, authors):
         '''Initialization of the fields and inputs validation.'''
         self.name = name
         self.value = value
+        self.checksum = checksum
+        self.updated_at = updated_at
         self.license = licens
         self.copyright = cpyright
         self.authors = authors
@@ -92,10 +94,18 @@ class DocumentFileValue(ABC):
         pass
 
     def is_updated(self, dasch_obj):
-        value_old = dasch_obj \
+        # Note: we don't want to download files if it is not necessary.
+        # But we also consider the dates and not only the checksum.
+        if dasch_obj is None:
+            return True
+        dasch_date = dasch_obj[self.name]['knora-api:valueCreationDate']['@value']
+        update_based_on_date = dasch_date < self.updated_at
+
+        checksum_old = dasch_obj \
             .get('Datacant:hasChecksum', {}) \
             .get('knora-api:valueAsString')
-        return self.checksum != value_old
+        same_checksum = self.checksum == checksum_old
+        return update_based_on_date or not same_checksum
 
     def to_knora(self):
         return {

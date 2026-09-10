@@ -24,11 +24,9 @@ class DecisionDocument(Resource):
         self.updated_at = updated_at
         self.date_issued = date_issued
         self.canton = canton
-        self.checksum = Checksum(checksum)
-        self.attachment = Attachment(eddb_url, filename_dasch, checksum)
+        self.attachment = Attachment(eddb_url, filename_dasch, checksum, updated_at)
 
     def eddb_filename(self):
-        # return self.url_file.split('/')[-1]
         return self.attachment.eddb_url.split('/')[-1]
 
     def eddb_url_file(self):
@@ -39,7 +37,7 @@ class DecisionDocument(Resource):
             self.eddb_id,
             FileName(self.filename()),
             self.attachment,
-            self.checksum,
+            Checksum(self.attachment.checksum),
         ]
 
     def filename(self):
@@ -57,18 +55,6 @@ class DecisionDocument(Resource):
     @staticmethod
     def resource_type():
         return 'Datacant:DecisionDocument'
-
-    def set_attachment(self, eddb_url, filename_dasch, checksum):
-        self.attachment.eddb_url = eddb_url
-        self.attachment.filename_dasch = filename_dasch
-        self.attachment.value = filename_dasch
-        self.attachment.checksum = checksum
-        self.checksum.value = checksum
-
-    def set_checksum(self, checksum):
-        # TODO: remove this function and the field `checksum` of this class.
-        self.attachment.checksum = checksum
-        self.checksum.value = checksum
 
     def to_dict(self):
         return {
