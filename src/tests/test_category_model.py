@@ -69,15 +69,18 @@ class TestCategory(unittest.TestCase):
 
     def test_payload_update_fields(self):
         category = Category(3, 'Surveillance', 'Überwachung2', 'Surveillance2')
-        (payloads, _, _) = category.payload_update_fields(self.dasch_db)
-        self.assertEqual(len(payloads), 2)
+        payloads = category.payload_update_fields(self.dasch_db)
+        self.assertEqual(len(payloads['updates']), 2)
+        self.assertEqual(len(payloads['add_values']), 0)
+        self.assertEqual(len(payloads['del_values']), 0)
 
-        name_de = payloads[0]['Datacant:hasNameDe']['knora-api:valueAsString']
-        self.assertEqual(payloads[0]['@type'], Category.resource_type())
+        p_updates = payloads['updates']
+        name_de = p_updates[0]['Datacant:hasNameDe']['knora-api:valueAsString']
+        self.assertEqual(p_updates[0]['@type'], Category.resource_type())
         self.assertEqual(name_de, 'Überwachung2')
 
-        name_fr = payloads[1]['Datacant:hasNameFr']['knora-api:valueAsString']
-        self.assertEqual(payloads[1]['@type'], Category.resource_type())
+        name_fr = p_updates[1]['Datacant:hasNameFr']['knora-api:valueAsString']
+        self.assertEqual(p_updates[1]['@type'], Category.resource_type())
         self.assertEqual(name_fr, 'Surveillance2')
 
     def test_payload_update_label(self):

@@ -144,12 +144,12 @@ class TestDecisionSummary(unittest.TestCase):
         }
         decision = DecisionSummary(**args)
         decision.fill_iri_values(self.dasch_db)
-        (payloads, links_add, links_del) = decision.payload_update_fields(self.dasch_db)
-        self.assertEqual(len(payloads), 6)
+        payloads = decision.payload_update_fields(self.dasch_db)
+        self.assertEqual(len(payloads['updates']), 6)
         for i in range(6):
-            self.assertEqual(payloads[i]['@type'], DecisionSummary.resource_type())
+            self.assertEqual(payloads['updates'][i]['@type'], DecisionSummary.resource_type())
 
-        date_issued = payloads[0]['Datacant:hasDateIssued']
+        date_issued = payloads['updates'][0]['Datacant:hasDateIssued']
         self.assertEqual(date_issued['knora-api:dateValueHasStartYear'], 2021)
         self.assertEqual(date_issued['knora-api:dateValueHasEndYear'], 2021)
         self.assertEqual(date_issued['knora-api:dateValueHasStartMonth'], 8)
@@ -157,24 +157,25 @@ class TestDecisionSummary(unittest.TestCase):
         self.assertEqual(date_issued['knora-api:dateValueHasStartDay'], 13)
         self.assertEqual(date_issued['knora-api:dateValueHasEndDay'], 13)
 
-        node = payloads[1]['Datacant:hasCantonList']['knora-api:listValueAsListNode']['@id']
+        p = payloads['updates']
+        node = p[1]['Datacant:hasCantonList']['knora-api:listValueAsListNode']['@id']
         self.assertEqual(node, 'http://rdfh.ch/lists/0871/otPRlr4VSjmqcDXtT13v0w')
 
-        desc_de = payloads[2]['Datacant:hasDescriptionDe']['knora-api:valueAsString']
+        desc_de = p[2]['Datacant:hasDescriptionDe']['knora-api:valueAsString']
         self.assertEqual(desc_de, 'Eine neue Beschreibung')
 
-        desc_fr = payloads[3]['Datacant:hasDescriptionFr']['knora-api:valueAsString']
+        desc_fr = p[3]['Datacant:hasDescriptionFr']['knora-api:valueAsString']
         self.assertEqual(desc_fr, 'Une nouvelle description')
 
-        abstract_de = payloads[4]['Datacant:hasAbstractDe']['knora-api:textValueAsXml']
+        abstract_de = p[4]['Datacant:hasAbstractDe']['knora-api:textValueAsXml']
         self.assertEqual(abstract_de, 'Eine neue Zusammenfassung')
 
-        abstract_fr = payloads[5]['Datacant:hasAbstractFr']['knora-api:textValueAsXml']
+        abstract_fr = p[5]['Datacant:hasAbstractFr']['knora-api:textValueAsXml']
         self.assertEqual(abstract_fr, 'Un nouveau résumé')
 
-        self.assertEqual(len(links_add), 0)
-        self.assertEqual(len(links_del), 1)
-        iri_to_remove = links_del[0] \
+        self.assertEqual(len(payloads['add_values']), 0)
+        self.assertEqual(len(payloads['del_values']), 1)
+        iri_to_remove = payloads['del_values'][0] \
             .get('@id')
         self.assertEqual(iri_to_remove, 'http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg')
 

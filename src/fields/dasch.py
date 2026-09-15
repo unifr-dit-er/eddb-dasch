@@ -5,7 +5,61 @@ import re
 REGEX_DATE = re.compile(r'\d{4}-\d{2}-\d{2}')
 
 
-class DateValue(ABC):
+class DaschValue(ABC):
+    @abstractmethod
+    def get_type(self):
+        pass
+
+    @abstractmethod
+    def is_updated(self, dasch_obj):
+        pass
+
+    @abstractmethod
+    def payload_value_add(self, dasch_obj):
+        pass
+
+    @abstractmethod
+    def payload_value_del(self, dasch_obj):
+        pass
+
+    @abstractmethod
+    def payload_value_update(self, dasch_obj):
+        pass
+
+    def to_knora_update(self, dasch_obj):
+        payloads = {'updates': [], 'add_values': [], 'del_values': []}
+        if not self.is_updated(dasch_obj):
+            return payloads
+
+        is_previous_null = dasch_obj.get(self.name) is None
+        is_new_null = self.value is None
+        if is_new_null:
+            if is_previous_null:
+                raise RuntimeError('Method cannot be called when value is still null.')
+            # Value must be deleted. (Note: empty array is empty and not null)
+            key_value = self.payload_value_del(dasch_obj)
+            payloads['del_values'].append(key_value)
+            return payloads
+
+        if isinstance(self, LinksValue):
+            key_value = self.payload_value_add(dasch_obj)
+            for k_v in key_value:
+                payloads['add_values'].append(k_v)
+            key_value = self.payload_value_del(dasch_obj)
+            for k_v in key_value:
+                payloads['del_values'].append(k_v)
+        elif is_previous_null:
+            # Then value must be created.
+            key_value = self.payload_value_add(dasch_obj)
+            payloads['add_values'].append(key_value)
+        else:
+            # Then value must be updated.
+            key_value = self.payload_value_update(dasch_obj)
+            payloads['updates'].append(key_value)
+        return payloads
+
+
+class DateValue(DaschValue):
     '''Abstract class which shapes the dates.
     '''
 
@@ -21,13 +75,18 @@ class DateValue(ABC):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
-    @abstractmethod
-    def is_constant(self):
-        pass
+    def get_type(self):
+        return 'knora-api:DateValue'
 
     def is_updated(self, dasch_obj):
         value_old = dasch_obj[self.name]['knora-api:valueAsString']
         return self.value not in value_old
+
+    def payload_value_add(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_del(self, dasch_obj):
+        raise NotImplementedError()
 
     def to_knora(self):
         year = int(self.value[:4])
@@ -35,7 +94,7 @@ class DateValue(ABC):
         day = int(self.value[8:])
         return {
             self.name: {
-                '@type': 'knora-api:DateValue',
+                '@type': self.get_type(),
                 'knora-api:dateValueHasStartYear': year,
                 'knora-api:dateValueHasEndYear': year,
                 'knora-api:dateValueHasStartMonth': month,
@@ -48,7 +107,7 @@ class DateValue(ABC):
             }
         }
 
-    def to_knora_update(self, dasch_obj):
+    def payload_value_update(self, dasch_obj):
         field_id = dasch_obj[self.name]['@id']
         year = int(self.value[:4])
         month = int(self.value[5:7])
@@ -56,7 +115,7 @@ class DateValue(ABC):
         return {
             self.name: {
                 '@id': field_id,
-                '@type': 'knora-api:DateValue',
+                '@type': self.get_type(),
                 'knora-api:dateValueHasStartYear': year,
                 'knora-api:dateValueHasEndYear': year,
                 'knora-api:dateValueHasStartMonth': month,
@@ -70,7 +129,7 @@ class DateValue(ABC):
         }
 
 
-class DocumentFileValue(ABC):
+class DocumentFileValue(DaschValue):
     '''Abstract class which shapes the document files.
     '''
 
@@ -89,9 +148,8 @@ class DocumentFileValue(ABC):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
-    @abstractmethod
-    def is_constant(self):
-        pass
+    def get_type(self):
+        return 'knora-api:DocumentFileValue'
 
     def is_updated(self, dasch_obj):
         # Note: we don't want to download files if it is not necessary.
@@ -110,7 +168,7 @@ class DocumentFileValue(ABC):
     def to_knora(self):
         return {
             self.name: {
-                '@type': 'knora-api:DocumentFileValue',
+                '@type': self.get_type(),
                 'knora-api:fileValueHasFilename': self.value,
                 'knora-api:hasLicense': {'@id': self.license},
                 'knora-api:hasCopyrightHolder': self.copyright,
@@ -118,11 +176,17 @@ class DocumentFileValue(ABC):
             }
         }
 
-    def to_knora_update(self, dasch_obj):
+    def payload_value_add(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_del(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_update(self, dasch_obj):
         raise NotImplementedError()
 
 
-class IntValue(ABC):
+class IntValue(DaschValue):
     '''Abstract class which shapes the integers.
     '''
 
@@ -138,23 +202,32 @@ class IntValue(ABC):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
-    @abstractmethod
-    def is_constant(self):
-        pass
+    def get_type(self):
+        return 'knora-api:IntValue'
+
+    def is_updated(self, dasch_obj):
+        # TODO
+        return False
 
     def to_knora(self):
         return {
             self.name: {
-                '@type': 'knora-api:IntValue',
+                '@type': self.get_type(),
                 'knora-api:intValueAsInt': self.value,
             }
         }
 
-    def to_knora_update(self, dasch_obj):
+    def payload_value_add(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_del(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_update(self, dasch_obj):
         raise NotImplementedError()
 
 
-class LinkValue(ABC):
+class LinkValue(DaschValue):
     '''Abstract class which shapes a (single) link to another resource.
     '''
 
@@ -169,9 +242,8 @@ class LinkValue(ABC):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
-    @abstractmethod
-    def is_constant(self):
-        pass
+    def get_type(self):
+        return 'knora-api:LinkValue'
 
     def is_updated(self, dasch_obj):
         is_previous_null = dasch_obj.get(self.name) is None
@@ -196,60 +268,46 @@ class LinkValue(ABC):
             raise RuntimeError('Method cannot be called when `iri` is not set')
         return {
             self.name: {
-                '@type': 'knora-api:LinkValue',
+                '@type': self.get_type(),
                 'knora-api:linkValueHasTargetIri': {
                     '@id': self.value_iri
                 }
             }
         }
 
-    def to_knora_update(self, dasch_obj):
-        # Link may be optional.
-        is_previous_null = dasch_obj.get(self.name) is None
-        is_new_null = self.value is None
-        if is_new_null:
-            if is_previous_null:
-                raise RuntimeError('Method cannot be called when value is still null.')
-            # Value must be deleted.
-            link_id = dasch_obj[self.name]['@id']
-            key_value = {
-                self.name: {
-                    '@id': link_id,
-                    '@type': 'knora-api:LinkValue',
+    def payload_value_add(self, dasch_obj):
+        return {
+            self.name: {
+                '@type': self.get_type(),
+                'knora-api:linkValueHasTargetIri': {
+                    '@id': self.value_iri
                 }
             }
-            return (None, None, key_value)
+        }
 
-        if self.value_iri is None:
-            raise RuntimeError('Method cannot be called when `iri` is not set')
+    def payload_value_del(self, dasch_obj):
+        link_id = dasch_obj[self.name]['@id']
+        return {
+            self.name: {
+                '@id': link_id,
+                '@type': self.get_type(),
+            }
+        }
 
-        if is_previous_null:
-            # Then value must be created.
-            key_value = {
-                self.name: {
-                    '@type': 'knora-api:LinkValue',
-                    'knora-api:linkValueHasTargetIri': {
-                        '@id': self.value_iri
-                    }
+    def payload_value_update(self, dasch_obj):
+        field_id = dasch_obj[self.name]['@id']
+        return {
+            self.name: {
+                '@id': field_id,
+                '@type': self.get_type(),
+                'knora-api:linkValueHasTargetIri': {
+                    '@id': self.value_iri
                 }
             }
-            return (None, key_value, None)
-        else:
-            # Then value must be updated.
-            field_id = dasch_obj[self.name]['@id']
-            key_value = {
-                self.name: {
-                    '@id': field_id,
-                    '@type': 'knora-api:LinkValue',
-                    'knora-api:linkValueHasTargetIri': {
-                        '@id': self.value_iri
-                    }
-                }
-            }
-            return (key_value, None, None)
+        }
 
 
-class LinksValue(ABC):
+class LinksValue(DaschValue):
     '''Abstract class which shapes multiple links to another resource.
     '''
 
@@ -264,9 +322,8 @@ class LinksValue(ABC):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
-    @abstractmethod
-    def is_constant(self):
-        pass
+    def get_type(self):
+        return 'knora-api:LinkValue'
 
     def is_updated(self, dasch_obj):
         links = dasch_obj[self.name]
@@ -289,7 +346,7 @@ class LinksValue(ABC):
         links_iri = []
         for keyword_iri in self.value_iri:
             chunk = {
-                '@type': 'knora-api:LinkValue',
+                '@type': self.get_type(),
                 'knora-api:linkValueHasTargetIri': {
                     '@id': keyword_iri
                 }
@@ -297,7 +354,31 @@ class LinksValue(ABC):
             links_iri.append(chunk)
         return {self.name: links_iri}
 
-    def to_knora_update(self, dasch_obj):
+    def payload_value_add(self, dasch_obj):
+        links = dasch_obj[self.name]
+        is_list = isinstance(links, list)
+        if not is_list:
+            # When only a single keyword
+            links = [links]
+        links_iri_new = set(self.value_iri)
+        links_iri_old = set()
+        for link in links:
+            iri = link['knora-api:linkValueHasTarget']['@id']
+            links_iri_old.add(iri)
+        link_iri_to_add = list(links_iri_new - links_iri_old)
+        add_list = []
+        for link_iri in link_iri_to_add:
+            add_list.append({
+                self.name: {
+                    '@type': self.get_type(),
+                    'knora-api:linkValueHasTargetIri': {
+                        '@id': link_iri
+                    }
+                }
+            })
+        return add_list
+
+    def payload_value_del(self, dasch_obj):
         links = dasch_obj[self.name]
         is_list = isinstance(links, list)
         if not is_list:
@@ -309,18 +390,7 @@ class LinksValue(ABC):
             iri = link['knora-api:linkValueHasTarget']['@id']
             links_iri_old.add(iri)
         link_iri_to_del = list(links_iri_old - links_iri_new)
-        link_iri_to_add = list(links_iri_new - links_iri_old)
-        add_list = []
         del_list = []
-        for link_iri in link_iri_to_add:
-            add_list.append({
-                self.name: {
-                    '@type': 'knora-api:LinkValue',
-                    'knora-api:linkValueHasTargetIri': {
-                        '@id': link_iri
-                    }
-                }
-            })
         for link in links:
             link_iri = link['@id']
             target_iri = link['knora-api:linkValueHasTarget']['@id']
@@ -328,13 +398,16 @@ class LinksValue(ABC):
                 del_list.append({
                     self.name: {
                         '@id': link_iri,
-                        '@type': 'knora-api:LinkValue',
+                        '@type': self.get_type(),
                     }
                 })
-        return add_list, del_list
+        return del_list
+
+    def payload_value_update(self, dasch_obj):
+        raise RuntimeError('This method should not be called.')
 
 
-class ListValue(ABC):
+class ListValue(DaschValue):
     '''Abstract class which shapes an enumeration of a controlled vocabulary.
     '''
 
@@ -349,9 +422,8 @@ class ListValue(ABC):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
-    @abstractmethod
-    def is_constant(self):
-        pass
+    def get_type(self):
+        return 'knora-api:ListValue'
 
     def is_updated(self, dasch_obj):
         value_old = dasch_obj[self.name]['knora-api:listValueAsListNode']['@id']
@@ -365,21 +437,25 @@ class ListValue(ABC):
             raise RuntimeError('Method cannot be called when `iri` is not set')
         return {
             self.name: {
-                '@type': 'knora-api:ListValue',
+                '@type': self.get_type(),
                 'knora-api:listValueAsListNode': {
                     '@id': self.value_iri,
                 },
             }
         }
 
-    def to_knora_update(self, dasch_obj):
-        if self.value_iri is None:
-            raise RuntimeError('Method cannot be called when `iri` is not set')
+    def payload_value_add(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_del(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_update(self, dasch_obj):
         field_id = dasch_obj[self.name]['@id']
         return {
             self.name: {
                 '@id': field_id,
-                '@type': 'knora-api:ListValue',
+                '@type': self.get_type(),
                 'knora-api:listValueAsListNode': {
                     '@id': self.value_iri
                 }
@@ -387,7 +463,7 @@ class ListValue(ABC):
         }
 
 
-class RichTextValue(ABC):
+class RichTextValue(DaschValue):
     '''Abstract class which shapes the strings with html tags.
     '''
 
@@ -402,9 +478,8 @@ class RichTextValue(ABC):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
-    @abstractmethod
-    def is_constant(self):
-        pass
+    def get_type(self):
+        return 'knora-api:TextValue'
 
     def is_updated(self, dasch_obj):
         # Note: we cannot compare the new with old value because DaSCH
@@ -415,7 +490,7 @@ class RichTextValue(ABC):
     def to_knora(self):
         return {
             self.name: {
-                '@type': 'knora-api:TextValue',
+                '@type': self.get_type(),
                 # TODO: check if processing is required.
                 'knora-api:textValueAsXml': self.value,
                 'knora-api:textValueHasMapping': {
@@ -424,12 +499,18 @@ class RichTextValue(ABC):
             }
         }
 
-    def to_knora_update(self, dasch_obj):
+    def payload_value_add(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_del(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_update(self, dasch_obj):
         field_id = dasch_obj[self.name]['@id']
         return {
             self.name: {
                 '@id': field_id,
-                '@type': 'knora-api:TextValue',
+                '@type': self.get_type(),
                 # TODO: check if processing is required.
                 'knora-api:textValueAsXml': self.value,
                 'knora-api:textValueHasMapping': {
@@ -439,7 +520,7 @@ class RichTextValue(ABC):
         }
 
 
-class SimpleTextValue(ABC):
+class SimpleTextValue(DaschValue):
     '''Abstract class which shapes the strings.
     '''
 
@@ -453,9 +534,8 @@ class SimpleTextValue(ABC):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
-    @abstractmethod
-    def is_constant(self):
-        pass
+    def get_type(self):
+        return 'knora-api:TextValue'
 
     def is_updated(self, dasch_obj):
         value_old = dasch_obj[self.name]['knora-api:valueAsString']
@@ -464,17 +544,23 @@ class SimpleTextValue(ABC):
     def to_knora(self):
         return {
             self.name: {
-                '@type': 'knora-api:TextValue',
+                '@type': self.get_type(),
                 'knora-api:valueAsString': self.value,
             }
         }
 
-    def to_knora_update(self, dasch_obj):
+    def payload_value_add(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_del(self, dasch_obj):
+        raise NotImplementedError()
+
+    def payload_value_update(self, dasch_obj):
         field_id = dasch_obj[self.name]['@id']
         return {
             self.name: {
                 '@id': field_id,
-                '@type': 'knora-api:TextValue',
+                '@type': self.get_type(),
                 'knora-api:valueAsString': self.value,
             }
         }

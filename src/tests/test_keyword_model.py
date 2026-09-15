@@ -82,19 +82,22 @@ class TestKeyword(unittest.TestCase):
     def test_payload_update_fields(self):
         keyword = Keyword(72, 3, 'Consent', 'Einwilligung2', 'Consentement2')
         keyword.fill_iri_values(self.dasch_db)
-        (payloads, _, _) = keyword.payload_update_fields(self.dasch_db)
-        self.assertEqual(len(payloads), 3)
+        payloads = keyword.payload_update_fields(self.dasch_db)
+        self.assertEqual(len(payloads['updates']), 3)
+        self.assertEqual(len(payloads['add_values']), 0)
+        self.assertEqual(len(payloads['del_values']), 0)
 
-        cat_iri = extract_category_iri_from_payload(payloads[0])
-        self.assertEqual(payloads[0]['@type'], Keyword.resource_type())
+        p_updates = payloads['updates']
+        cat_iri = extract_category_iri_from_payload(p_updates[0])
+        self.assertEqual(p_updates[0]['@type'], Keyword.resource_type())
         self.assertEqual(cat_iri, 'http://rdfh.ch/0871/oTMF94U2TrCoWzM2iW1Jyg')
 
-        name_de = payloads[1]['Datacant:hasNameDe']['knora-api:valueAsString']
-        self.assertEqual(payloads[1]['@type'], Keyword.resource_type())
+        name_de = p_updates[1]['Datacant:hasNameDe']['knora-api:valueAsString']
+        self.assertEqual(p_updates[1]['@type'], Keyword.resource_type())
         self.assertEqual(name_de, 'Einwilligung2')
 
-        name_fr = payloads[2]['Datacant:hasNameFr']['knora-api:valueAsString']
-        self.assertEqual(payloads[2]['@type'], Keyword.resource_type())
+        name_fr = p_updates[2]['Datacant:hasNameFr']['knora-api:valueAsString']
+        self.assertEqual(p_updates[2]['@type'], Keyword.resource_type())
         self.assertEqual(name_fr, 'Consentement2')
 
     def test_payload_update_label(self):

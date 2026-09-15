@@ -25,9 +25,6 @@ class Abstract(RichTextValue):
             raise ValueError('Abstract must be set')
         RichTextValue.__init__(self, name, v, updated_at)
 
-    def is_constant(self):
-        return False
-
 
 class Attachment(DocumentFileValue):
 
@@ -43,9 +40,6 @@ class Attachment(DocumentFileValue):
         DocumentFileValue.__init__(
             self, name, value, checksum, updated_at, lic, cpyright, authors)
 
-    def is_constant(self):
-        return False
-
     def set_value(self, eddb_url, filename_dasch, checksum):
         self.eddb_url = eddb_url
         self.filename_dasch = filename_dasch
@@ -60,9 +54,6 @@ class Canton(ListValue):
         name = f'{PROJECT_NAME}:hasCantonList'
         ListValue.__init__(self, name, value)
 
-    def is_constant(self):
-        return False
-
 
 class CategoryLink(LinkValue):
 
@@ -70,9 +61,6 @@ class CategoryLink(LinkValue):
         '''Initialization of the fields.'''
         name = f'{PROJECT_NAME}:linkToCategoryValue'
         LinkValue.__init__(self, name, value)
-
-    def is_constant(self):
-        return False
 
 
 class Checksum(SimpleTextValue):
@@ -83,9 +71,6 @@ class Checksum(SimpleTextValue):
         v = (value or '').strip()
         SimpleTextValue.__init__(self, name, v)
 
-    def is_constant(self):
-        return False
-
 
 class DateGreg(DateValue):
 
@@ -94,9 +79,6 @@ class DateGreg(DateValue):
         name = f'{PROJECT_NAME}:hasDateIssued'
         DateValue.__init__(self, name, value)
 
-    def is_constant(self):
-        return False
-
 
 class DecisionDocumentLink(LinkValue):
 
@@ -104,9 +86,6 @@ class DecisionDocumentLink(LinkValue):
         '''Initialization of the fields.'''
         name = f'{PROJECT_NAME}:linkToDocumentValue'
         LinkValue.__init__(self, name, value)
-
-    def is_constant(self):
-        return False
 
 
 class Description(SimpleTextValue):
@@ -121,9 +100,6 @@ class Description(SimpleTextValue):
             raise ValueError('Description must be set')
         SimpleTextValue.__init__(self, name, v)
 
-    def is_constant(self):
-        return False
-
 
 class EddbId(IntValue):
 
@@ -133,9 +109,6 @@ class EddbId(IntValue):
             raise ValueError('EDDB id must be greater than 0')
         name = f'{PROJECT_NAME}:hasId'
         IntValue.__init__(self, name, value)
-
-    def is_constant(self):
-        return True
 
 
 class FileName(SimpleTextValue):
@@ -148,9 +121,6 @@ class FileName(SimpleTextValue):
         name = f'{PROJECT_NAME}:hasFileName'
         SimpleTextValue.__init__(self, name, v)
 
-    def is_constant(self):
-        return False
-
 
 class KeywordLink(LinksValue):
 
@@ -158,9 +128,6 @@ class KeywordLink(LinksValue):
         '''Initialization of the fields.'''
         name = f'{PROJECT_NAME}:linkToKeywordValue'
         LinksValue.__init__(self, name, value)
-
-    def is_constant(self):
-        return False
 
 
 class NameDe(SimpleTextValue):
@@ -173,9 +140,6 @@ class NameDe(SimpleTextValue):
         name = f'{PROJECT_NAME}:hasNameDe'
         SimpleTextValue.__init__(self, name, v)
 
-    def is_constant(self):
-        return False
-
 
 class NameFr(SimpleTextValue):
 
@@ -186,6 +150,3 @@ class NameFr(SimpleTextValue):
             raise ValueError('Name in French must be set')
         name = f'{PROJECT_NAME}:hasNameFr'
         SimpleTextValue.__init__(self, name, v)
-
-    def is_constant(self):
-        return False

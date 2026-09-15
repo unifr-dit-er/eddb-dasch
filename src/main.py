@@ -112,18 +112,15 @@ if __name__ == '__main__':
                 # TODO: add a special bloc to compare attachment.
 
                 payloads = object_eddb.payload_update_fields(data_dasch)
-                (payload_updates, payload_add, payload_del) = payloads
-                for payload in payload_updates:
+                for payload in payloads['updates']:
                     update_value(payload, token)
-                for payload in payload_add:
+                for payload in payloads['add_values']:
                     create_value(payload, token)
-                for payload in payload_del:
+                for payload in payloads['del_values']:
                     delete_value(payload, token)
 
-                is_updated = payload_label is not None or \
-                    len(payload_updates) != 0 or \
-                    len(payload_add) != 0 or \
-                    len(payload_del) != 0
+                nb_field_change = sum(map(len, payloads.values()))
+                is_updated = payload_label is not None or nb_field_change != 0
                 if is_updated:
                     resource_id = object_dasch['@id']
                     logger.info(f'{key_in_db} (id={eddb_id}) field(s) have been updated')
