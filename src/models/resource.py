@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import payload
-from fields.dasch import LinksValue
+from fields.dasch import LinkValue, LinksValue
 
 
 class Resource(ABC):
@@ -57,6 +57,17 @@ class Resource(ABC):
                         payloads_add_links.append(p)
                     for link in del_links:
                         p = payload.update(resource_id, resource_type, link)
+                        payloads_del_links.append(p)
+                elif isinstance(field, LinkValue):
+                    update_v, add_value, del_value = field.to_knora_update(dasch_obj)
+                    if update_v is not None:
+                        p = payload.update(resource_id, resource_type, update_v)
+                        payloads.append(p)
+                    if add_value is not None:
+                        p = payload.update(resource_id, resource_type, add_value)
+                        payloads_add_links.append(p)
+                    if del_value is not None:
+                        p = payload.update(resource_id, resource_type, del_value)
                         payloads_del_links.append(p)
                 else:
                     key_value = field.to_knora_update(dasch_obj)

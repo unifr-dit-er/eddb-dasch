@@ -74,7 +74,7 @@ if __name__ == '__main__':
             path_to_file = Path('data/documents') / filename
             with open(path_to_file, 'rb', buffering=0) as f:
                 checksum = hashlib.file_digest(f, 'sha256').hexdigest()
-                same_checksum = checksum == doc_dasch \
+                same_checksum = not is_new and checksum == doc_dasch \
                     .get('Datacant:hasChecksum', {}) \
                     .get('knora-api:valueAsString')
                 filename_dasch = None

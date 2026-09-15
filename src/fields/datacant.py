@@ -106,7 +106,7 @@ class DecisionDocumentLink(LinkValue):
         LinkValue.__init__(self, name, value)
 
     def is_constant(self):
-        return True
+        return False
 
 
 class Description(SimpleTextValue):

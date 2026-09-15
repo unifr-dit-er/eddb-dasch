@@ -174,6 +174,12 @@ class LinkValue(ABC):
         pass
 
     def is_updated(self, dasch_obj):
+        is_previous_null = dasch_obj.get(self.name) is None
+        is_new_null = self.value is None
+        if is_previous_null and is_new_null:
+            return False
+        if is_previous_null ^ is_new_null:
+            return True
         link_target = dasch_obj[self.name].get('knora-api:linkValueHasTarget')
         if link_target is None:
             link_target = dasch_obj[self.name]['knora-api:linkValueHasTargetIri']
@@ -198,19 +204,49 @@ class LinkValue(ABC):
         }
 
     def to_knora_update(self, dasch_obj):
-        # TODO: handle optional field.
-        if self.value_iri is None:
-            raise RuntimeError('Method cannot be called when `iri` is not set')
-        field_id = dasch_obj[self.name]['@id']
-        return {
-            self.name: {
-                '@id': field_id,
-                '@type': 'knora-api:LinkValue',
-                'knora-api:linkValueHasTargetIri': {
-                    '@id': self.value_iri
+        # Link may be optional.
+        is_previous_null = dasch_obj.get(self.name) is None
+        is_new_null = self.value is None
+        if is_new_null:
+            if is_previous_null:
+                raise RuntimeError('Method cannot be called when value is still null.')
+            # Value must be deleted.
+            link_id = dasch_obj[self.name]['@id']
+            key_value = {
+                self.name: {
+                    '@id': link_id,
+                    '@type': 'knora-api:LinkValue',
                 }
             }
-        }
+            return (None, None, key_value)
+
+        if self.value_iri is None:
+            raise RuntimeError('Method cannot be called when `iri` is not set')
+
+        if is_previous_null:
+            # Then value must be created.
+            key_value = {
+                self.name: {
+                    '@type': 'knora-api:LinkValue',
+                    'knora-api:linkValueHasTargetIri': {
+                        '@id': self.value_iri
+                    }
+                }
+            }
+            return (None, key_value, None)
+        else:
+            # Then value must be updated.
+            field_id = dasch_obj[self.name]['@id']
+            key_value = {
+                self.name: {
+                    '@id': field_id,
+                    '@type': 'knora-api:LinkValue',
+                    'knora-api:linkValueHasTargetIri': {
+                        '@id': self.value_iri
+                    }
+                }
+            }
+            return (key_value, None, None)
 
 
 class LinksValue(ABC):
