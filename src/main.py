@@ -87,7 +87,7 @@ if __name__ == '__main__':
         Category.resource_type(),
         Keyword.resource_type(),
         DecisionDocument.resource_type(),
-        # DecisionSummary.resource_type(),
+        DecisionSummary.resource_type(),
     ]
 
     # Step 2: Update existing resources  or add new resources.
@@ -112,60 +112,25 @@ if __name__ == '__main__':
                 # TODO: add a special bloc to compare attachment.
 
                 payloads = object_eddb.payload_update_fields(data_dasch)
-                (payload_updates, _, _) = payloads
+                (payload_updates, payload_add, payload_del) = payloads
                 for payload in payload_updates:
                     update_value(payload, token)
+                for payload in payload_add:
+                    create_value(payload, token)
+                for payload in payload_del:
+                    delete_value(payload, token)
 
-                is_updated = payload_label is not None or len(payload_updates) != 0
+                is_updated = payload_label is not None or \
+                    len(payload_updates) != 0 or \
+                    len(payload_add) != 0 or \
+                    len(payload_del) != 0
                 if is_updated:
                     resource_id = object_dasch['@id']
                     logger.info(f'{key_in_db} (id={eddb_id}) field(s) have been updated')
             if is_created or is_updated:
                 data_dasch[key_in_db][eddb_id] = fetch_resource(resource_id, token)
 
-    # Step 4: Update existing decisions summary or add new summaries.
-    key_in_db = DecisionSummary.resource_type()
-    for did, decision_eddb in data_eddb[key_in_db].items():
-        decision_dasch = data_dasch[key_in_db].get(did)
-        decision_eddb.fill_iri_values(data_dasch)
-        is_created = False
-        is_updated = False
-
-        if decision_dasch is None:
-            logger.info(f'Add new DecisionSummary (id={did})')
-
-            # Create the resource.
-            payload = decision_eddb.payload_create()
-            resource_id = create_resource(payload, token)
-            is_created = True
-        else:
-            # Maybe update existing decision.
-            resource_id = decision_dasch['@id']
-            payload_label = decision_eddb.payload_update_label(decision_dasch)
-            if payload_label is not None:
-                logger.info(f'DecisionSummary (id={did}) label has been updated')
-                response = update_label(payload_label, token)
-
-            payloads = decision_eddb.payload_update_fields(data_dasch)
-            (payload_updates, payload_add, payload_del) = payloads
-            for payload in payload_updates:
-                update_value(payload, token)
-            for payload in payload_add:
-                create_value(payload, token)
-            for payload in payload_del:
-                delete_value(payload, token)
-
-            is_updated = payload_label is not None or \
-                len(payload_updates) != 0 or \
-                len(payload_add) != 0 or \
-                len(payload_del) != 0
-            if is_updated:
-                logger.info(f'DecisionSummary (id={did}) field(s) have been updated')
-
-        if is_created or is_updated:
-            data_dasch[key_in_db][did] = fetch_resource(resource_id, token)
-
-    # Step 5: Delete resources if not found in EDDB.
+    # Step 3: Delete resources if not found in EDDB.
     resource_types = [
         DecisionSummary.resource_type(),
         DecisionDocument.resource_type(),
@@ -185,7 +150,7 @@ if __name__ == '__main__':
         for k in keys_to_remove:
             data_dasch[resource_type].pop(k)
 
-    # Step 7: Save data in file.
+    # Step 4: Save data in file.
     with open('data/data_dasch.json', 'w') as f:
         f.write(json.dumps(data_dasch, indent=4))
     with open('data/eddb_decisions_document.json', 'w') as f:
