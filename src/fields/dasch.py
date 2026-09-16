@@ -109,24 +109,9 @@ class DateValue(DaschValue):
 
     def payload_value_update(self, dasch_obj):
         field_id = dasch_obj[self.name]['@id']
-        year = int(self.value[:4])
-        month = int(self.value[5:7])
-        day = int(self.value[8:])
-        return {
-            self.name: {
-                '@id': field_id,
-                '@type': self.get_type(),
-                'knora-api:dateValueHasStartYear': year,
-                'knora-api:dateValueHasEndYear': year,
-                'knora-api:dateValueHasStartMonth': month,
-                'knora-api:dateValueHasEndMonth': month,
-                'knora-api:dateValueHasStartDay': day,
-                'knora-api:dateValueHasEndDay': day,
-                'knora-api:dateValueHasStartEra': 'CE',
-                'knora-api:dateValueHasEndEra': 'CE',
-                'knora-api:dateValueHasCalendar': 'GREGORIAN'
-            }
-        }
+        key_value = self.to_knora()
+        key_value[self.name]['@id'] = field_id
+        return key_value
 
 
 class DocumentFileValue(DaschValue):
@@ -313,12 +298,14 @@ class LinksValue(DaschValue):
 
     def __init__(self, name, value):
         '''Initialization of the fields and inputs validation.'''
+        if not isinstance(value, list):
+            raise TypeError()
         self.name = name
         self.value = value
         self.value_iri = None
 
     def __eq__(self, other):
-        if not isinstance(other, LinkValue):
+        if not isinstance(other, LinksValue):
             return TypeError()
         return self.name == other.name and self.value == other.value
 
@@ -557,10 +544,6 @@ class SimpleTextValue(DaschValue):
 
     def payload_value_update(self, dasch_obj):
         field_id = dasch_obj[self.name]['@id']
-        return {
-            self.name: {
-                '@id': field_id,
-                '@type': self.get_type(),
-                'knora-api:valueAsString': self.value,
-            }
-        }
+        key_value = self.to_knora()
+        key_value[self.name]['@id'] = field_id
+        return key_value
