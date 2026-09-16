@@ -1,7 +1,7 @@
 import unittest
 import json
 from pathlib import Path
-from fields.datacant import CategoryLink, EddbId, NameDe, NameFr
+from fields.datacant import CategoryLink, EddbId, Name
 from models.keyword_model import Keyword
 
 
@@ -24,8 +24,8 @@ class TestKeyword(unittest.TestCase):
         self.assertEqual(keyword.eddb_id, EddbId(72))
         self.assertEqual(keyword.category_id, CategoryLink(22))
         self.assertEqual(keyword.name_en, 'Consent')
-        self.assertEqual(keyword.name_de, NameDe('Einwilligung'))
-        self.assertEqual(keyword.name_fr, NameFr('Consentement'))
+        self.assertEqual(keyword.name_de, Name('Einwilligung', 'de'))
+        self.assertEqual(keyword.name_fr, Name('Consentement', 'fr'))
 
     def test_constructor_fail(self):
         with self.assertRaises(ValueError):
@@ -49,8 +49,8 @@ class TestKeyword(unittest.TestCase):
         self.assertEqual(new_keyword.eddb_id, EddbId(72))
         self.assertEqual(new_keyword.category_id, CategoryLink(22))
         self.assertEqual(new_keyword.name_en, 'Consent')
-        self.assertEqual(new_keyword.name_de, NameDe('Einwilligung'))
-        self.assertEqual(new_keyword.name_fr, NameFr('Consentement'))
+        self.assertEqual(new_keyword.name_de, Name('Einwilligung', 'de'))
+        self.assertEqual(new_keyword.name_fr, Name('Consentement', 'fr'))
 
     def test_has_attachment_field(self):
         keyword = Keyword(72, 22, 'Consent', 'Einwilligung', 'Consentement')

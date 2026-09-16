@@ -130,23 +130,14 @@ class KeywordLink(LinksValue):
         LinksValue.__init__(self, name, value)
 
 
-class NameDe(SimpleTextValue):
+class Name(SimpleTextValue):
 
-    def __init__(self, value):
+    def __init__(self, value, language):
         '''Initialization of the fields.'''
+        if language not in ['de', 'fr']:
+            raise ValueError('Invalid language')
+        name = f'{PROJECT_NAME}:hasName{language.title()}'
         v = (value or '').strip()
         if len(v) == 0:
-            raise ValueError('Name in German must be set')
-        name = f'{PROJECT_NAME}:hasNameDe'
-        SimpleTextValue.__init__(self, name, v)
-
-
-class NameFr(SimpleTextValue):
-
-    def __init__(self, value):
-        '''Initialization of the fields.'''
-        v = (value or '').strip()
-        if len(v) == 0:
-            raise ValueError('Name in French must be set')
-        name = f'{PROJECT_NAME}:hasNameFr'
+            raise ValueError('Name must be set')
         SimpleTextValue.__init__(self, name, v)

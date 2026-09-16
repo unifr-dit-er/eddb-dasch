@@ -2,8 +2,7 @@ import unittest
 from fields.datacant import (
     DecisionDocumentLink,
     EddbId,
-    NameDe,
-    NameFr,
+    Name,
 )
 
 
@@ -44,27 +43,16 @@ class TestDatacantFields(unittest.TestCase):
         with self.assertRaises(ValueError):
             EddbId(-3)
 
-    def test_name_de(self):
-        field = NameDe(' Schuldbetreibung und Konkurs ')
+    def test_name_constructor(self):
+        field = Name(' Schuldbetreibung und Konkurs ', 'de')
         self.assertEqual(field.name, 'Datacant:hasNameDe')
         self.assertEqual(field.value, 'Schuldbetreibung und Konkurs')
 
-    def test_name_de_fail(self):
+    def test_name_constructor_fail(self):
         with self.assertRaises(ValueError):
-            NameDe(' ')
+            Name(' ', 'fr')
         with self.assertRaises(ValueError):
-            NameDe(None)
-
-    def test_name_fr(self):
-        field = NameFr(' Poursuite pour dette et faillite ')
-        self.assertEqual(field.name, 'Datacant:hasNameFr')
-        self.assertEqual(field.value, 'Poursuite pour dette et faillite')
-
-    def test_name_fr_fail(self):
-        with self.assertRaises(ValueError):
-            NameFr(' ')
-        with self.assertRaises(ValueError):
-            NameFr(None)
+            Name('Invalid language', 'en')
 
 
 if __name__ == '__main__':

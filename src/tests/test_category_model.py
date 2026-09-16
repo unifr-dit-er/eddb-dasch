@@ -1,7 +1,7 @@
 import unittest
 import json
 from pathlib import Path
-from fields.datacant import EddbId, NameDe, NameFr
+from fields.datacant import EddbId, Name
 from models.category_model import Category
 
 
@@ -23,8 +23,8 @@ class TestCategory(unittest.TestCase):
         category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')
         self.assertEqual(category.eddb_id, EddbId(1))
         self.assertEqual(category.name_en, 'Privacy')
-        self.assertEqual(category.name_de, NameDe('Datenschutz'))
-        self.assertEqual(category.name_fr, NameFr('Vie privée'))
+        self.assertEqual(category.name_de, Name('Datenschutz', 'de'))
+        self.assertEqual(category.name_fr, Name('Vie privée', 'fr'))
 
     def test_constructor_fail(self):
         with self.assertRaises(ValueError):

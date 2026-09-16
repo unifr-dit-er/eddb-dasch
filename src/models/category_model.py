@@ -1,5 +1,5 @@
 from models.resource import Resource
-from fields.datacant import EddbId, NameDe, NameFr
+from fields.datacant import EddbId, Name
 
 
 class Category(Resource):
@@ -11,8 +11,8 @@ class Category(Resource):
             raise ValueError('Category name_en is not set')
         self.eddb_id = EddbId(eddb_id)
         self.name_en = en
-        self.name_de = NameDe(name_de)
-        self.name_fr = NameFr(name_fr)
+        self.name_de = Name(name_de, 'de')
+        self.name_fr = Name(name_fr, 'fr')
 
     def fill_iri_values(self, dasch_db):
         pass

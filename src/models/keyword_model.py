@@ -1,6 +1,6 @@
 from models.resource import Resource
 from models.category_model import Category
-from fields.datacant import CategoryLink, EddbId, NameDe, NameFr
+from fields.datacant import CategoryLink, EddbId, Name
 
 
 class Keyword(Resource):
@@ -13,8 +13,8 @@ class Keyword(Resource):
         self.eddb_id = EddbId(eddb_id)
         self.category_id = CategoryLink(category_id)
         self.name_en = en
-        self.name_de = NameDe(name_de)
-        self.name_fr = NameFr(name_fr)
+        self.name_de = Name(name_de, 'de')
+        self.name_fr = Name(name_fr, 'fr')
 
     def fill_iri_values(self, dasch_db):
         category = self.category_id
