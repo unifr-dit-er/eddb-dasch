@@ -225,6 +225,10 @@ class TestDatacantFields(unittest.TestCase):
         with self.assertRaises(ValueError):
             EddbId(-3)
 
+    def test_eddb_id_type(self):
+        field = EddbId(1)
+        self.assertEqual(field.get_type(), 'knora-api:IntValue')
+
     def test_filename_constructor(self):
         field = FileName('FR_2021-08-12.pdf')
         self.assertEqual(field.name, 'Datacant:hasFileName')
@@ -243,6 +247,77 @@ class TestDatacantFields(unittest.TestCase):
         with self.assertRaises(TypeError):
             KeywordLink(3)
 
+    def test_keyword_link_type(self):
+        field = KeywordLink([3, 72])
+        self.assertEqual(field.get_type(), 'knora-api:LinkValue')
+
+    def test_keyword_link_is_updated_false(self):
+        field = KeywordLink([3, 72])
+        field.set_value_iri(['1a', '1b'])
+        dasch_obj = {
+            field.name: [
+                {'knora-api:linkValueHasTargetIri': {'@id': '1a'}},
+                {'knora-api:linkValueHasTargetIri': {'@id': '1b'}},
+            ]
+        }
+        self.assertFalse(field.is_updated(dasch_obj))
+
+    def test_keyword_link_is_updated_true(self):
+        field = KeywordLink([3, 72])
+        field.set_value_iri(['1a', '1b'])
+        dasch_obj = {
+            # Note: It is not a list when there is only one keyword.
+            field.name: {
+                'knora-api:linkValueHasTargetIri': {'@id': '1a'},
+            }
+        }
+        self.assertTrue(field.is_updated(dasch_obj))
+
+    def test_keyword_link_payload_create(self):
+        field = KeywordLink([3, 72])
+        field.set_value_iri(['1a', '1b'])
+        key_value = field.to_knora()
+        values = key_value[field.name]
+        self.assertEqual(len(values), 2)
+        self.assertEqual(values[0]['@type'], field.get_type())
+        self.assertEqual(values[0]['knora-api:linkValueHasTargetIri']['@id'], '1a')
+        self.assertEqual(values[1]['@type'], field.get_type())
+        self.assertEqual(values[1]['knora-api:linkValueHasTargetIri']['@id'], '1b')
+
+    def test_keyword_link_payload_value_add(self):
+        field = KeywordLink([3, 72])
+        field.set_value_iri(['1a', '1b'])
+        dasch_obj = {
+            field.name: [
+                {'knora-api:linkValueHasTarget': {'@id': '1a'}},
+            ]
+        }
+        key_value = field.payload_value_add(dasch_obj)
+        self.assertEqual(len(key_value), 1)
+        v = key_value[0][field.name]
+        self.assertEqual(v['@type'], field.get_type())
+        self.assertEqual(v['knora-api:linkValueHasTargetIri']['@id'], '1b')
+
+    def test_keyword_link_payload_value_del(self):
+        field = KeywordLink([3])
+        field.set_value_iri(['1a'])
+        dasch_obj = {
+            field.name: [
+                {'@id': '22', 'knora-api:linkValueHasTarget': {'@id': '1a'}},
+                {'@id': '33', 'knora-api:linkValueHasTarget': {'@id': '1b'}},
+            ]
+        }
+        key_value = field.payload_value_del(dasch_obj)
+        self.assertEqual(len(key_value), 1)
+        v = key_value[0][field.name]
+        self.assertEqual(v['@id'], '33')
+        self.assertEqual(v['@type'], field.get_type())
+
+    def test_keyword_link_payload_value_update(self):
+        with self.assertRaises(RuntimeError):
+            field = KeywordLink([3])
+            field.payload_value_update(None)
+
     def test_name_constructor(self):
         field = Name(' Schuldbetreibung und Konkurs ', 'de')
         self.assertEqual(field.name, 'Datacant:hasNameDe')
@@ -253,6 +328,10 @@ class TestDatacantFields(unittest.TestCase):
             Name(' ', 'fr')
         with self.assertRaises(ValueError):
             Name('Invalid language', 'en')
+
+    def test_name_type(self):
+        field = Name(' Schuldbetreibung und Konkurs ', 'de')
+        self.assertEqual(field.get_type(), 'knora-api:TextValue')
 
 
 if __name__ == '__main__':
