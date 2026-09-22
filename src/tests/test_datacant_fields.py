@@ -1,5 +1,6 @@
 import unittest
 from fields.datacant import (
+    Abstract,
     Attachment,
     Canton,
     CategoryLink,
@@ -16,6 +17,47 @@ from fields.datacant import (
 class TestDatacantFields(unittest.TestCase):
     def setUp(self):
         pass
+
+    def test_abstract_constructor(self):
+        updated_at = '2026-02-20 13:37:26+00:00'
+        field = Abstract('A. arbeitet seit 1991', 'de', updated_at)
+        self.assertEqual(field.name, 'Datacant:hasAbstractDe')
+        self.assertEqual(field.value, 'A. arbeitet seit 1991')
+        self.assertEqual(field.updated_at, '2026-02-20 13:37:26+00:00')
+
+    def test_abstract_type(self):
+        updated_at = '2026-02-20 13:37:26+00:00'
+        field = Abstract('A. arbeitet seit 1991', 'de', updated_at)
+        self.assertEqual(field.get_type(), 'knora-api:TextValue')
+
+    def test_abstract_is_updated_false(self):
+        created_at = '2026-09-16T08:16:43.552906918Z'
+        updated_at = '2026-02-20 13:37:26+00:00'
+        field = Abstract('A. arbeitet seit 1991', 'de', updated_at)
+        dasch_obj = {field.name: {'knora-api:valueCreationDate': {'@value': created_at}}}
+        self.assertFalse(field.is_updated(dasch_obj))
+
+    # Note: we don't test `test_abstract_is_updated_true` because api is required.
+
+    def test_abstract_payload_create(self):
+        updated_at = '2026-02-20 13:37:26+00:00'
+        field = Abstract('A. arbeitet seit 1991', 'de', updated_at)
+        key_value = field.to_knora()
+        v = key_value[field.name]
+        self.assertEqual(v['@type'], field.get_type())
+        self.assertEqual(v['knora-api:textValueAsXml'], field.value)
+        self.assertTrue(v['knora-api:textValueHasMapping']['@id'].endswith('StandardMapping'))
+
+    def test_abstract_payload_value_update(self):
+        updated_at = '2026-02-20 13:37:26+00:00'
+        field = Abstract('A. arbeitet seit 1991', 'de', updated_at)
+        dasch_obj = {field.name: {'@id': '1a'}}
+        key_value = field.payload_value_update(dasch_obj)
+        v = key_value[field.name]
+        self.assertEqual(v['@id'], '1a')
+        self.assertEqual(v['@type'], field.get_type())
+        self.assertEqual(v['knora-api:textValueAsXml'], field.value)
+        self.assertIsNone(v['knora-api:textValueHasMapping']['@id'])
 
     def test_attachment_constructor(self):
         updated_at = '2026-02-20 13:37:26+00:00'
@@ -67,7 +109,10 @@ class TestDatacantFields(unittest.TestCase):
         key_value = field.to_knora()
         v = key_value[field.name]
         self.assertEqual(v['@type'], field.get_type())
-        self.assertEqual(v['knora-api:listValueAsListNode']['@id'], 1234)
+        self.assertEqual(v['knora-api:fileValueHasFilename'], 'tmp.pdf')
+        self.assertTrue(v['knora-api:hasLicense']['@id'].endswith('/licenses/public-domain'))
+        self.assertTrue(v['knora-api:hasCopyrightHolder'].startswith('Public Domain'))
+        self.assertEqual(v['knora-api:hasAuthorship'], ['Swiss court'])
 
     def test_canton_constructor(self):
         field = Canton('FR')

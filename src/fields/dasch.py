@@ -472,6 +472,7 @@ class RichTextValue(DaschValue):
         # Note: we cannot compare the new with old value because DaSCH
         # transforms the input. Therefore, we assume a change based on a date.
         dasch_date = dasch_obj[self.name]['knora-api:valueCreationDate']['@value']
+        # TODO: check the update using the api.
         return dasch_date < self.updated_at
 
     def to_knora(self):
