@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import MagicMock, patch
 import json
 from pathlib import Path
 from fields.datacant import (
@@ -25,6 +26,7 @@ class TestDecisionSummary(unittest.TestCase):
             {int(k): v for k, v in data['Datacant:DecisionDocument'].items()}
         data['Datacant:DecisionSummary'] = \
             {int(k): v for k, v in data['Datacant:DecisionSummary'].items()}
+        data['token'] = None
         self.dasch_db = data
         self.attributes = {
             'eddb_id': 257,
@@ -129,7 +131,12 @@ class TestDecisionSummary(unittest.TestCase):
         abstract_fr = payload['Datacant:hasAbstractFr']['knora-api:textValueAsXml']
         self.assertEqual(abstract_fr, decision.abstract_fr.value)
 
-    def test_payload_update_fields(self):
+    @patch('helper.requests.post')
+    def test_payload_update_fields(self, mock_requests):
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.text.return_value = ''
+        mock_requests.return_value = mock_response
         args = {
             'eddb_id': self.attributes['eddb_id'],
             'date_issued': '2021-08-13',

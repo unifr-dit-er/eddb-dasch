@@ -58,6 +58,8 @@ if __name__ == '__main__':
         tmp = {k: v.to_dict() for k, v in data_eddb[key].items()}
         f.write(json.dumps(tmp, indent=4))
 
+    data_dasch['token'] = token
+
     # Step 1: Handle the attachments.
     key_in_db = DecisionDocument.resource_type()
     for did, doc_eddb in data_eddb[key_in_db].items():

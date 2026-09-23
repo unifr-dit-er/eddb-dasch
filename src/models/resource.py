@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 import payload
+from fields.dasch import DocumentFileValue, RichTextValue
+from helper import transform_to_rich
 
 
 class Resource(ABC):
@@ -45,6 +47,15 @@ class Resource(ABC):
 
         for field in self.fields():
             f_payloads = field.to_knora_update(dasch_obj)
+            if isinstance(field, DocumentFileValue):
+                print('Document file detected')
+            elif isinstance(field, RichTextValue):
+                # `Method is_updated` does a parital comparison for `RichText` type.
+                if field.is_updated(dasch_obj):
+                    dasch_xml = dasch_obj[field.name]['knora-api:textValueAsXml']
+                    response = transform_to_rich(field.value, dasch_db['token'])
+                    if dasch_xml == response.text:
+                        continue
             for key in ['updates', 'add_values', 'del_values']:
                 for key_value in f_payloads[key]:
                     p = payload.update(resource_id, resource_type, key_value)
