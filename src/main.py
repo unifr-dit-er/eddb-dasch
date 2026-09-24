@@ -61,36 +61,37 @@ if __name__ == '__main__':
 
     data_dasch['token'] = token
 
-    # Step 1: Handle the attachments.
-    key_in_db = DecisionDocument.resource_type()
-    for did, doc_eddb in data_eddb[key_in_db].items():
-        doc_dasch = data_dasch[key_in_db].get(did)
-
-        is_new = doc_dasch is None
-        maybe_updated = doc_eddb.attachment.is_updated(doc_dasch)
-
-        if is_new or maybe_updated:
-            # Download required.
-            filename = doc_eddb.eddb_filename()
-            url_file = doc_eddb.eddb_url_file()
-            download_file(url_file, filename)
-            path_to_file = Path('data/documents') / filename
-            with open(path_to_file, 'rb', buffering=0) as f:
-                checksum_new = hashlib.file_digest(f, 'sha256').hexdigest()
-                checksum_old = fetch_checksum(doc_dasch, token)
-                is_upload_needed = checksum_new != checksum_old
-                filename_dasch = None
-                if is_upload_needed:
-                    response = upload_to_ingest(filename, token)
-                    filename_dasch = response['internalFilename']
-                    doc_eddb.attachment.set_value(filename_dasch)
-
     resource_types = [
         Category.resource_type(),
         Keyword.resource_type(),
         DecisionDocument.resource_type(),
         DecisionSummary.resource_type(),
     ]
+
+    # Step 1: Handle the attachments.
+    for key_in_db in resource_types:
+        for eddb_id, object_eddb in data_eddb[key_in_db].items():
+            object_dasch = data_dasch[key_in_db].get(eddb_id)
+            attachment = object_eddb.file_field()
+            if attachment is not None:
+                is_new = object_dasch is None
+                maybe_updated = attachment.is_updated(object_dasch)
+
+                if is_new or maybe_updated:
+                    # Download required.
+                    filename = object_eddb.eddb_filename()
+                    url_file = object_eddb.eddb_url_file()
+                    download_file(url_file, filename)
+                    path_to_file = Path('data/documents') / filename
+                    with open(path_to_file, 'rb', buffering=0) as f:
+                        checksum_new = hashlib.file_digest(f, 'sha256').hexdigest()
+                        checksum_old = fetch_checksum(object_dasch, token)
+                        is_upload_needed = checksum_new != checksum_old
+                        filename_dasch = None
+                        if is_upload_needed:
+                            response = upload_to_ingest(filename, token)
+                            filename_dasch = response['internalFilename']
+                            attachment.set_value(filename_dasch)
 
     # Step 2: Update existing resources  or add new resources.
     for key_in_db in resource_types:
@@ -128,12 +129,8 @@ if __name__ == '__main__':
                 data_dasch[key_in_db][eddb_id] = fetch_resource(resource_id, token)
 
     # Step 3: Delete resources if not found in EDDB.
-    resource_types = [
-        DecisionSummary.resource_type(),
-        DecisionDocument.resource_type(),
-        Keyword.resource_type(),
-        Category.resource_type(),
-    ]
+    resource_types.reverse()
+
     for resource_type in resource_types:
         keys_to_remove = []
         for eddb_id_old, row in data_dasch[resource_type].items():

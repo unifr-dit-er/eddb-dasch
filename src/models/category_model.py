@@ -14,6 +14,9 @@ class Category(Resource):
         self.name_de = Name(name_de, 'de')
         self.name_fr = Name(name_fr, 'fr')
 
+    def file_field(self):
+        return None
+
     def fill_iri_values(self, dasch_db):
         pass
 
@@ -23,9 +26,6 @@ class Category(Resource):
             self.name_de,
             self.name_fr,
         ]
-
-    def has_attachment_field(self):
-        return False
 
     def label(self):
         return self.name_en

@@ -34,6 +34,10 @@ class TestCategory(unittest.TestCase):
         with self.assertRaises(ValueError):
             Category(1, 'Privacy', 'Datenschutz', None)
 
+    def test_file_field(self):
+        category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')
+        self.assertIsNone(category.file_field())
+
     def test_from_and_to_json(self):
         category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')
         json_str = json.dumps(category.to_dict())
@@ -43,10 +47,6 @@ class TestCategory(unittest.TestCase):
         self.assertEqual(new_category.name_en, 'Privacy')
         self.assertEqual(new_category.name_de, 'Datenschutz')
         self.assertEqual(new_category.name_fr, 'Vie privée')
-
-    def test_has_attachment_field(self):
-        category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')
-        self.assertFalse(category.has_attachment_field())
 
     def test_label(self):
         category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')

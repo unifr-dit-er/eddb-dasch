@@ -59,6 +59,10 @@ class TestDecisionSummary(unittest.TestCase):
         with self.assertRaises(ValueError):
             DecisionSummary(**attributes)
 
+    def test_file_field(self):
+        decision = DecisionSummary(**self.attributes)
+        self.assertIsNone(decision.file_field())
+
     def test_fill_iri_values(self):
         decision = DecisionSummary(**self.attributes)
         decision.fill_iri_values(self.dasch_db)

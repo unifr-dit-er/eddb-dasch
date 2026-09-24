@@ -49,6 +49,10 @@ class TestDecisionDocument(unittest.TestCase):
         url_file = 'http://www.u.ch/download/2005.06.28-5__vzhl.pdf'
         self.assertEqual(decision.attachment.eddb_url, url_file)
 
+    def test_file_field(self):
+        decision = DecisionDocument(**self.attributes)
+        self.assertTrue(decision.file_field())
+
     def test_fill_iri_values(self):
         decision = DecisionDocument(**self.attributes)
         decision.fill_iri_values(self.dasch_db)
@@ -72,10 +76,6 @@ class TestDecisionDocument(unittest.TestCase):
     def test_filename(self):
         decision = DecisionDocument(**self.attributes)
         self.assertEqual(decision.filename(), 'FR_2021-08-12.pdf')
-
-    def test_has_file_field(self):
-        decision = DecisionDocument(**self.attributes)
-        self.assertTrue(decision.has_attachment_field())
 
     def test_label(self):
         decision = DecisionDocument(**self.attributes)

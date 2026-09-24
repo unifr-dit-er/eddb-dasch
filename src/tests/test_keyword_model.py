@@ -35,6 +35,10 @@ class TestKeyword(unittest.TestCase):
         with self.assertRaises(ValueError):
             Keyword(72, 22, 'Consent', 'EinwilligungDatenschutz', None)
 
+    def test_file_field(self):
+        keyword = Keyword(72, 22, 'Consent', 'Einwilligung', 'Consentement')
+        self.assertIsNone(keyword.file_field())
+
     def test_fill_iri_values(self):
         keyword = Keyword(72, 22, 'Consent', 'Einwilligung', 'Consentement')
         keyword.fill_iri_values(self.dasch_db)
@@ -51,10 +55,6 @@ class TestKeyword(unittest.TestCase):
         self.assertEqual(new_keyword.name_en, 'Consent')
         self.assertEqual(new_keyword.name_de, Name('Einwilligung', 'de'))
         self.assertEqual(new_keyword.name_fr, Name('Consentement', 'fr'))
-
-    def test_has_attachment_field(self):
-        keyword = Keyword(72, 22, 'Consent', 'Einwilligung', 'Consentement')
-        self.assertFalse(keyword.has_attachment_field())
 
     def test_label(self):
         keyword = Keyword(72, 22, 'Consent', 'Einwilligung', 'Consentement')

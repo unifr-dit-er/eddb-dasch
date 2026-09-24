@@ -12,15 +12,15 @@ class Resource(ABC):
         pass
 
     @abstractmethod
+    def file_field(self):
+        pass
+
+    @abstractmethod
     def fill_iri_values(self, dasch_db):
         pass
 
     @abstractmethod
     def fields(self):
-        pass
-
-    @abstractmethod
-    def has_attachment_field(self):
         pass
 
     def has_label_changed(self, label_old):

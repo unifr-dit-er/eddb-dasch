@@ -39,6 +39,9 @@ class DecisionSummary(Resource):
         self.keywords_id = KeywordLink(keywords_id)
         self.decision_document = DecisionDocumentLink(decision_document)
 
+    def file_field(self):
+        return None
+
     def fields(self):
         return [
             self.eddb_id,
@@ -63,9 +66,6 @@ class DecisionSummary(Resource):
             .get(self.eddb_id.value, {}) \
             .get('@id')
         self.decision_document.set_value_iri(doc_iri)
-
-    def has_attachment_field(self):
-        return False
 
     def label(self):
         return '{} {}'.format(self.canton.value, self.date_issued.value)

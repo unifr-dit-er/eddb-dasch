@@ -30,6 +30,9 @@ class DecisionDocument(Resource):
     def eddb_url_file(self):
         return self.attachment.eddb_url
 
+    def file_field(self):
+        return self.attachment
+
     def fields(self):
         return [
             self.eddb_id,
@@ -43,9 +46,6 @@ class DecisionDocument(Resource):
 
     def fill_iri_values(self, dasch_db):
         pass
-
-    def has_attachment_field(self):
-        return True
 
     def label(self):
         return '{} {}'.format(self.canton, self.date_issued)
