@@ -16,15 +16,13 @@ class DecisionDocument(Resource):
         date_issued,
         canton,
         eddb_url,
-        checksum,
-        filename_dasch,
     ):
         '''Initialization of the fields.'''
         self.eddb_id = EddbId(eddb_id)
         self.updated_at = updated_at
         self.date_issued = date_issued
         self.canton = canton
-        self.attachment = Attachment(eddb_url, filename_dasch, checksum, updated_at)
+        self.attachment = Attachment(eddb_url, updated_at)
 
     def eddb_filename(self):
         return self.attachment.eddb_url.split('/')[-1]
@@ -37,7 +35,7 @@ class DecisionDocument(Resource):
             self.eddb_id,
             FileName(self.filename()),
             self.attachment,
-            Checksum(self.attachment.checksum),
+            Checksum('TODO'),
         ]
 
     def filename(self):
@@ -63,8 +61,6 @@ class DecisionDocument(Resource):
             'date_issued': self.date_issued,
             'canton': self.canton,
             'eddb_url': self.attachment.eddb_url,
-            'filename_dasch': self.attachment.filename_dasch,
-            'checksum': self.attachment.checksum,
         }
 
     @classmethod

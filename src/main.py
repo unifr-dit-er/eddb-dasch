@@ -14,6 +14,7 @@ from models.keyword_model import Keyword
 import payload as pload
 from repository import (
     fetch_all_resources,
+    fetch_checksum,
     fetch_resource,
     fetch_token,
     create_resource,
@@ -75,15 +76,14 @@ if __name__ == '__main__':
             download_file(url_file, filename)
             path_to_file = Path('data/documents') / filename
             with open(path_to_file, 'rb', buffering=0) as f:
-                checksum = hashlib.file_digest(f, 'sha256').hexdigest()
-                same_checksum = not is_new and checksum == doc_dasch \
-                    .get('Datacant:hasChecksum', {}) \
-                    .get('knora-api:valueAsString')
+                checksum_new = hashlib.file_digest(f, 'sha256').hexdigest()
+                checksum_old = fetch_checksum(doc_dasch, token)
+                is_upload_needed = checksum_new != checksum_old
                 filename_dasch = None
-                if not same_checksum:
+                if is_upload_needed:
                     response = upload_to_ingest(filename, token)
                     filename_dasch = response['internalFilename']
-                doc_eddb.attachment.set_value(url_file, filename_dasch, checksum)
+                    doc_eddb.attachment.set_value(filename_dasch)
 
     resource_types = [
         Category.resource_type(),
@@ -110,8 +110,6 @@ if __name__ == '__main__':
                 if payload_label is not None:
                     logger.info(f'{key_in_db} (id={eddb_id}) label has been updated')
                     response = update_label(payload_label, token)
-
-                # TODO: add a special bloc to compare attachment.
 
                 payloads = object_eddb.payload_update_fields(data_dasch)
                 for payload in payloads['updates']:

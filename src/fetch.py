@@ -113,8 +113,6 @@ def fetch_eddb_decisions_page(data, date_start, page):
                 'eddb_url': url_file,
                 'date_issued': j['Date'],
                 'canton': j['Canton'],
-                'filename_dasch': None,
-                'checksum': None,
                 'updated_at': j['UpdatedAt'],
             }
         attributes_summary = {

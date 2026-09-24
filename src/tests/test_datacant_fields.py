@@ -61,51 +61,39 @@ class TestDatacantFields(unittest.TestCase):
 
     def test_attachment_constructor(self):
         updated_at = '2026-02-20 13:37:26+00:00'
-        field = Attachment('https://', 'tmp.pdf', 'ba7816bf8', updated_at)
+        field = Attachment('https://', updated_at)
         self.assertEqual(field.name, 'knora-api:hasDocumentFileValue')
-        self.assertEqual(field.value, 'tmp.pdf')
-        self.assertEqual(field.checksum, 'ba7816bf8')
+        self.assertIsNone(field.value)
         self.assertEqual(field.eddb_url, 'https://')
         self.assertEqual(field.license, 'http://rdfh.ch/licenses/public-domain')
         self.assertEqual(field.copyright, 'Public Domain - Not Protected by Copyright')
         self.assertEqual(field.authors, ['Swiss court'])
 
     def test_attachment_type(self):
-        field = Attachment('https://', 'tmp.pdf', None, '2026-02-20 13:37:26+00:00')
+        field = Attachment('https://', '2026-02-20 13:37:26+00:00')
         self.assertEqual(field.get_type(), 'knora-api:DocumentFileValue')
 
     def test_attachment_is_updated_false(self):
-        field = Attachment('https://', 'tmp.pdf', 'ab', '2026-02-20 13:37:26+00:00')
+        field = Attachment('https://', '2026-02-20 13:37:26+00:00')
         dasch_obj = {
             field.name: {
-                'knora-api:valueCreationDate': {'@value': '2026-02-20 13:37:26+00:00'}
+                'knora-api:valueCreationDate': {'@value': '2026-02-21 13:37:26+00:00'}
             },
-            'Datacant:hasChecksum': {'knora-api:valueAsString': 'ab'},
         }
         self.assertFalse(field.is_updated(dasch_obj))
 
-    def test_attachment_is_updated_by_checksum(self):
-        field = Attachment('https://', 'tmp.pdf', 'bc', '2026-02-20 13:37:26+00:00')
+    def test_attachment_is_updated_true(self):
+        field = Attachment('https://', '2026-02-20 00:00:00+00:00')
         dasch_obj = {
             field.name: {
                 'knora-api:valueCreationDate': {'@value': '2026-02-20 13:37:26+00:00'}
             },
-            'Datacant:hasChecksum': {'knora-api:valueAsString': 'ab'},
-        }
-        self.assertTrue(field.is_updated(dasch_obj))
-
-    def test_attachment_is_updated_by_date(self):
-        field = Attachment('https://', 'tmp.pdf', 'ab', '2026-02-21 00:00:00+00:00')
-        dasch_obj = {
-            field.name: {
-                'knora-api:valueCreationDate': {'@value': '2026-02-20 13:37:26+00:00'}
-            },
-            'Datacant:hasChecksum': {'knora-api:valueAsString': 'ab'},
         }
         self.assertTrue(field.is_updated(dasch_obj))
 
     def test_attachment_payload_create(self):
-        field = Attachment('https://', 'tmp.pdf', 'ab', '2026-02-21 00:00:00+00:00')
+        field = Attachment('https://', '2026-02-21 00:00:00+00:00')
+        field.set_value('tmp.pdf')
         key_value = field.to_knora()
         v = key_value[field.name]
         self.assertEqual(v['@type'], field.get_type())

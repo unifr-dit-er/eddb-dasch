@@ -64,6 +64,25 @@ def fetch_all_resources(token, use_cache):
     return data
 
 
+def fetch_checksum(dasch_obj, token):
+    if dasch_obj is None:
+        return ''
+    filename = dasch_obj \
+        .get('knora-api:hasDocumentFileValue') \
+        .get('knora-api:fileValueHasFilename')
+    filename_id = filename.split('.')[0]
+    url = f'{INGEST_HOST}/projects/0871/assets/{filename_id}'
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json',
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code >= 400:
+        raise RuntimeError('Cannot fetch document checksum')
+    checksum = response.json()['checksumOriginal']
+    return checksum
+
+
 def fetch_controlled_vocabulary(token):
     '''Fetch the enumerations defined in the project.
     '''

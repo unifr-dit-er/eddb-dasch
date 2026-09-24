@@ -118,11 +118,10 @@ class DocumentFileValue(DaschValue):
     '''Abstract class which shapes the document files.
     '''
 
-    def __init__(self, name, value, checksum, updated_at, licens, cpyright, authors):
+    def __init__(self, name, value, updated_at, licens, cpyright, authors):
         '''Initialization of the fields and inputs validation.'''
         self.name = name
         self.value = value
-        self.checksum = checksum
         self.updated_at = updated_at
         self.license = licens
         self.copyright = cpyright
@@ -138,19 +137,19 @@ class DocumentFileValue(DaschValue):
 
     def is_updated(self, dasch_obj):
         # Note: we don't want to download files if it is not necessary.
-        # But we also consider the dates and not only the checksum.
+        # But we are only considering the dates and not only the checksum here.
         if dasch_obj is None:
             return True
         dasch_date = dasch_obj[self.name]['knora-api:valueCreationDate']['@value']
-        update_based_on_date = dasch_date < self.updated_at
+        date_change = dasch_date[:10] <= self.updated_at[:10]
+        return date_change or self.value is not None
 
-        checksum_old = dasch_obj \
-            .get('Datacant:hasChecksum', {}) \
-            .get('knora-api:valueAsString')
-        same_checksum = self.checksum == checksum_old
-        return update_based_on_date or not same_checksum
+    def set_value(self, filename_dasch):
+        self.value = filename_dasch
 
     def to_knora(self):
+        if self.value is None:
+            raise RuntimeError('Method cannot be called when value is not set')
         return {
             self.name: {
                 '@type': self.get_type(),

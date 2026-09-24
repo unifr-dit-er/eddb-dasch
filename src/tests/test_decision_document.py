@@ -24,8 +24,6 @@ class TestDecisionDocument(unittest.TestCase):
             'updated_at': '2026-02-20 13:37:26+00:00',
             'canton': 'FR',
             'eddb_url': 'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
-            'filename_dasch': '3HIj4A8lXjQ-vxGzbejbhxO.pdf',
-            'checksum': 'ba7816bf8',
         }
 
     def test_constructor(self):
@@ -37,8 +35,7 @@ class TestDecisionDocument(unittest.TestCase):
         self.assertEqual(
             doc.attachment.eddb_url,
             'http://www.u.ch/download/2005.06.28-5__vzhl.pdf')
-        self.assertEqual(doc.attachment.filename_dasch, '3HIj4A8lXjQ-vxGzbejbhxO.pdf')
-        self.assertEqual(doc.attachment.checksum, 'ba7816bf8')
+        self.assertIsNone(doc.attachment.value)
 
     def test_constructor_fail(self):
         pass
@@ -67,12 +64,10 @@ class TestDecisionDocument(unittest.TestCase):
         self.assertEqual(decision.canton, 'FR')
         self.assertEqual(decision.attachment, Attachment(
             'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
-            '3HIj4A8lXjQ-vxGzbejbhxO.pdf',
-            'ba7816bf8',
             '2026-02-20 13:37:26+00:00',
         ))
-        # self.assertTrue(decision.attachment.eddb_url.startswith('http'))
-        # self.assertTrue(decision.attachment.filename_dasch.endswith('2005.06.28-5__vzhl.pdf'))
+        self.assertTrue(decision.attachment.eddb_url.startswith('http'))
+        self.assertIsNone(decision.attachment.value)
 
     def test_filename(self):
         decision = DecisionDocument(**self.attributes)
@@ -89,6 +84,7 @@ class TestDecisionDocument(unittest.TestCase):
     def test_payload_create(self):
         decision = DecisionDocument(**self.attributes)
         decision.fill_iri_values(self.dasch_db)
+        decision.attachment.set_value('3HIj4A8lXjQ-vxGzbejbhxO.pdf')
         payload = decision.payload_create()
         self.assertEqual(payload['@type'], decision.resource_type())
         self.assertEqual(payload['rdfs:label'], decision.label())
@@ -99,12 +95,10 @@ class TestDecisionDocument(unittest.TestCase):
         filename = payload['Datacant:hasFileName']['knora-api:valueAsString']
         self.assertEqual(filename, decision.filename())
 
-        # TODO: add checksum bloc
-
         filename_dasch_tmp = payload \
             .get('knora-api:hasDocumentFileValue') \
             .get('knora-api:fileValueHasFilename')
-        self.assertEqual(filename_dasch_tmp, decision.attachment.filename_dasch)
+        self.assertEqual(filename_dasch_tmp, decision.attachment.value)
 
     def test_payload_update_fields(self):
         pass
@@ -114,13 +108,9 @@ class TestDecisionDocument(unittest.TestCase):
 
     def test_set_filename_dasch(self):
         decision = DecisionDocument(**self.attributes)
-        eddb_url = 'https://...'
         filename_dasch = '4rMCDmxpYAx-DiRuvu3v2rQ.pdf'
-        checksum = 'ba7816bf8'
-        decision.attachment.set_value(eddb_url, filename_dasch, checksum)
-        self.assertEqual(decision.attachment.eddb_url, eddb_url)
-        self.assertEqual(decision.attachment.filename_dasch, filename_dasch)
-        self.assertEqual(decision.attachment.checksum, checksum)
+        decision.attachment.set_value(filename_dasch)
+        self.assertEqual(decision.attachment.value, filename_dasch)
 
     def test_resource_type(self):
         decision = DecisionDocument(**self.attributes)

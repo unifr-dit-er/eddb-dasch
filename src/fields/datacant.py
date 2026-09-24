@@ -28,23 +28,15 @@ class Abstract(RichTextValue):
 
 class Attachment(DocumentFileValue):
 
-    def __init__(self, eddb_url, filename_dasch, checksum, updated_at):
+    def __init__(self, eddb_url, updated_at):
         '''Initialization of the fields.'''
         self.eddb_url = eddb_url
-        self.filename_dasch = filename_dasch
         name = 'knora-api:hasDocumentFileValue'
-        value = filename_dasch
+        value = None
         lic = 'http://rdfh.ch/licenses/public-domain'
         cpyright = 'Public Domain - Not Protected by Copyright'
         authors = ['Swiss court']
-        DocumentFileValue.__init__(
-            self, name, value, checksum, updated_at, lic, cpyright, authors)
-
-    def set_value(self, eddb_url, filename_dasch, checksum):
-        self.eddb_url = eddb_url
-        self.filename_dasch = filename_dasch
-        self.value = filename_dasch
-        self.checksum = checksum
+        DocumentFileValue.__init__(self, name, value, updated_at, lic, cpyright, authors)
 
 
 class Canton(ListValue):
@@ -63,6 +55,7 @@ class CategoryLink(LinkValue):
         LinkValue.__init__(self, name, value)
 
 
+# TODO: Delete this class.
 class Checksum(SimpleTextValue):
 
     def __init__(self, value):
@@ -70,6 +63,9 @@ class Checksum(SimpleTextValue):
         name = f'{PROJECT_NAME}:hasChecksum'
         v = (value or '').strip()
         SimpleTextValue.__init__(self, name, v)
+
+    def is_updated(self, obj):
+        return False
 
 
 class DateGreg(DateValue):
