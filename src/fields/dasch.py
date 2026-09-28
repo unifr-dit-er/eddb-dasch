@@ -167,7 +167,14 @@ class DocumentFileValue(DaschValue):
         raise NotImplementedError()
 
     def payload_value_update(self, dasch_obj):
-        raise NotImplementedError()
+        field_id = dasch_obj[self.name]['@id']
+        return {
+            self.name: {
+                '@id': field_id,
+                '@type': self.get_type(),
+                'knora-api:fileValueHasFilename': self.value,
+            }
+        }
 
 
 class IntValue(DaschValue):
