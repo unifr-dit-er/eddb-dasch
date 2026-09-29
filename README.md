@@ -10,7 +10,7 @@ As in SQL, the data model must define the entities and the relationships between
 
 Once the structure of the data is defined, it is possible to export it into a json file:
 ```
-dsp-tools get -P 0871 project_definition.json
+dsp-tools get -P 0871 project_definition/datacant.json
 ```
 
 ### Interact with the database
@@ -63,7 +63,7 @@ dsp-tools stop-stack
 
 Import the project definition:
 ```
-dsp-tools create project_definition.json
+dsp-tools create project_definition/datacant.json
 ```
 
 ## Useful links

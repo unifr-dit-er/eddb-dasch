@@ -56,7 +56,7 @@ def fetch_all_resources(token, use_cache):
     }
     response = requests.get(url, headers=headers)
     if response.status_code >= 400:
-        raise RuntimeError(f'Cannot fetch resources on DaSCH:', response.text)
+        raise RuntimeError('Cannot fetch resources on DaSCH:', response.text)
     rows = response.json()
     data = build_dasch_data(rows, token)
 

@@ -1,0 +1,653 @@
+{
+    "prefixes": {
+        "Datacant": "http://0.0.0.0:3333/ontology/0871/Datacant/v2"
+    },
+    "$schema": "https://raw.githubusercontent.com/dasch-swiss/dsp-tools/main/src/dsp_tools/resources/schema/project.json",
+    "project": {
+        "shortcode": "0871",
+        "shortname": "datacant",
+        "longname": "Database of cantonal case law on data protection",
+        "descriptions": {
+            "de": "Die Urteils-Datenbank Datenschutz macht kantonale Rechtsprechung im Gebiet des Datenschutzes seit 1984 allgemein zugänglich. Die bestehende Datenbank wird kontinuierlich aktualisiert. Zu jedem Urteil steht eine Zusammenfassung zur Verfügung, die von Forschenden des Instituts für Europarecht der Universität Freiburg erstellt werden. Sie sind jeweils in deutscher und in französischer Sprache verfügbar. Die Datenbank richtet sich sowohl an Praktiker-innen des Datenschutzrechts, wie Behördenverter-innen und die Anwaltschaft, als auch an die Wissenschaft.",
+            "fr": "La base de données des arrêts cantonaux en matière de protection des données rend accessible au public la jurisprudence cantonale relative à la protection des données depuis 1984. La base de données est continuellement mise à jour. Pour chaque décision, un résumé est disponible, élaboré par les chercheur-euse-s de l'Institut de droit européen de l'Université de Fribourg. Ils sont disponibles en langue allemande et en langue française. La base de données s'adresse tant aux praticien-ne-s du droit de la protection des données, tels que les représentant-e-s des autorités et les avocat-e-s, qu'au monde académique.",
+            "en": "The Database on Data Protection makes cantonal case law in the field of data protection accessible since 1984. The existing database is continuously updated. For each judgment, a summary is available, prepared by researchers at the Institute of European Law at the University of Fribourg. These summaries are available in both German and French. The database is intended for both practitioners of data protection law, such as government officials and the legal profession, as well as for the scientific community."
+        },
+        "keywords": [
+            "Judgment",
+            "Data protection"
+        ],
+        "enabled_licenses": [
+            "http://rdfh.ch/licenses/cc-by-nd-4.0",
+            "http://rdfh.ch/licenses/cc-by-nc-sa-4.0",
+            "http://rdfh.ch/licenses/public-domain",
+            "http://rdfh.ch/licenses/unknown",
+            "http://rdfh.ch/licenses/ai-generated",
+            "http://rdfh.ch/licenses/cc-by-4.0",
+            "http://rdfh.ch/licenses/cc-by-nc-nd-4.0",
+            "http://rdfh.ch/licenses/cc-by-nc-4.0",
+            "http://rdfh.ch/licenses/cc-by-sa-4.0"
+        ],
+        "default_permissions": "private",
+        "groups": [],
+        "lists": [
+            {
+                "name": "Canton",
+                "labels": {
+                    "fr": "Canton",
+                    "en": "Canton",
+                    "de": "Kanton"
+                },
+                "comments": {
+                    "de": "Die Liste der Kantone der Schweiz.",
+                    "fr": "La liste des cantons de la Suisse.",
+                    "en": "The list of cantons of Switzerland."
+                },
+                "nodes": [
+                    {
+                        "name": "AG",
+                        "labels": {
+                            "de": "Aargau",
+                            "en": "Argovia",
+                            "fr": "Argovie"
+                        }
+                    },
+                    {
+                        "name": "AR",
+                        "labels": {
+                            "de": "Appenzell Ausserrhoden",
+                            "en": "Appenzell Outer-Rhodes",
+                            "fr": "Appenzell Rhodes-Extérieures"
+                        }
+                    },
+                    {
+                        "name": "AI",
+                        "labels": {
+                            "de": "Appenzell Innerrhodern",
+                            "en": "Appenzell Inner-Rhodes",
+                            "fr": "Appenzell Rhodes-Intérieures"
+                        }
+                    },
+                    {
+                        "name": "BL",
+                        "labels": {
+                            "de": "Basel-Land",
+                            "en": "Basle-Country",
+                            "fr": "Bâle-Campagne"
+                        }
+                    },
+                    {
+                        "name": "BS",
+                        "labels": {
+                            "de": "Basel-Stadt",
+                            "en": "Basle-City",
+                            "fr": "Bâle-Ville"
+                        }
+                    },
+                    {
+                        "name": "BE",
+                        "labels": {
+                            "de": "Bern",
+                            "en": "Berne",
+                            "fr": "Berne"
+                        }
+                    },
+                    {
+                        "name": "FR",
+                        "labels": {
+                            "de": "Freiburg",
+                            "en": "Friburg",
+                            "fr": "Fribourg"
+                        }
+                    },
+                    {
+                        "name": "GE",
+                        "labels": {
+                            "de": "Genf",
+                            "en": "Geneva",
+                            "fr": "Genève"
+                        }
+                    },
+                    {
+                        "name": "GL",
+                        "labels": {
+                            "de": "Glarus",
+                            "en": "Glarus",
+                            "fr": "Glaris"
+                        }
+                    },
+                    {
+                        "name": "GR",
+                        "labels": {
+                            "de": "Graubünden",
+                            "en": "Graubünden",
+                            "fr": "Grisons"
+                        }
+                    },
+                    {
+                        "name": "JU",
+                        "labels": {
+                            "de": "Jura",
+                            "en": "Jura",
+                            "fr": "Jura"
+                        }
+                    },
+                    {
+                        "name": "LU",
+                        "labels": {
+                            "de": "Luzern",
+                            "en": "Lucerne",
+                            "fr": "Lucerne"
+                        }
+                    },
+                    {
+                        "name": "NE",
+                        "labels": {
+                            "de": "Neuenburg",
+                            "en": "Neuchâtel",
+                            "fr": "Neuchâtel"
+                        }
+                    },
+                    {
+                        "name": "NW",
+                        "labels": {
+                            "de": "Nidwalden",
+                            "en": "Nidwalden",
+                            "fr": "Nidwald"
+                        }
+                    },
+                    {
+                        "name": "OW",
+                        "labels": {
+                            "de": "Obwalden",
+                            "en": "Obwalden",
+                            "fr": "Obwald"
+                        }
+                    },
+                    {
+                        "name": "SG",
+                        "labels": {
+                            "de": "Sankt Gallen",
+                            "en": "St Gall",
+                            "fr": "Saint-Gall"
+                        }
+                    },
+                    {
+                        "name": "SH",
+                        "labels": {
+                            "de": "Schaffhausen",
+                            "en": "Schaffhausen",
+                            "fr": "Schaffhouse"
+                        }
+                    },
+                    {
+                        "name": "SZ",
+                        "labels": {
+                            "de": "Schwyz",
+                            "en": "Schwyz",
+                            "fr": "Schwytz"
+                        }
+                    },
+                    {
+                        "name": "SO",
+                        "labels": {
+                            "de": "Solothurn",
+                            "en": "Soleure",
+                            "fr": "Soleure"
+                        }
+                    },
+                    {
+                        "name": "TG",
+                        "labels": {
+                            "de": "Thurgau",
+                            "en": "Thurgovia",
+                            "fr": "Thurgovie"
+                        }
+                    },
+                    {
+                        "name": "TI",
+                        "labels": {
+                            "de": "Tessin",
+                            "en": "Tessin",
+                            "fr": "Tessin"
+                        }
+                    },
+                    {
+                        "name": "UR",
+                        "labels": {
+                            "de": "Uri",
+                            "en": "Uri",
+                            "fr": "Uri"
+                        }
+                    },
+                    {
+                        "name": "VD",
+                        "labels": {
+                            "de": "Waadt",
+                            "en": "Vaud",
+                            "fr": "Vaud"
+                        }
+                    },
+                    {
+                        "name": "VS",
+                        "labels": {
+                            "de": "Wallis",
+                            "en": "Wallis",
+                            "fr": "Valais"
+                        }
+                    },
+                    {
+                        "name": "ZG",
+                        "labels": {
+                            "de": "Zug",
+                            "en": "Zoug",
+                            "fr": "Zoug"
+                        }
+                    },
+                    {
+                        "name": "ZH",
+                        "labels": {
+                            "de": "Zürich",
+                            "en": "Zurich",
+                            "fr": "Zurich"
+                        }
+                    }
+                ]
+            }
+        ],
+        "ontologies": [
+            {
+                "name": "Datacant",
+                "label": "datenschutz: Judgment",
+                "properties": [
+                    {
+                        "name": "hasAbstractDe",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "TextValue",
+                        "labels": {
+                            "de": "Zusammenfassung auf Deutsch",
+                            "en": "Abstract in German",
+                            "fr": "Résumé en allemand"
+                        },
+                        "comments": {
+                            "de": "Die Zusammenfassung des Urteils in deutscher Sprache.",
+                            "en": "The summary of the judgment in German.",
+                            "fr": "Le résumé du jugement en allemand."
+                        },
+                        "gui_element": "Richtext"
+                    },
+                    {
+                        "name": "hasAbstractFr",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "TextValue",
+                        "labels": {
+                            "de": "Zusammenfassung auf Französisch",
+                            "en": "Abstract in French",
+                            "fr": "Résumé en français"
+                        },
+                        "comments": {
+                            "de": "Die Zusammenfassung des Urteils in französischer Sprache.",
+                            "en": "The summary of the judgment in French.",
+                            "fr": "Le résumé du jugement en français."
+                        },
+                        "gui_element": "Richtext"
+                    },
+                    {
+                        "name": "hasCantonList",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "ListValue",
+                        "labels": {
+                            "de": "Kanton",
+                            "en": "Canton",
+                            "fr": "Canton"
+                        },
+                        "comments": {
+                            "de": "Der Kanton des Gerichts, der die Entscheidung getroffen hat.",
+                            "en": "The canton of the court that made the decision.",
+                            "fr": "Le canton du tribunal qui a pris la décision."
+                        },
+                        "gui_element": "List",
+                        "gui_attributes": {
+                            "hlist": "Canton"
+                        }
+                    },
+                    {
+                        "name": "hasDateIssued",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "DateValue",
+                        "labels": {
+                            "de": "Datum",
+                            "en": "Date",
+                            "fr": "Date"
+                        },
+                        "comments": {
+                            "de": "Das Datum des Tages, an dem das Urteil verkündet wurde.",
+                            "en": "The date of the day the judgment was pronounced.",
+                            "fr": "La date du jour où le jugement a été prononcé."
+                        },
+                        "gui_element": "Date"
+                    },
+                    {
+                        "name": "hasDescriptionDe",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "TextValue",
+                        "labels": {
+                            "de": "Beschreibung in deutscher Sprache",
+                            "en": "Description in German",
+                            "fr": "Description en allemand"
+                        },
+                        "comments": {
+                            "de": "Die Beschreibung der Entscheidung in deutscher Sprache.",
+                            "en": "The description of the decision in German.",
+                            "fr": "La description de la décision en allemand."
+                        },
+                        "gui_element": "Textarea"
+                    },
+                    {
+                        "name": "hasDescriptionFr",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "TextValue",
+                        "labels": {
+                            "de": "Beschreibung in französischer Sprache",
+                            "en": "Description in French",
+                            "fr": "Description en français"
+                        },
+                        "comments": {
+                            "de": "Die Beschreibung der Entscheidung in französischer Sprache.",
+                            "en": "The description of the decision in French.",
+                            "fr": "La description de la décision en français."
+                        },
+                        "gui_element": "Textarea"
+                    },
+                    {
+                        "name": "hasFileName",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "TextValue",
+                        "labels": {
+                            "de": "Dateiname",
+                            "en": "Filename",
+                            "fr": "Nom du fichier"
+                        },
+                        "comments": {
+                            "de": "Der Dateiname",
+                            "en": "The name of the file",
+                            "fr": "Le nom du fichier"
+                        },
+                        "gui_element": "SimpleText"
+                    },
+                    {
+                        "name": "hasId",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "IntValue",
+                        "labels": {
+                            "de": "EDDB id",
+                            "en": "EDDB id",
+                            "fr": "EDDB id"
+                        },
+                        "comments": {
+                            "de": "Eindeutige Kennung in der EDDB-Datenbank der Universität Freiburg.",
+                            "en": "Unique identifier on the EDDB database of the University of Fribourg.",
+                            "fr": "Identifiant unique sur la base de données EDDB de l'Université de Fribourg."
+                        },
+                        "gui_element": "Spinbox"
+                    },
+                    {
+                        "name": "hasNameDe",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "TextValue",
+                        "labels": {
+                            "de": "Name auf Deutsch",
+                            "en": "Name in German",
+                            "fr": "Nom en allemand"
+                        },
+                        "comments": {
+                            "de": "Name auf Deutsch.",
+                            "en": "Name in German.",
+                            "fr": "Nom en allemand."
+                        },
+                        "gui_element": "SimpleText"
+                    },
+                    {
+                        "name": "hasNameFr",
+                        "super": [
+                            "hasValue"
+                        ],
+                        "object": "TextValue",
+                        "labels": {
+                            "de": "Name in Französisch",
+                            "en": "Name in French",
+                            "fr": "Nom en français"
+                        },
+                        "comments": {
+                            "de": "Name in Französisch.",
+                            "en": "Name in French.",
+                            "fr": "Nom en français."
+                        },
+                        "gui_element": "SimpleText"
+                    },
+                    {
+                        "name": "linkToCategory",
+                        "super": [
+                            "hasLinkTo"
+                        ],
+                        "object": ":Category",
+                        "labels": {
+                            "de": "Kategorie",
+                            "en": "Category",
+                            "fr": "Categorie"
+                        },
+                        "comments": {
+                            "de": "Jedes Schlüsselwort ist mit einer Kategorie verknüpft.",
+                            "en": "Each keyword is linked to a category.",
+                            "fr": "Chaque mot-clé est lié à une catégorie."
+                        },
+                        "gui_element": "Searchbox"
+                    },
+                    {
+                        "name": "linkToDocument",
+                        "super": [
+                            "hasLinkTo"
+                        ],
+                        "object": ":DecisionDocument",
+                        "labels": {
+                            "en": "Document"
+                        },
+                        "comments": {
+                            "de": "Link zur vom Gericht veröffentlichten PDF-Datei.",
+                            "en": "Link to the PDF file issued by the court.",
+                            "fr": "Lien vers le fichier PDF publié par le tribunal."
+                        },
+                        "gui_element": "Searchbox"
+                    },
+                    {
+                        "name": "linkToKeyword",
+                        "super": [
+                            "hasLinkTo"
+                        ],
+                        "object": ":Keyword",
+                        "labels": {
+                            "de": "Stichwort",
+                            "en": "Keyword",
+                            "fr": "Mot-clé"
+                        },
+                        "comments": {
+                            "de": "Schlüsselwort im Zusammenhang mit der Entscheidung.",
+                            "en": "Keyword associated with the decision.",
+                            "fr": "Mot-clé associé à la décision."
+                        },
+                        "gui_element": "Searchbox"
+                    }
+                ],
+                "resources": [
+                    {
+                        "name": "Category",
+                        "super": "Resource",
+                        "labels": {
+                            "de": "Kategorie",
+                            "en": "Category",
+                            "fr": "Categorie"
+                        },
+                        "comments": {
+                            "de": "Die Urteile sind in Kategorien eingeteilt.",
+                            "en": "The judgments are grouped into categories.",
+                            "fr": "Les jugements sont regroupés dans des catégories."
+                        },
+                        "cardinalities": [
+                            {
+                                "propname": ":hasNameFr",
+                                "cardinality": "1",
+                                "gui_order": 1
+                            },
+                            {
+                                "propname": ":hasNameDe",
+                                "cardinality": "1",
+                                "gui_order": 2
+                            },
+                            {
+                                "propname": ":hasId",
+                                "cardinality": "1",
+                                "gui_order": 3
+                            }
+                        ]
+                    },
+                    {
+                        "name": "DecisionSummary",
+                        "super": "Resource",
+                        "labels": {
+                            "en": "Decision summary"
+                        },
+                        "comments": {
+                            "de": "Zusammenfassung der Entscheidung auf Französisch und Deutsch.",
+                            "en": "Summary of the decision in French and in German.",
+                            "fr": "Résumé de la décision en français et en allemand."
+                        },
+                        "cardinalities": [
+                            {
+                                "propname": ":linkToDocument",
+                                "cardinality": "0-1",
+                                "gui_order": 1
+                            },
+                            {
+                                "propname": ":hasCantonList",
+                                "cardinality": "1",
+                                "gui_order": 2
+                            },
+                            {
+                                "propname": ":hasDateIssued",
+                                "cardinality": "1",
+                                "gui_order": 3
+                            },
+                            {
+                                "propname": ":hasDescriptionFr",
+                                "cardinality": "1",
+                                "gui_order": 4
+                            },
+                            {
+                                "propname": ":hasDescriptionDe",
+                                "cardinality": "1",
+                                "gui_order": 5
+                            },
+                            {
+                                "propname": ":hasAbstractFr",
+                                "cardinality": "1",
+                                "gui_order": 6
+                            },
+                            {
+                                "propname": ":hasAbstractDe",
+                                "cardinality": "1",
+                                "gui_order": 7
+                            },
+                            {
+                                "propname": ":hasId",
+                                "cardinality": "1",
+                                "gui_order": 8
+                            },
+                            {
+                                "propname": ":linkToKeyword",
+                                "cardinality": "1-n",
+                                "gui_order": 9
+                            }
+                        ]
+                    },
+                    {
+                        "name": "DecisionDocument",
+                        "super": "DocumentRepresentation",
+                        "labels": {
+                            "en": "Decision document"
+                        },
+                        "comments": {
+                            "de": "Die vom Gericht veröffentlichte Entscheidung.",
+                            "en": "The decision published by the court.",
+                            "fr": "La décision publiée par le tribunal."
+                        },
+                        "cardinalities": [
+                            {
+                                "propname": ":hasFileName",
+                                "cardinality": "1",
+                                "gui_order": 1
+                            },
+                            {
+                                "propname": ":hasId",
+                                "cardinality": "1",
+                                "gui_order": 2
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Keyword",
+                        "super": "Resource",
+                        "labels": {
+                            "de": "Stichwort",
+                            "en": "Keyword",
+                            "fr": "Mot-clé"
+                        },
+                        "comments": {
+                            "de": "Schlüsselwörter ermöglichen es Ihnen, Entscheidungen zu sortieren.",
+                            "en": "Keywords allow you to sort decisions.",
+                            "fr": "Les mots-clés permettent de trier les décisions."
+                        },
+                        "cardinalities": [
+                            {
+                                "propname": ":hasNameFr",
+                                "cardinality": "1",
+                                "gui_order": 1
+                            },
+                            {
+                                "propname": ":hasNameDe",
+                                "cardinality": "1",
+                                "gui_order": 2
+                            },
+                            {
+                                "propname": ":hasId",
+                                "cardinality": "1",
+                                "gui_order": 3
+                            },
+                            {
+                                "propname": ":linkToCategory",
+                                "cardinality": "1",
+                                "gui_order": 4
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

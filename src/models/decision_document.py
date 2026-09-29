@@ -1,6 +1,5 @@
 from fields.datacant import (
     Attachment,
-    Checksum,
     EddbId,
     FileName,
 )
@@ -38,7 +37,6 @@ class DecisionDocument(Resource):
             self.eddb_id,
             FileName(self.filename()),
             self.attachment,
-            Checksum('TODO'),
         ]
 
     def filename(self):

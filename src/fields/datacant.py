@@ -55,19 +55,6 @@ class CategoryLink(LinkValue):
         LinkValue.__init__(self, name, value)
 
 
-# TODO: Delete this class.
-class Checksum(SimpleTextValue):
-
-    def __init__(self, value):
-        '''Initialization of the fields.'''
-        name = f'{PROJECT_NAME}:hasChecksum'
-        v = (value or '').strip()
-        SimpleTextValue.__init__(self, name, v)
-
-    def is_updated(self, obj):
-        return False
-
-
 class DateGreg(DateValue):
 
     def __init__(self, value):
