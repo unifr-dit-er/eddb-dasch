@@ -101,16 +101,16 @@ if __name__ == '__main__':
             is_created = False
             is_updated = False
             if object_dasch is None:
-                logger.info(f'Add new {key_in_db} (id={eddb_id})')
                 payload = object_eddb.payload_create()
                 resource_id = create_resource(payload, token)
                 is_created = True
+                logger.info(f'Add new {key_in_db} (id={eddb_id})')
             else:
                 # Maybe update existing category.
                 payload_label = object_eddb.payload_update_label(object_dasch)
                 if payload_label is not None:
-                    logger.info(f'{key_in_db} (id={eddb_id}) label has been updated')
                     response = update_label(payload_label, token)
+                    logger.info(f'{key_in_db} (id={eddb_id}) label has been updated')
 
                 payloads = object_eddb.payload_update_fields(data_dasch)
                 for payload in payloads['updates']:
@@ -135,12 +135,12 @@ if __name__ == '__main__':
         keys_to_remove = []
         for eddb_id_old, row in data_dasch[resource_type].items():
             if eddb_id_old not in data_eddb[resource_type]:
-                logger.info(f'Delete {resource_type} (id={eddb_id_old})')
                 resource_iri = row['@id']
                 last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
                 body = pload.delete(resource_iri, resource_type, last_modification)
                 delete_resource(body, token)
                 keys_to_remove.append(eddb_id_old)
+                logger.info(f'Delete {resource_type} (id={eddb_id_old})')
         for k in keys_to_remove:
             data_dasch[resource_type].pop(k)
 
