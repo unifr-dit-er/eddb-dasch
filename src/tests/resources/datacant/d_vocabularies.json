@@ -1,0 +1,30 @@
+{
+    "Datacant:Cantons": {
+        "AG": "http://rdfh.ch/lists/0871/YqC9emv0TaWLmzBCzOt7lg",
+        "AR": "http://rdfh.ch/lists/0871/s29c716LRmK8AqekoJMHQg",
+        "AI": "http://rdfh.ch/lists/0871/Clc5iOOHQhqpm5_j8-j6Jw",
+        "BL": "http://rdfh.ch/lists/0871/Z7HksEoVQUS5szktByqZBA",
+        "BS": "http://rdfh.ch/lists/0871/9eACFMNBStinDEmLfcHWpw",
+        "BE": "http://rdfh.ch/lists/0871/l9GbRJOGTG6UZDE3Gydgbg",
+        "FR": "http://rdfh.ch/lists/0871/fSKvY2DQTCC1imPR1tNS6w",
+        "GE": "http://rdfh.ch/lists/0871/BMhYa_ypRMODvv254x0L3Q",
+        "GL": "http://rdfh.ch/lists/0871/ADM7KcwbT8mYd3eZSXxdDA",
+        "GR": "http://rdfh.ch/lists/0871/d1m6qUgHQkGkPQrzqtqrZA",
+        "JU": "http://rdfh.ch/lists/0871/apiEvx58R_GS6G7cPl1oyw",
+        "LU": "http://rdfh.ch/lists/0871/qTSfxrTPTvO374l-piqMEA",
+        "NE": "http://rdfh.ch/lists/0871/OUCmE6CVTLGFpb3Mmme2Mg",
+        "NW": "http://rdfh.ch/lists/0871/yhkiOw0_RceqFyo_SKsgUQ",
+        "OW": "http://rdfh.ch/lists/0871/I3eUR_3HRxKyW4zH_2uJfA",
+        "SG": "http://rdfh.ch/lists/0871/lw2vJKhxQeOAIpMn7slnZw",
+        "SH": "http://rdfh.ch/lists/0871/Dccw5CFdQ2mvQwgD5JSfIg",
+        "SZ": "http://rdfh.ch/lists/0871/mM7DQFKJT-K51VPupcfSPw",
+        "SO": "http://rdfh.ch/lists/0871/hscWpCfkQxuJddNsWPkerg",
+        "TG": "http://rdfh.ch/lists/0871/EY6RN9y7SzatXFPb3joy5A",
+        "TI": "http://rdfh.ch/lists/0871/EO-RsikST8KH5AO_AtbJbA",
+        "UR": "http://rdfh.ch/lists/0871/RlN6RFoNR9-guS4yfryMfA",
+        "VD": "http://rdfh.ch/lists/0871/Rmoazh_lQAmNpbuT_J0x2w",
+        "VS": "http://rdfh.ch/lists/0871/tUl1OqEXQxCJDZuHmdMS2g",
+        "ZG": "http://rdfh.ch/lists/0871/otPRlr4VSjmqcDXtT13v0w",
+        "ZH": "http://rdfh.ch/lists/0871/4YjuuOZwSSKCwu0-YEUgbA"
+    }
+}
