@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 import json
 from pathlib import Path
+from database.datacant import Datacant
 from fields.datacant import (
     Abstract,
     Canton,
@@ -16,18 +17,18 @@ from models.decision_summary import DecisionSummary
 
 class TestDecisionSummary(unittest.TestCase):
     def setUp(self):
-        file = Path('tests/resources/data_dasch.json')
-        data = json.loads(file.read_text(encoding='utf-8'))
-        data['Datacant:Category'] = \
-            {int(k): v for k, v in data['Datacant:Category'].items()}
-        data['Datacant:Keyword'] = \
-            {int(k): v for k, v in data['Datacant:Keyword'].items()}
-        data['Datacant:DecisionDocument'] = \
-            {int(k): v for k, v in data['Datacant:DecisionDocument'].items()}
-        data['Datacant:DecisionSummary'] = \
-            {int(k): v for k, v in data['Datacant:DecisionSummary'].items()}
-        data['token'] = None
-        self.dasch_db = data
+        dasch_token_response = MagicMock()
+        dasch_token_response.status_code = 200
+        dasch_token_response.json.return_value = {'token': 'af32-3242'}
+
+        def mock_post(url, *args, **kwargs):
+            if url.endswith('/v2/authentication'):
+                return dasch_token_response
+            raise ValueError(f'Unexpected URL: {url}')
+
+        with patch('requests.post', side_effect=mock_post):
+            directory = Path('tests/resources/datacant')
+            self.db = Datacant(directory)
         self.attributes = {
             'eddb_id': 257,
             'date_issued': '2021-08-12',
@@ -65,7 +66,7 @@ class TestDecisionSummary(unittest.TestCase):
 
     def test_fill_iri_values(self):
         decision = DecisionSummary(**self.attributes)
-        decision.fill_iri_values(self.dasch_db)
+        self.db.fill_iri_values(decision)
 
         canton_iri = decision.canton.value_iri
         self.assertEqual(canton_iri, 'http://rdfh.ch/lists/0871/fSKvY2DQTCC1imPR1tNS6w')
@@ -101,7 +102,7 @@ class TestDecisionSummary(unittest.TestCase):
 
     def test_payload_create(self):
         decision = DecisionSummary(**self.attributes)
-        decision.fill_iri_values(self.dasch_db)
+        self.db.fill_iri_values(decision)
         payload = decision.payload_create()
         self.assertEqual(payload['@type'], decision.resource_type())
         self.assertEqual(payload['rdfs:label'], decision.label())
@@ -135,11 +136,10 @@ class TestDecisionSummary(unittest.TestCase):
         abstract_fr = payload['Datacant:hasAbstractFr']['knora-api:textValueAsXml']
         self.assertEqual(abstract_fr, decision.abstract_fr.value)
 
-    @patch('helper.requests.post')
+    @patch('database.database.Database.transform_to_rich')
     def test_payload_update_fields(self, mock_requests):
         mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.text.return_value = ''
+        mock_response.return_value = ''
         mock_requests.return_value = mock_response
         args = {
             'eddb_id': self.attributes['eddb_id'],
@@ -154,8 +154,8 @@ class TestDecisionSummary(unittest.TestCase):
             'decision_document': None,
         }
         decision = DecisionSummary(**args)
-        decision.fill_iri_values(self.dasch_db)
-        payloads = decision.payload_update_fields(self.dasch_db)
+        self.db.fill_iri_values(decision)
+        payloads = decision.payload_update_fields(self.db)
         self.assertEqual(len(payloads['updates']), 6)
         for i in range(6):
             self.assertEqual(payloads['updates'][i]['@type'], DecisionSummary.resource_type())
@@ -191,7 +191,7 @@ class TestDecisionSummary(unittest.TestCase):
         self.assertEqual(iri_to_remove, 'http://rdfh.ch/0871/-69lw2B_RCGuvrkg1KeiUg')
 
     def test_payload_update_label(self):
-        dasch_obj = self.dasch_db['Datacant:DecisionSummary'][257]
+        dasch_obj = self.db.get_dasch('Datacant:DecisionSummary', 257)
         decision = DecisionSummary(**self.attributes)
         decision.canton = Canton('ZH')
         payload = decision.payload_update_label(dasch_obj)

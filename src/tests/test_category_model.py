@@ -1,23 +1,26 @@
 import unittest
+from unittest.mock import MagicMock, patch
 import json
 from pathlib import Path
+from database.datacant import Datacant
 from fields.datacant import EddbId, Name
 from models.category_model import Category
 
 
 class TestCategory(unittest.TestCase):
     def setUp(self):
-        file = Path('tests/resources/data_dasch.json')
-        data = json.loads(file.read_text(encoding='utf-8'))
-        data['Datacant:Category'] = \
-            {int(k): v for k, v in data['Datacant:Category'].items()}
-        data['Datacant:Keyword'] = \
-            {int(k): v for k, v in data['Datacant:Keyword'].items()}
-        data['Datacant:DecisionDocument'] = \
-            {int(k): v for k, v in data['Datacant:DecisionDocument'].items()}
-        data['Datacant:DecisionSummary'] = \
-            {int(k): v for k, v in data['Datacant:DecisionSummary'].items()}
-        self.dasch_db = data
+        dasch_token_response = MagicMock()
+        dasch_token_response.status_code = 200
+        dasch_token_response.json.return_value = {'token': 'af32-3242'}
+
+        def mock_post(url, *args, **kwargs):
+            if url.endswith('/v2/authentication'):
+                return dasch_token_response
+            raise ValueError(f'Unexpected URL: {url}')
+
+        with patch('requests.post', side_effect=mock_post):
+            directory = Path('tests/resources/datacant')
+            self.db = Datacant(directory)
 
     def test_constructor(self):
         category = Category(1, 'Privacy', 'Datenschutz', 'Vie privée')
@@ -69,7 +72,7 @@ class TestCategory(unittest.TestCase):
 
     def test_payload_update_fields(self):
         category = Category(3, 'Surveillance', 'Überwachung2', 'Surveillance2')
-        payloads = category.payload_update_fields(self.dasch_db)
+        payloads = category.payload_update_fields(self.db)
         self.assertEqual(len(payloads['updates']), 2)
         self.assertEqual(len(payloads['add_values']), 0)
         self.assertEqual(len(payloads['del_values']), 0)
@@ -84,7 +87,7 @@ class TestCategory(unittest.TestCase):
         self.assertEqual(name_fr, 'Surveillance2')
 
     def test_payload_update_label(self):
-        dasch_obj = self.dasch_db['Datacant:Category'][3]
+        dasch_obj = self.db.get_dasch('Datacant:Category', 3)
         category = Category(3, 'Surveillance2', 'Überwachung', 'Surveillance')
         payload = category.payload_update_label(dasch_obj)
         last_modif = '2026-08-17T15:54:24.629395191Z'

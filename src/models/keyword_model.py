@@ -19,12 +19,6 @@ class Keyword(Resource):
     def file_field(self):
         return None
 
-    def fill_iri_values(self, dasch_db):
-        category = self.category_id
-        category_type = Category.resource_type()
-        value_iri = dasch_db[category_type][category.value]['@id']
-        category.set_value_iri(value_iri)
-
     def fields(self):
         return [
             self.eddb_id,

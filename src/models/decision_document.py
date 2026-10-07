@@ -42,9 +42,6 @@ class DecisionDocument(Resource):
     def filename(self):
         return '{}_{}.pdf'.format(self.canton, self.date_issued)
 
-    def fill_iri_values(self, dasch_db):
-        pass
-
     def label(self):
         return '{} {}'.format(self.canton, self.date_issued)
 

@@ -6,28 +6,15 @@ import json
 import logging
 import os
 from pathlib import Path
+from database.datacant import Datacant
 from fetch import download_file, fetch_all_eddb
 from models.category_model import Category
 from models.decision_document import DecisionDocument
 from models.decision_summary import DecisionSummary
 from models.keyword_model import Keyword
 import payload as pload
-from repository import (
-    fetch_all_resources,
-    fetch_checksum,
-    fetch_resource,
-    fetch_token,
-    create_resource,
-    create_value,
-    delete_resource,
-    delete_value,
-    update_label,
-    update_value,
-    upload_to_ingest,
-)
 
 
-USE_DASCH_CACHE = os.environ.get('USE_DASCH_CACHE') in ('true', 'True', 'TRUE')
 logger = logging.getLogger(__name__)
 
 
@@ -35,11 +22,11 @@ if __name__ == '__main__':
     logging.basicConfig(filename='data/app.log', level=logging.INFO)
     logger.info('Start the process!')
 
-    token = fetch_token()
+    USE_DASCH_CACHE = os.environ.get('USE_DASCH_CACHE') in ('true', 'True')
 
-    data_dasch = fetch_all_resources(token, use_cache=USE_DASCH_CACHE)
-    with open('data/data_dasch.json', 'w') as f:
-        f.write(json.dumps(data_dasch, indent=4))
+    db = Datacant('data/datacant')
+    if not USE_DASCH_CACHE:
+        db.build_dasch_cache()
 
     data_eddb = fetch_all_eddb(reset_cache=False)
     with open('data/eddb_categories.json', 'w') as f:
@@ -59,14 +46,7 @@ if __name__ == '__main__':
         tmp = {k: v.to_dict() for k, v in data_eddb[key].items()}
         f.write(json.dumps(tmp, indent=4))
 
-    data_dasch['token'] = token
-
-    resource_types = [
-        Category.resource_type(),
-        Keyword.resource_type(),
-        DecisionDocument.resource_type(),
-        DecisionSummary.resource_type(),
-    ]
+    resource_types = db.resource_types()
 
     # Step 1: Handle the attachments.
     for key_in_db in resource_types:
@@ -85,11 +65,11 @@ if __name__ == '__main__':
                     path_to_file = Path('data/documents') / filename
                     with open(path_to_file, 'rb', buffering=0) as f:
                         checksum_new = hashlib.file_digest(f, 'sha256').hexdigest()
-                        checksum_old = fetch_checksum(object_dasch, token)
+                        checksum_old = db.fetch_checksum(object_dasch)
                         is_upload_needed = checksum_new != checksum_old
                         filename_dasch = None
                         if is_upload_needed:
-                            response = upload_to_ingest(filename, token)
+                            response = db.upload_to_ingest(filename)
                             filename_dasch = response['internalFilename']
                             attachment.set_value(filename_dasch)
 
@@ -102,23 +82,23 @@ if __name__ == '__main__':
             is_updated = False
             if object_dasch is None:
                 payload = object_eddb.payload_create()
-                resource_id = create_resource(payload, token)
+                resource_id = db.create_resource(payload)
                 is_created = True
                 logger.info(f'Add new {key_in_db} (id={eddb_id})')
             else:
                 # Maybe update existing category.
                 payload_label = object_eddb.payload_update_label(object_dasch)
                 if payload_label is not None:
-                    response = update_label(payload_label, token)
+                    response = db.update_label(payload_label)
                     logger.info(f'{key_in_db} (id={eddb_id}) label has been updated')
 
                 payloads = object_eddb.payload_update_fields(data_dasch)
                 for payload in payloads['updates']:
-                    update_value(payload, token)
+                    db.update_value(payload)
                 for payload in payloads['add_values']:
-                    create_value(payload, token)
+                    db.create_value(payload)
                 for payload in payloads['del_values']:
-                    delete_value(payload, token)
+                    db.delete_value(payload)
 
                 nb_field_change = sum(map(len, payloads.values()))
                 is_updated = payload_label is not None or nb_field_change != 0
@@ -126,7 +106,7 @@ if __name__ == '__main__':
                     resource_id = object_dasch['@id']
                     logger.info(f'{key_in_db} (id={eddb_id}) field(s) have been updated')
             if is_created or is_updated:
-                data_dasch[key_in_db][eddb_id] = fetch_resource(resource_id, token)
+                data_dasch[key_in_db][eddb_id] = db.fetch_resource(resource_id)
 
     # Step 3: Delete resources if not found in EDDB.
     resource_types.reverse()
@@ -138,17 +118,10 @@ if __name__ == '__main__':
                 resource_iri = row['@id']
                 last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
                 body = pload.delete(resource_iri, resource_type, last_modification)
-                delete_resource(body, token)
+                db.delete_resource(body)
                 keys_to_remove.append(eddb_id_old)
                 logger.info(f'Delete {resource_type} (id={eddb_id_old})')
         for k in keys_to_remove:
             data_dasch[resource_type].pop(k)
 
-    # Step 4: Save data in file.
-    with open('data/data_dasch.json', 'w') as f:
-        f.write(json.dumps(data_dasch, indent=4))
-    with open('data/eddb_decisions_document.json', 'w') as f:
-        key = DecisionDocument.resource_type()
-        tmp = {k: v.to_dict() for k, v in data_eddb[key].items()}
-        f.write(json.dumps(tmp, indent=4))
     logger.info('Finished!')

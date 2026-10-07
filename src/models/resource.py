@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 import payload
 from fields.dasch import RichTextValue
-from helper import transform_to_rich
 
 
 class Resource(ABC):
@@ -13,10 +12,6 @@ class Resource(ABC):
 
     @abstractmethod
     def file_field(self):
-        pass
-
-    @abstractmethod
-    def fill_iri_values(self, dasch_db):
         pass
 
     @abstractmethod
@@ -36,11 +31,11 @@ class Resource(ABC):
         payload_chunks = [field.to_knora() for field in self.fields()]
         return payload.create(resource_type, label, payload_chunks)
 
-    def payload_update_fields(self, dasch_db):
+    def payload_update_fields(self, db):
         payloads = {'updates': [], 'add_values': [], 'del_values': []}
         resource_type = self.resource_type()
         eddb_id = self.eddb_id.value
-        dasch_obj = dasch_db[resource_type].get(eddb_id)
+        dasch_obj = db.get_dasch(resource_type, eddb_id)
         if dasch_obj is None:
             raise RuntimeError(f'Updated resource (id={eddb_id}) not found')
         resource_id = dasch_obj['@id']
@@ -51,7 +46,7 @@ class Resource(ABC):
                 # `Method is_updated` does a parital comparison for `RichText` type.
                 if field.is_updated(dasch_obj):
                     dasch_xml = dasch_obj[field.name]['knora-api:textValueAsXml']
-                    response = transform_to_rich(field.value, dasch_db['token'])
+                    response = db.transform_to_rich(field.value)
                     if dasch_xml == response.text:
                         continue
             for key in ['updates', 'add_values', 'del_values']:

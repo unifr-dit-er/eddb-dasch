@@ -17,9 +17,6 @@ class Category(Resource):
     def file_field(self):
         return None
 
-    def fill_iri_values(self, dasch_db):
-        pass
-
     def fields(self):
         return [
             self.eddb_id,

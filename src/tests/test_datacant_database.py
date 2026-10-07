@@ -32,11 +32,17 @@ class TestDatacant(unittest.TestCase):
 
     def test_get_dasch_items(self):
         categories = self.db.get_dasch_items('Datacant:Category')
-        self.assertEqual(len(list(categories)), 2)
+        self.assertEqual(len(categories), 2)
+        self.assertEqual(categories[0][0], 22)
+        self.assertEqual(categories[1][0], 3)
         keywords = self.db.get_dasch_items('Datacant:Keyword')
-        self.assertEqual(len(list(keywords)), 2)
+        self.assertEqual(len(keywords), 2)
+        self.assertEqual(keywords[0][0], 3)
+        self.assertEqual(keywords[1][0], 72)
         decision_summary = self.db.get_dasch_items('Datacant:DecisionSummary')
-        self.assertEqual(len(list(decision_summary)), 2)
+        self.assertEqual(len(decision_summary), 2)
+        self.assertEqual(decision_summary[0][0], 207)
+        self.assertEqual(decision_summary[1][0], 257)
 
     def test_resource_types(self):
         types = self.db.resource_types()
