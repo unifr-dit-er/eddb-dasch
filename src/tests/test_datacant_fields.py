@@ -61,20 +61,20 @@ class TestDatacantFields(unittest.TestCase):
 
     def test_attachment_constructor(self):
         updated_at = '2026-02-20 13:37:26+00:00'
-        field = Attachment('https://', updated_at)
+        field = Attachment('https://', updated_at, 'internal_name.pdf')
         self.assertEqual(field.name, 'knora-api:hasDocumentFileValue')
-        self.assertIsNone(field.value)
+        self.assertEqual(field.value, 'internal_name.pdf')
         self.assertEqual(field.eddb_url, 'https://')
         self.assertEqual(field.license, 'http://rdfh.ch/licenses/public-domain')
         self.assertEqual(field.copyright, 'Public Domain - Not Protected by Copyright')
         self.assertEqual(field.authors, ['Swiss court'])
 
     def test_attachment_type(self):
-        field = Attachment('https://', '2026-02-20 13:37:26+00:00')
+        field = Attachment('https://', '2026-02-20 13:37:26+00:00', None)
         self.assertEqual(field.get_type(), 'knora-api:DocumentFileValue')
 
     def test_attachment_is_updated_false(self):
-        field = Attachment('https://', '2026-02-20 13:37:26+00:00')
+        field = Attachment('https://', '2026-02-20 13:37:26+00:00', None)
         dasch_obj = {
             field.name: {
                 'knora-api:valueCreationDate': {'@value': '2026-02-21 13:37:26+00:00'}
@@ -83,7 +83,7 @@ class TestDatacantFields(unittest.TestCase):
         self.assertFalse(field.is_updated(dasch_obj))
 
     def test_attachment_is_updated_true(self):
-        field = Attachment('https://', '2026-02-20 00:00:00+00:00')
+        field = Attachment('https://', '2026-02-20 00:00:00+00:00', None)
         dasch_obj = {
             field.name: {
                 'knora-api:valueCreationDate': {'@value': '2026-02-20 13:37:26+00:00'}
@@ -92,7 +92,7 @@ class TestDatacantFields(unittest.TestCase):
         self.assertTrue(field.is_updated(dasch_obj))
 
     def test_attachment_payload_create(self):
-        field = Attachment('https://', '2026-02-21 00:00:00+00:00')
+        field = Attachment('https://', '2026-02-21 00:00:00+00:00', None)
         field.set_value('tmp.pdf')
         key_value = field.to_knora()
         v = key_value[field.name]

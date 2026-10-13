@@ -15,13 +15,14 @@ class DecisionDocument(Resource):
         date_issued,
         canton,
         eddb_url,
+        filename_dasch,
     ):
         '''Initialization of the fields.'''
         self.eddb_id = EddbId(eddb_id)
         self.updated_at = updated_at
         self.date_issued = date_issued
         self.canton = canton
-        self.attachment = Attachment(eddb_url, updated_at)
+        self.attachment = Attachment(eddb_url, updated_at, filename_dasch)
 
     def eddb_filename(self):
         return self.attachment.eddb_url.split('/')[-1]
@@ -56,6 +57,7 @@ class DecisionDocument(Resource):
             'date_issued': self.date_issued,
             'canton': self.canton,
             'eddb_url': self.attachment.eddb_url,
+            'filename_dasch': self.attachment.value,
         }
 
     @classmethod

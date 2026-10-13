@@ -28,11 +28,11 @@ class Abstract(RichTextValue):
 
 class Attachment(DocumentFileValue):
 
-    def __init__(self, eddb_url, updated_at):
+    def __init__(self, eddb_url, updated_at, filename_dasch):
         '''Initialization of the fields.'''
         self.eddb_url = eddb_url
         name = 'knora-api:hasDocumentFileValue'
-        value = None
+        value = filename_dasch
         lic = 'http://rdfh.ch/licenses/public-domain'
         cpyright = 'Public Domain - Not Protected by Copyright'
         authors = ['Swiss court']

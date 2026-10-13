@@ -1,4 +1,8 @@
+import json
+from pathlib import Path
+import requests
 from database.database import Database
+from helper import text_to_xml
 from models.category_model import Category
 from models.decision_document import DecisionDocument
 from models.decision_summary import DecisionSummary
@@ -14,8 +18,131 @@ class Datacant(Database):
         '''Initialization of the fields.'''
         Database.__init__(self, directory, PROJECT_NUMBER)
 
-    def build_eddb_cache(self):
-        pass
+    def build_eddb_cache(self, since):
+        self.fetch_categories()
+        self.fetch_decisions(since)
+        self.fetch_keywords()
+
+    def fetch_categories(self):
+        category_limit = 200
+        url = 'https://eddb.unifr.ch/datacant/api/nocodb/api/v2/tables/mpqb34djokcbpcy/records'
+        params = {'limit': category_limit}
+        headers = {'xc-token': self.token_eddb}
+        r = requests.get(url, params=params, headers=headers)
+        response = r.json()
+        nb_category = response['pageInfo']['totalRows']
+        if category_limit < nb_category:
+            raise RuntimeError('Could not fetch all the categories')
+        type_in_file = self.map_type_to_file(Category.resource_type())
+        for c in response['list']:
+            eddb_id = c['Id']
+            name_en = c['CategoryEN']
+            name_de = c['CategoryDE']
+            name_fr = c['CategoryFR']
+            try:
+                category = Category(eddb_id, name_en, name_de, name_fr)
+                filename = f'e_{type_in_file}_{eddb_id}.json'
+                file = Path(self.directory) / filename
+                file.write_text(json.dumps(category.to_dict()), encoding='utf-8')
+            except ValueError as err:
+                print(f'Category id {eddb_id}: {err}')
+
+    def fetch_decisions(self, since):
+        page = 1
+        has_next_page = True
+        while has_next_page:
+            has_next_page = self.fetch_decisions_page(since, page)
+            page += 1
+
+    def fetch_decisions_page(self, since, page):
+        url = 'https://eddb.unifr.ch/noco/api/v2/tables/merxbxhfvr09g66/records'
+        limit = 25
+        offset = (page - 1) * limit
+        where = f'(CreatedAt,ge,exactDate,{since})~or(UpdatedAt,ge,exactDate,{since})'
+        params = {
+            'offset': offset,
+            'limit': limit,
+            'where': where,
+            'sort': 'Id',
+        }
+        headers = {'xc-token': self.token_eddb}
+        r = requests.get(url, params=params, headers=headers)
+        response = r.json()
+        has_next_page = not response['pageInfo']['isLastPage']
+        judgments = response['list']
+        type_summary = self.map_type_to_file(DecisionSummary.resource_type())
+        type_document = self.map_type_to_file(DecisionDocument.resource_type())
+        for j in judgments:
+            eddb_id = j['Id']
+            attributes_document = None
+            if j['Attachment'] is not None:
+                url_file = 'https://eddb.unifr.ch/noco/{}'.format(j['Attachment'][0]['path'])
+                attributes_document = {
+                    'eddb_id': eddb_id,
+                    'eddb_url': url_file,
+                    'date_issued': j['Date'],
+                    'canton': j['Canton'],
+                    'updated_at': j['UpdatedAt'],
+                    'filename_dasch': None,
+                }
+            attributes_summary = {
+                'eddb_id': eddb_id,
+                'updated_at': j['UpdatedAt'],
+                'desc_de': j['DescriptionDE'].strip(),
+                'desc_fr': j['DescriptionFR'].strip(),
+                'abstract_de': text_to_xml(j['AbstractDE']),
+                'abstract_fr': text_to_xml(j['AbstractFR']),
+                'date_issued': j['Date'],
+                'canton': j['Canton'],
+                'keywords_id': [],
+                'decision_document': None if attributes_document is None else eddb_id,
+            }
+
+            for keyword in j['_nc_m2m_Decisions_Keywords']:
+                if 'Keywords' not in keyword:
+                    # keyword is no longer linked to the decision.
+                    continue
+                keyword_id = keyword['Keywords_id']
+                attributes_summary['keywords_id'].append(keyword_id)
+
+            try:
+                decision = DecisionSummary(**attributes_summary)
+                filename = f'e_{type_summary}_{eddb_id}.json'
+                file = Path(self.directory) / filename
+                file.write_text(json.dumps(decision.to_dict()), encoding='utf-8')
+                if attributes_document is not None:
+                    doc = DecisionDocument(**attributes_document)
+                    filename = f'e_{type_document}_{eddb_id}.json'
+                    file = Path(self.directory) / filename
+                    file.write_text(json.dumps(doc.to_dict()), encoding='utf-8')
+            except ValueError as err:
+                print(f'DecisionSummary {eddb_id}: {err}')
+        return has_next_page
+
+    def fetch_keywords(self):
+        keyword_limit = 1000
+        url = 'https://eddb.unifr.ch/datacant/api/nocodb/api/v2/tables/mp7ev44j9pdsyxs/records'
+        params = {'limit': keyword_limit}
+        headers = {'xc-token': self.token_eddb}
+        r = requests.get(url, params=params, headers=headers)
+        response = r.json()
+        nb_keyword = response['pageInfo']['totalRows']
+        if keyword_limit < nb_keyword:
+            raise RuntimeError('Could not fetch all the keywords')
+        type_in_file = self.map_type_to_file(Keyword.resource_type())
+        for k in response['list']:
+            eddb_id = k['Id']
+            category_id = k['Categories_id']
+            name_en = k['KeywordEN']
+            name_de = k['KeywordDE']
+            name_fr = k['KeywordFR']
+            try:
+                keyword = Keyword(eddb_id, category_id, name_en, name_de, name_fr)
+                filename = f'e_{type_in_file}_{eddb_id}.json'
+                file = Path(self.directory) / filename
+                file.write_text(json.dumps(keyword.to_dict()), encoding='utf-8')
+            except ValueError as err:
+                print(f'Keyword {eddb_id}: {err}')
 
     def fill_iri_values(self, object_eddb):
         if isinstance(object_eddb, Category):
@@ -49,10 +176,45 @@ class Datacant(Database):
             raise ValueError()
 
     def get_eddb(self, resource_type, eddb_id):
-        raise NotImplementedError()
+        type_in_file = self.map_type_to_file(resource_type)
+        filename = f'e_{type_in_file}_{eddb_id}.json'
+        file = Path(self.directory) / filename
+        if not file.exists():
+            return None
+        json_data = json.loads(file.read_text(encoding='utf-8'))
+        if resource_type == Category.resource_type():
+            return Category(**json_data)
+        if resource_type == Keyword.resource_type():
+            return Keyword(**json_data)
+        if resource_type == DecisionDocument.resource_type():
+            return DecisionDocument(**json_data)
+        if resource_type == DecisionSummary.resource_type():
+            return DecisionSummary(**json_data)
+        return None
 
     def get_eddb_items(self, resource_type):
-        raise NotImplementedError()
+        type_in_file = self.map_type_to_file(resource_type)
+        pattern = f'e_{type_in_file}*'
+        folder = Path(self.directory)
+        filenames = list(folder.glob(pattern))
+        ret = []
+        for filename in filenames:
+            n = int(str(filename).rsplit("_", 1)[1].removesuffix(".json"))
+            json_data = json.loads(filename.read_text(encoding='utf-8'))
+            obj = self.json_to_obj(resource_type, json_data)
+            ret.append((n, obj))
+        return ret
+
+    def json_to_obj(self, resource_type, json_data):
+        if resource_type == Category.resource_type():
+            return Category(**json_data)
+        if resource_type == Keyword.resource_type():
+            return Keyword(**json_data)
+        if resource_type == DecisionDocument.resource_type():
+            return DecisionDocument(**json_data)
+        if resource_type == DecisionSummary.resource_type():
+            return DecisionSummary(**json_data)
+        raise ValueError(f'Unexpected type: {resource_type}')
 
     def resource_types(self):
         return [

@@ -43,6 +43,20 @@ class TestDatacant(unittest.TestCase):
         self.assertEqual(decision_summary[0][0], 207)
         self.assertEqual(decision_summary[1][0], 257)
 
+    def test_get_eddb(self):
+        category_3 = self.db.get_eddb('Datacant:Category', 3)
+        self.assertEqual(category_3.label(), 'Surveillance2')
+        keyword_72 = self.db.get_eddb('Datacant:Keyword', 72)
+        self.assertEqual(keyword_72.label(), 'Consent2')
+
+    def test_get_eddb_items(self):
+        categories = self.db.get_eddb_items('Datacant:Category')
+        self.assertEqual(len(categories), 1)
+        self.assertEqual(categories[0][0], 3)
+        keywords = self.db.get_eddb_items('Datacant:Keyword')
+        self.assertEqual(len(keywords), 1)
+        self.assertEqual(keywords[0][0], 72)
+
     def test_resource_types(self):
         types = self.db.resource_types()
         self.assertEqual(len(types), 4)

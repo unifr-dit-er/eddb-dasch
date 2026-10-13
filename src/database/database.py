@@ -54,12 +54,12 @@ class Database(ABC):
                 type_in_file = self.map_type_to_file(resource_type)
                 filename = f'd_{type_in_file}_{id_eddb}.json'
                 file = Path(self.directory) / filename
-                file.write_text(json.dumps(resource), encoding='utf-8')
+                file.write_text(json.dumps(resource, indent=4), encoding='utf-8')
 
         vocabularies = self.fetch_controlled_vocabulary()
         filename = 'd_vocabularies.json'
         file = Path(self.directory) / filename
-        file.write_text(json.dumps(vocabularies), encoding='utf-8')
+        file.write_text(json.dumps(vocabularies, indent=4), encoding='utf-8')
 
     @abstractmethod
     def build_eddb_cache(self):
@@ -70,7 +70,7 @@ class Database(ABC):
         filename = f'd_{type_in_file}_{eddb_id}.json'
         file = Path(self.directory) / filename
         if not file.exists():
-            raise RuntimeError(f'{filename} not found while overwriting it')
+            raise RuntimeError(f'{filename} not found while deleting it')
         file.unlink()
 
     def download_file(self, url, filename):
@@ -213,14 +213,17 @@ class Database(ABC):
             raise RuntimeError(f'Cannot update label: {response.text}')
         return response
 
-    def overwrite_cache(self, resource, resource_type, eddb_id):
+    def overwrite_cache_dasch(self, resource, resource_type, eddb_id):
         type_in_file = self.map_type_to_file(resource_type)
         filename = f'd_{type_in_file}_{eddb_id}.json'
         file = Path(self.directory) / filename
-        if not file.exists():
-            # raise RuntimeError(f'{filename} not found while overwriting it')
-            pass
-        file.write_text(json.dumps(resource), encoding='utf-8')
+        file.write_text(json.dumps(resource, indent=4), encoding='utf-8')
+
+    def overwrite_cache_eddb(self, eddb_obj, resource_type, eddb_id):
+        type_in_file = self.map_type_to_file(resource_type)
+        filename = f'e_{type_in_file}_{eddb_id}.json'
+        file = Path(self.directory) / filename
+        file.write_text(json.dumps(eddb_obj.to_dict(), indent=4), encoding='utf-8')
 
     @abstractmethod
     def resource_types(self):
@@ -243,7 +246,7 @@ class Database(ABC):
             raise RuntimeError(f'Error while creating resource: {response.text}')
         return response.json()['@id']
 
-    def resource_delete(self, body):
+    def resource_delete(self, resource_type, eddb_id, body):
         url = f'{self.dsp_host}/v2/resources/delete'
         headers = {
             'Authorization': f'Bearer {self.token_dasch}',
@@ -252,6 +255,7 @@ class Database(ABC):
         response = requests.post(url, headers=headers, json=body)
         if response.status_code >= 400:
             raise RuntimeError(f'Cannot delete resource: {response.text}')
+        self.delete_cache(resource_type, eddb_id)
 
     def set_token_dasch(self):
         url = f'{self.dsp_host}/v2/authentication'

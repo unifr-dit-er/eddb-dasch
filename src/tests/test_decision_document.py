@@ -27,6 +27,7 @@ class TestDecisionDocument(unittest.TestCase):
             'updated_at': '2026-02-20 13:37:26+00:00',
             'canton': 'FR',
             'eddb_url': 'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
+            'filename_dasch': None,
         }
 
     def test_constructor(self):
@@ -68,6 +69,7 @@ class TestDecisionDocument(unittest.TestCase):
         self.assertEqual(decision.attachment, Attachment(
             'http://www.u.ch/download/2005.06.28-5__vzhl.pdf',
             '2026-02-20 13:37:26+00:00',
+            None,
         ))
         self.assertTrue(decision.attachment.eddb_url.startswith('http'))
         self.assertIsNone(decision.attachment.value)

@@ -142,7 +142,7 @@ class DocumentFileValue(DaschValue):
             return True
         dasch_date = dasch_obj[self.name]['knora-api:valueCreationDate']['@value']
         date_change = dasch_date[:10] <= self.updated_at[:10]
-        return date_change or self.value is not None
+        return date_change
 
     def set_value(self, filename_dasch):
         self.value = filename_dasch
