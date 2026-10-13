@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import MagicMock, patch
-import json
 from pathlib import Path
 from database.datacant import Datacant
 

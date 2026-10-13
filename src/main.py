@@ -1,13 +1,12 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-import hashlib
 import json
 import logging
 import os
 from pathlib import Path
 from database.datacant import Datacant
-from fetch import download_file, fetch_all_eddb
+from fetch import fetch_all_eddb
 from models.category_model import Category
 from models.decision_document import DecisionDocument
 from models.decision_summary import DecisionSummary
@@ -51,38 +50,30 @@ if __name__ == '__main__':
     # Step 1: Handle the attachments.
     for key_in_db in resource_types:
         for eddb_id, object_eddb in data_eddb[key_in_db].items():
-            object_dasch = data_dasch[key_in_db].get(eddb_id)
+            object_dasch = db.get_dasch(key_in_db, eddb_id)
             attachment = object_eddb.file_field()
             if attachment is not None:
                 is_new = object_dasch is None
                 maybe_updated = attachment.is_updated(object_dasch)
-
                 if is_new or maybe_updated:
-                    # Download required.
                     filename = object_eddb.eddb_filename()
                     url_file = object_eddb.eddb_url_file()
-                    download_file(url_file, filename)
-                    path_to_file = Path('data/documents') / filename
-                    with open(path_to_file, 'rb', buffering=0) as f:
-                        checksum_new = hashlib.file_digest(f, 'sha256').hexdigest()
-                        checksum_old = db.fetch_checksum(object_dasch)
-                        is_upload_needed = checksum_new != checksum_old
-                        filename_dasch = None
-                        if is_upload_needed:
-                            response = db.upload_to_ingest(filename)
-                            filename_dasch = response['internalFilename']
-                            attachment.set_value(filename_dasch)
+                    db.download_file(url_file, filename)
+                    if db.is_upload_needed(object_dasch, filename):
+                        response = db.upload_to_ingest(filename)
+                        filename_dasch = response['internalFilename']
+                        attachment.set_value(filename_dasch)
 
     # Step 2: Update existing resources  or add new resources.
     for key_in_db in resource_types:
         for eddb_id, object_eddb in data_eddb[key_in_db].items():
-            object_dasch = data_dasch[key_in_db].get(eddb_id)
-            object_eddb.fill_iri_values(data_dasch)
+            object_dasch = db.get_dasch(key_in_db, eddb_id)
+            db.fill_iri_values(object_eddb)
             is_created = False
             is_updated = False
             if object_dasch is None:
                 payload = object_eddb.payload_create()
-                resource_id = db.create_resource(payload)
+                resource_id = db.resource_create(payload)
                 is_created = True
                 logger.info(f'Add new {key_in_db} (id={eddb_id})')
             else:
@@ -92,7 +83,7 @@ if __name__ == '__main__':
                     response = db.update_label(payload_label)
                     logger.info(f'{key_in_db} (id={eddb_id}) label has been updated')
 
-                payloads = object_eddb.payload_update_fields(data_dasch)
+                payloads = object_eddb.payload_update_fields(db)
                 for payload in payloads['updates']:
                     db.update_value(payload)
                 for payload in payloads['add_values']:
@@ -106,14 +97,15 @@ if __name__ == '__main__':
                     resource_id = object_dasch['@id']
                     logger.info(f'{key_in_db} (id={eddb_id}) field(s) have been updated')
             if is_created or is_updated:
-                data_dasch[key_in_db][eddb_id] = db.fetch_resource(resource_id)
+                object_dasch = db.fetch_resource(resource_id)
+                db.overwrite_cache(object_dasch, key_in_db, eddb_id)
 
     # Step 3: Delete resources if not found in EDDB.
     resource_types.reverse()
 
     for resource_type in resource_types:
         keys_to_remove = []
-        for eddb_id_old, row in data_dasch[resource_type].items():
+        for eddb_id_old, row in db.get_dasch_items(resource_type):
             if eddb_id_old not in data_eddb[resource_type]:
                 resource_iri = row['@id']
                 last_modification = row.get('knora-api:lastModificationDate', {}).get('@value')
@@ -122,6 +114,6 @@ if __name__ == '__main__':
                 keys_to_remove.append(eddb_id_old)
                 logger.info(f'Delete {resource_type} (id={eddb_id_old})')
         for k in keys_to_remove:
-            data_dasch[resource_type].pop(k)
+            db.delete_cache(resource_type, k)
 
     logger.info('Finished!')

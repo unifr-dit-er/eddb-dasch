@@ -13,20 +13,6 @@ EDDB_TOKEN = os.environ.get('EDDB_TOKEN')
 NB_DAYS_LAST_INGESTION = 60
 
 
-def download_file(url, filename):
-    output_dir = Path('data/documents')
-    output_dir.mkdir(parents=True, exist_ok=True)
-    filepath = output_dir / filename
-    if filepath.is_file():
-        return
-
-    r = requests.get(url)
-    if not r.ok:
-        raise RuntimeError(f'Error while downloading file: {url}')
-    with open(filepath, 'wb') as f:
-        f.write(r.content)
-
-
 def fetch_eddb_categories():
     category_limit = 200
     url = 'https://eddb.unifr.ch/datacant/api/nocodb/api/v2/tables/mpqb34djokcbpcy/records'

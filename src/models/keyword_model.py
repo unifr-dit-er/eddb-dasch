@@ -1,5 +1,4 @@
 from models.resource import Resource
-from models.category_model import Category
 from fields.datacant import CategoryLink, EddbId, Name
 
 

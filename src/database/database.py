@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-import json
+import hashlib
 from itertools import batched
+import json
 import os
 from pathlib import Path
 import requests
@@ -30,7 +31,7 @@ class Database(ABC):
         url = '{}/v2/metadata/projects/{}/resources?format=json' \
             .format(self.dsp_host, self.project_number)
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.get(url, headers=headers)
@@ -44,25 +45,50 @@ class Database(ABC):
                 iris.append(row['resourceIri'])
         expected_types = self.resource_types()
         for batch_iri in batched(iris, BATCH_SIZE):
-            resources = fetch_batch(batch_iri)
+            resources = self.fetch_batch(batch_iri)
             for resource in resources:
                 id_eddb = resource['Datacant:hasId']['knora-api:intValueAsInt']
                 resource_type = resource['@type']
                 if resource_type not in expected_types:
                     raise ValueError('Unknown class')
-                # TODO: write to disk (type, id_eddb) <- resource
+                type_in_file = self.map_type_to_file(resource_type)
+                filename = f'd_{type_in_file}_{id_eddb}.json'
+                file = Path(self.directory) / filename
+                file.write_text(json.dumps(resource), encoding='utf-8')
 
-        cantons = fetch_controlled_vocabulary(token)
-        # TODO: write to disk.
+        vocabularies = self.fetch_controlled_vocabulary()
+        filename = 'd_vocabularies.json'
+        file = Path(self.directory) / filename
+        file.write_text(json.dumps(vocabularies), encoding='utf-8')
 
     @abstractmethod
     def build_eddb_cache(self):
         pass
 
+    def delete_cache(self, resource_type, eddb_id):
+        type_in_file = self.map_type_to_file(resource_type)
+        filename = f'd_{type_in_file}_{eddb_id}.json'
+        file = Path(self.directory) / filename
+        if not file.exists():
+            raise RuntimeError(f'{filename} not found while overwriting it')
+        file.unlink()
+
+    def download_file(self, url, filename):
+        output_dir = Path(self.directory) / 'documents'
+        output_dir.mkdir(parents=True, exist_ok=True)
+        filepath = output_dir / filename
+        if filepath.is_file():
+            return
+        r = requests.get(url)
+        if not r.ok:
+            raise RuntimeError(f'Error while downloading file: {url}')
+        with open(filepath, 'wb') as f:
+            f.write(r.content)
+
     def fetch_batch(self, batch):
         url = f'{self.dsp_host}/v2/resources/batch'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         data = {'resourceIris': batch}
@@ -82,7 +108,7 @@ class Database(ABC):
         filename_id = filename.split('.')[0]
         url = f'{self.ingest_host}/projects/{self.project_number}/assets/{filename_id}'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.get(url, headers=headers)
@@ -96,7 +122,7 @@ class Database(ABC):
         '''
         url = f'{self.dsp_host}/admin/lists'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.get(url, headers=headers)
@@ -115,13 +141,13 @@ class Database(ABC):
         for canton in r['list']['children']:
             name = canton['name']
             cantons[name] = canton['id']
-        return cantons
+        return {'Datacant:Cantons': cantons}
 
     def fetch_resource(self, iri):
         iri_enc = quote(iri, safe='')
         url = f'{self.dsp_host}/v2/resources/{iri_enc}'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.get(url, headers=headers)
@@ -169,16 +195,32 @@ class Database(ABC):
     def get_eddb_items(self, resource_type):
         pass
 
+    def is_upload_needed(self, dasch_obj, eddb_filename):
+        path_to_file = Path(self.directory) / 'documents' / eddb_filename
+        with open(path_to_file, 'rb', buffering=0) as f:
+            checksum_new = hashlib.file_digest(f, 'sha256').hexdigest()
+            checksum_old = self.fetch_checksum(dasch_obj)
+            return checksum_new != checksum_old
+
     def label_update(self, body):
         url = f'{self.dsp_host}/v2/resources'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.put(url, headers=headers, json=body)
         if response.status_code >= 400:
             raise RuntimeError(f'Cannot update label: {response.text}')
         return response
+
+    def overwrite_cache(self, resource, resource_type, eddb_id):
+        type_in_file = self.map_type_to_file(resource_type)
+        filename = f'd_{type_in_file}_{eddb_id}.json'
+        file = Path(self.directory) / filename
+        if not file.exists():
+            # raise RuntimeError(f'{filename} not found while overwriting it')
+            pass
+        file.write_text(json.dumps(resource), encoding='utf-8')
 
     @abstractmethod
     def resource_types(self):
@@ -193,7 +235,7 @@ class Database(ABC):
     def resource_create(self, body):
         url = f'{self.dsp_host}/v2/resources'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.post(url, headers=headers, json=body)
@@ -204,7 +246,7 @@ class Database(ABC):
     def resource_delete(self, body):
         url = f'{self.dsp_host}/v2/resources/delete'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.post(url, headers=headers, json=body)
@@ -229,7 +271,7 @@ class Database(ABC):
     def transform_to_rich(self, text):
         url = f'{self.dsp_host}/v2/standoff/canonicalize'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'text/plain',
         }
         response = requests.post(url, headers=headers, data=text)
@@ -237,10 +279,10 @@ class Database(ABC):
             raise RuntimeError(f'Cannot get the XML output: {response.text}')
         return response
 
-    def value_create(body):
+    def value_create(self, body):
         url = f'{self.dsp_host}/v2/values'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.post(url, headers=headers, json=body)
@@ -250,7 +292,7 @@ class Database(ABC):
     def value_delete(self, body):
         url = f'{self.dsp_host}/v2/values/delete'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.post(url, headers=headers, json=body)
@@ -260,21 +302,20 @@ class Database(ABC):
     def value_update(self, body):
         url = f'{self.dsp_host}/v2/values'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/json',
         }
         response = requests.put(url, headers=headers, json=body)
         if response.status_code >= 400:
             raise RuntimeError(f'Cannot update value: {response.text}')
 
-
-    def upload_to_ingest(filename):
+    def upload_to_ingest(self, filename):
         url = f'{self.ingest_host}/projects/0871/assets/ingest/{filename}'
         headers = {
-            'Authorization': f'Bearer {self.token}',
+            'Authorization': f'Bearer {self.token_dasch}',
             'Content-Type': 'application/octet-stream',
         }
-        output_dir = Path('data/documents')
+        output_dir = Path(self.directory) / 'documents'
         filepath = output_dir / filename
         if not filepath.is_file():
             raise RuntimeError(f'File {filename} not found when uploading it')
