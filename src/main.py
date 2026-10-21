@@ -20,11 +20,9 @@ if __name__ == '__main__':
     USE_DASCH_CACHE = os.environ.get('USE_DASCH_CACHE') in ('true', 'True')
 
     db = Datacant('data/datacant')
-    if not USE_DASCH_CACHE:
-        db.build_dasch_cache()
+    db.build_dasch_cache(USE_DASCH_CACHE)
 
     since = date.today() - timedelta(days=NB_DAYS_LAST_INGESTION)
-    # since = '2000-01-01'
     db.build_eddb_cache(since)
 
     resource_types = db.resource_types()

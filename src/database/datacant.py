@@ -19,16 +19,29 @@ class Datacant(Database):
         Database.__init__(self, directory, PROJECT_NUMBER)
 
     def build_eddb_cache(self, since):
+        folder = Path(self.directory)
+        files = list(folder.glob('e_*'))
+        if len(files) == 0:
+            since = '2000-01-01'
+        else:
+            deletion_detected = False
+            if deletion_detected:
+                since = '2000-01-01'
+                for file in files:
+                    if file.is_file():
+                        file.unlink()
         self.fetch_categories()
         self.fetch_decisions(since)
         self.fetch_keywords()
 
     def fetch_categories(self):
         category_limit = 200
-        url = 'https://eddb.unifr.ch/datacant/api/nocodb/api/v2/tables/mpqb34djokcbpcy/records'
+        url = 'https://eddb.unifr.ch/noco/api/v2/tables/mpqb34djokcbpcy/records'
         params = {'limit': category_limit}
         headers = {'xc-token': self.token_eddb}
         r = requests.get(url, params=params, headers=headers)
+        if r.status_code >= 400:
+            raise RuntimeError(f'Eddb server error: {r.status_code}')
         response = r.json()
         nb_category = response['pageInfo']['totalRows']
         if category_limit < nb_category:
@@ -43,7 +56,7 @@ class Datacant(Database):
                 category = Category(eddb_id, name_en, name_de, name_fr)
                 filename = f'e_{type_in_file}_{eddb_id}.json'
                 file = Path(self.directory) / filename
-                file.write_text(json.dumps(category.to_dict()), encoding='utf-8')
+                file.write_text(json.dumps(category.to_dict(), indent=4), encoding='utf-8')
             except ValueError as err:
                 print(f'Category id {eddb_id}: {err}')
 
@@ -67,6 +80,8 @@ class Datacant(Database):
         }
         headers = {'xc-token': self.token_eddb}
         r = requests.get(url, params=params, headers=headers)
+        if r.status_code >= 400:
+            raise RuntimeError(f'Eddb server error: {r.status_code}')
         response = r.json()
         has_next_page = not response['pageInfo']['isLastPage']
         judgments = response['list']
@@ -109,22 +124,24 @@ class Datacant(Database):
                 decision = DecisionSummary(**attributes_summary)
                 filename = f'e_{type_summary}_{eddb_id}.json'
                 file = Path(self.directory) / filename
-                file.write_text(json.dumps(decision.to_dict()), encoding='utf-8')
+                file.write_text(json.dumps(decision.to_dict(), indent=4), encoding='utf-8')
                 if attributes_document is not None:
                     doc = DecisionDocument(**attributes_document)
                     filename = f'e_{type_document}_{eddb_id}.json'
                     file = Path(self.directory) / filename
-                    file.write_text(json.dumps(doc.to_dict()), encoding='utf-8')
+                    file.write_text(json.dumps(doc.to_dict(), indent=4), encoding='utf-8')
             except ValueError as err:
                 print(f'DecisionSummary {eddb_id}: {err}')
         return has_next_page
 
     def fetch_keywords(self):
         keyword_limit = 1000
-        url = 'https://eddb.unifr.ch/datacant/api/nocodb/api/v2/tables/mp7ev44j9pdsyxs/records'
+        url = 'https://eddb.unifr.ch/noco/api/v2/tables/mp7ev44j9pdsyxs/records'
         params = {'limit': keyword_limit}
         headers = {'xc-token': self.token_eddb}
         r = requests.get(url, params=params, headers=headers)
+        if r.status_code >= 400:
+            raise RuntimeError(f'Eddb server error: {r.status_code}')
         response = r.json()
         nb_keyword = response['pageInfo']['totalRows']
         if keyword_limit < nb_keyword:
@@ -140,7 +157,7 @@ class Datacant(Database):
                 keyword = Keyword(eddb_id, category_id, name_en, name_de, name_fr)
                 filename = f'e_{type_in_file}_{eddb_id}.json'
                 file = Path(self.directory) / filename
-                file.write_text(json.dumps(keyword.to_dict()), encoding='utf-8')
+                file.write_text(json.dumps(keyword.to_dict(), indent=4), encoding='utf-8')
             except ValueError as err:
                 print(f'Keyword {eddb_id}: {err}')
 

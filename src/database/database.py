@@ -27,7 +27,15 @@ class Database(ABC):
     def all_projects():
         return ['Datacant']
 
-    def build_dasch_cache(self):
+    def build_dasch_cache(self, use_cache):
+        folder = Path(self.directory)
+        files = list(folder.glob('d_*'))
+        cache_found = len(files) != 0
+        if cache_found and use_cache:
+            return
+        for file in files:
+            if file.is_file():
+                file.unlink()
         url = '{}/v2/metadata/projects/{}/resources?format=json' \
             .format(self.dsp_host, self.project_number)
         headers = {
