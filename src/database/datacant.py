@@ -3,10 +3,7 @@ from pathlib import Path
 import requests
 from database.database import Database
 from helper import text_to_xml
-from models.category_model import Category
-from models.decision_document import DecisionDocument
-from models.decision_summary import DecisionSummary
-from models.keyword_model import Keyword
+from models.datacant import Category, DecisionDocument, DecisionSummary, Keyword
 
 
 PROJECT_NUMBER = '0871'

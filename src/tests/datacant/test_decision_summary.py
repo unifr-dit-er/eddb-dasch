@@ -12,7 +12,7 @@ from fields.datacant import (
     EddbId,
     KeywordLink,
 )
-from models.decision_summary import DecisionSummary
+from models.datacant import DecisionSummary
 
 
 class TestDecisionSummary(unittest.TestCase):

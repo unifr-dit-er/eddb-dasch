@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from database.datacant import Datacant
 from fields.datacant import EddbId, Name
-from models.category_model import Category
+from models.datacant import Category
 
 
 class TestCategory(unittest.TestCase):

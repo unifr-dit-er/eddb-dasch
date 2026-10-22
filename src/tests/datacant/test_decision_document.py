@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from database.datacant import Datacant
 from fields.datacant import Attachment, EddbId
-from models.decision_document import DecisionDocument
+from models.datacant import DecisionDocument
 
 
 class TestDecisionDocument(unittest.TestCase):

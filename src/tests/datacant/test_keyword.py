@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from database.datacant import Datacant
 from fields.datacant import CategoryLink, EddbId, Name
-from models.keyword_model import Keyword
+from models.datacant import Keyword
 
 
 class TestKeyword(unittest.TestCase):
