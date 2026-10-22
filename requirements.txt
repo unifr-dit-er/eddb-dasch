@@ -1,3 +1,5 @@
+beautifulsoup4==4.15.0
 dsp-tools==19.2.1.post0
 flake8==7.3.0
+markdown==3.11.2
 python-dotenv==1.2.2

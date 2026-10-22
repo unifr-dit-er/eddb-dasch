@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import requests
 from database.database import Database
-from helper import text_to_xml
+from helper import markdown_to_dasch_xml
 from models.datacant import Category, DecisionDocument, DecisionSummary, Keyword
 
 
@@ -33,7 +33,7 @@ class Datacant(Database):
 
     def fetch_categories(self):
         category_limit = 200
-        url = 'https://eddb.unifr.ch/noco/api/v2/tables/mpqb34djokcbpcy/records'
+        url = self.base_url_eddb + '/api/v2/tables/mpqb34djokcbpcy/records'
         params = {'limit': category_limit}
         headers = {'xc-token': self.token_eddb}
         r = requests.get(url, params=params, headers=headers)
@@ -65,7 +65,7 @@ class Datacant(Database):
             page += 1
 
     def fetch_decisions_page(self, since, page):
-        url = 'https://eddb.unifr.ch/noco/api/v2/tables/merxbxhfvr09g66/records'
+        url = self.base_url_eddb + '/api/v2/tables/merxbxhfvr09g66/records'
         limit = 25
         offset = (page - 1) * limit
         where = f'(CreatedAt,ge,exactDate,{since})~or(UpdatedAt,ge,exactDate,{since})'
@@ -88,7 +88,7 @@ class Datacant(Database):
             eddb_id = j['Id']
             attributes_document = None
             if j['Attachment'] is not None:
-                url_file = 'https://eddb.unifr.ch/noco/{}'.format(j['Attachment'][0]['path'])
+                url_file = '{}/{}'.format(self.base_url_eddb, j['Attachment'][0]['path'])
                 attributes_document = {
                     'eddb_id': eddb_id,
                     'eddb_url': url_file,
@@ -102,8 +102,8 @@ class Datacant(Database):
                 'updated_at': j['UpdatedAt'],
                 'desc_de': j['DescriptionDE'].strip(),
                 'desc_fr': j['DescriptionFR'].strip(),
-                'abstract_de': text_to_xml(j['AbstractDE']),
-                'abstract_fr': text_to_xml(j['AbstractFR']),
+                'abstract_de': markdown_to_dasch_xml(j['AbstractDE']),
+                'abstract_fr': markdown_to_dasch_xml(j['AbstractFR']),
                 'date_issued': j['Date'],
                 'canton': j['Canton'],
                 'keywords_id': [],
@@ -133,7 +133,7 @@ class Datacant(Database):
 
     def fetch_keywords(self):
         keyword_limit = 1000
-        url = 'https://eddb.unifr.ch/noco/api/v2/tables/mp7ev44j9pdsyxs/records'
+        url = self.base_url_eddb + '/api/v2/tables/mp7ev44j9pdsyxs/records'
         params = {'limit': keyword_limit}
         headers = {'xc-token': self.token_eddb}
         r = requests.get(url, params=params, headers=headers)

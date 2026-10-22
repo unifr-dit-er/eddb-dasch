@@ -17,6 +17,7 @@ class Database(ABC):
 
     def __init__(self, directory, project_number):
         self.directory = directory
+        self.base_url_eddb = os.environ.get('BASE_URL_EDDB')
         self.dsp_host = os.environ.get('DSP_HOST')
         self.ingest_host = os.environ.get('INGEST_HOST')
         self.project_number = project_number
