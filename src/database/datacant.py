@@ -49,13 +49,10 @@ class Datacant(Database):
             name_en = c['CategoryEN']
             name_de = c['CategoryDE']
             name_fr = c['CategoryFR']
-            try:
-                category = Category(eddb_id, name_en, name_de, name_fr)
-                filename = f'e_{type_in_file}_{eddb_id}.json'
-                file = Path(self.directory) / filename
-                file.write_text(json.dumps(category.to_dict(), indent=4), encoding='utf-8')
-            except ValueError as err:
-                print(f'Category id {eddb_id}: {err}')
+            category = Category(eddb_id, name_en, name_de, name_fr)
+            filename = f'e_{type_in_file}_{eddb_id}.json'
+            file = Path(self.directory) / filename
+            file.write_text(json.dumps(category.to_dict(), indent=4), encoding='utf-8')
 
     def fetch_decisions(self, since):
         page = 1
@@ -117,18 +114,15 @@ class Datacant(Database):
                 keyword_id = keyword['Keywords_id']
                 attributes_summary['keywords_id'].append(keyword_id)
 
-            try:
-                decision = DecisionSummary(**attributes_summary)
-                filename = f'e_{type_summary}_{eddb_id}.json'
+            decision = DecisionSummary(**attributes_summary)
+            filename = f'e_{type_summary}_{eddb_id}.json'
+            file = Path(self.directory) / filename
+            file.write_text(json.dumps(decision.to_dict(), indent=4), encoding='utf-8')
+            if attributes_document is not None:
+                doc = DecisionDocument(**attributes_document)
+                filename = f'e_{type_document}_{eddb_id}.json'
                 file = Path(self.directory) / filename
-                file.write_text(json.dumps(decision.to_dict(), indent=4), encoding='utf-8')
-                if attributes_document is not None:
-                    doc = DecisionDocument(**attributes_document)
-                    filename = f'e_{type_document}_{eddb_id}.json'
-                    file = Path(self.directory) / filename
-                    file.write_text(json.dumps(doc.to_dict(), indent=4), encoding='utf-8')
-            except ValueError as err:
-                print(f'DecisionSummary {eddb_id}: {err}')
+                file.write_text(json.dumps(doc.to_dict(), indent=4), encoding='utf-8')
         return has_next_page
 
     def fetch_keywords(self):
@@ -150,13 +144,10 @@ class Datacant(Database):
             name_en = k['KeywordEN']
             name_de = k['KeywordDE']
             name_fr = k['KeywordFR']
-            try:
-                keyword = Keyword(eddb_id, category_id, name_en, name_de, name_fr)
-                filename = f'e_{type_in_file}_{eddb_id}.json'
-                file = Path(self.directory) / filename
-                file.write_text(json.dumps(keyword.to_dict(), indent=4), encoding='utf-8')
-            except ValueError as err:
-                print(f'Keyword {eddb_id}: {err}')
+            keyword = Keyword(eddb_id, category_id, name_en, name_de, name_fr)
+            filename = f'e_{type_in_file}_{eddb_id}.json'
+            file = Path(self.directory) / filename
+            file.write_text(json.dumps(keyword.to_dict(), indent=4), encoding='utf-8')
 
     def fill_iri_values(self, object_eddb):
         if isinstance(object_eddb, Category):
