@@ -2,6 +2,34 @@
 
 Users work with EDDB to manage their data. This script syncs EDDB with DaSCH which is a repository for the long-term preservation and reuse of data in the humanities.
 
+## Getting started
+
+Make sure Docker (not Podman) is installed. The library [Dsp-Tools](https://pypi.org/project/dsp-tools/) requires Python 3.12 or above.
+
+Create a virtual environment:
+```
+virtualenv venv
+```
+
+Then download the dependencies:
+```
+(venv) pip3 install -r requirements.txt
+```
+
+Run the unittests:
+```
+(venv) python3 -m unittest
+```
+
+Note: If the system is restarted, the containers must be started again.
+```
+docker start start-stack-app-1
+docker start start-stack-ingest-1
+docker start start-stack-db-1
+docker start start-stack-api-1
+docker start start-stack-sipi-1
+```
+
 ## General workflow
 
 ### Design the entities
@@ -31,32 +59,9 @@ Fortunately, a valid stratgy is straightforward to implement:
 5. Delete keywords.
 6. Delete categories.
 
-## Getting started
-
-Make sure Docker (not Podman) is installed. The library [Dsp-Tools](https://pypi.org/project/dsp-tools/) requires Python 3.12 or above.
-
-Create a virtual environment:
-```
-virtualenv venv --python=python3.12
-```
-
-Then download the dependencies:
-```
-(venv) pip3 install -r requirements.txt
-```
-
-If the system is restarted, the containers must be started again.
-```
-docker start start-stack-app-1
-docker start start-stack-ingest-1
-docker start start-stack-db-1
-docker start start-stack-api-1
-docker start start-stack-sipi-1
-```
-
 ## Reset a local instance of DaSCH
 
-Shut down .
+Reset all the projects in the local instance:
 ```
 dsp-tools stop-stack
 ```
