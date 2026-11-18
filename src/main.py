@@ -4,6 +4,7 @@ load_dotenv()
 from datetime import date, timedelta
 import logging
 import os
+from pathlib import Path
 from database.datacant import Datacant
 import payload as pload
 
@@ -14,10 +15,17 @@ NB_DAYS_LAST_INGESTION = 60
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='data/app.log', level=logging.INFO)
-    logger.info('Start the process!')
+    PROJECT_NAME = os.environ.get('PROJECT_NAME')
 
-    USE_DASCH_CACHE = os.environ.get('USE_DASCH_CACHE') in ('true', 'True')
+    lock_file = Path(f'data/{PROJECT_NAME}.lock')
+    if lock_file.exists():
+        USE_DASCH_CACHE = False
+    else:
+        USE_DASCH_CACHE = os.environ.get('USE_DASCH_CACHE') in ('true', 'True')
+        lock_file.touch(exist_ok=True)
+
+    logging.basicConfig(filename=f'data/{PROJECT_NAME}.log', level=logging.INFO)
+    logger.info('Start the process!')
 
     db = Datacant('data/datacant')
     db.build_dasch_cache(USE_DASCH_CACHE)
@@ -94,3 +102,4 @@ if __name__ == '__main__':
                 logger.info(f'Delete {resource_type} (id={eddb_id_old})')
 
     logger.info('Finished!')
+    lock_file.unlink()
